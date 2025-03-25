@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import './App.css'
-import Header from './components/Header'
+import Home from './vistas/Home'
+import Login from './vistas/Login'
+import CarritoCompras from './vistas/CarritoCompras'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-    <div>
-      <Header></Header>
-    </div>
+      <CarritoCompras />
     </>
   )
 }
