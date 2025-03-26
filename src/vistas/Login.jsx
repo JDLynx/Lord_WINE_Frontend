@@ -3,7 +3,7 @@ import React from 'react'
 export default function Login() {
     return (
         <>
-            <main class="bg-login">
+            <main class="bg-vistas">
                 <div class="login-card">
                     <h2 class="login-title">Iniciar Sesión</h2> 
                     <form>
