@@ -8,5 +8,6 @@ console.log("El archivo main.jsx se está ejecutando correctamente");
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
+    
   </StrictMode>,
 )
