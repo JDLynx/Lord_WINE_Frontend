@@ -1,0 +1,17 @@
+.page-container{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url('/img/Viñedo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+main{
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+}

@@ -61,7 +61,7 @@ button:focus-visible {
   display: flex;
   align-content: center;
   justify-content: center;
-  background-image: url('/img/Viñedo.jpg');
+
   background-size: cover;
   background-position: center;
   padding: 2rem;

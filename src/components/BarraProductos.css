@@ -1,0 +1,32 @@
+.header-parte-inferior{
+    background-color: #921913;
+    width: 100%;
+    padding: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.btn-productos{
+    background-color: transparent;
+    border: none;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0px;
+    flex: 1;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, color 0.3s;
+}
+.btn-productos:not(:last-child){
+    margin-right: 10px;
+}
+.btn-productos:focus,
+.btn-productos:active{
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+.btn-productos:hover{
+    transform: scale(1.1);
+    color: #ffcccb;
+}

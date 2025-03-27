@@ -14,14 +14,6 @@ header{
     align-items: center;
     width: 100%;
 }
-.header-parte-inferior{
-    background-color: #921913;
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    color: black;
-    justify-content: space-between;
-}
 header div:last-child{
     display: flex;
     gap: 15px;
@@ -37,33 +29,32 @@ header div:last-child{
 .icono-tiendas,
 .icono-carrito-compras,
 .icono-usuario-login{
-    width: 70px;
-    height: 70px;
+    width: 30px;
+    height: 30px;
     color: white;
+    transition: color 0.3s;
 }
-.btn-redondo{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #000000;
+.icono-principales{
+    background: none;
     border: none;
     border-radius: 50%;
     width: 70px;
     height: 70px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    box-shadow: none;
+    transition: background 0.3s ease-in-out;
 }
-button:hover{
-    background-color: #921913;
+.icono-principales:hover .icono-tiendas,
+.icono-principales:hover .icono-carrito-compras,
+.icono-principales:hover .icono-usuario-login{
+    color: #921913;
 }
-.btn-productos{
-    background-color: transparent;
-    border: none;
-    color: black;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 0px;
-    transition: transform 0.2s ease-in-out;
-}
-.btn-productos:hover{
-    transform: scale(1.1);
+.icono-principales:focus,
+.icono-principales:active{
+    outline: none !important;
+    box-shadow: none !important;
 }

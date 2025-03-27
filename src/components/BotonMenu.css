@@ -2,28 +2,40 @@
     position: relative;
     display: inline-block;
 }
-.menu-btn-redondo{
-    background: none;
+.btn-redondo{
+    background: none !important;
     border: none;
     cursor: pointer;
     padding: 10px;
-    border-radius: 50%;
-    transition: background 0.3s;
+    transition: color 0.3s;
+    outline: none;
 }
-.menu-btn-redondo:hover{
-    background: rgba(0, 0, 0, 0.1);
+.btn-redondo:hover{
+    background: transparent !important;
+    box-shadow: none !important;
 }
-.icono-menu{
+.btn-redondo:focus,
+.btn-redondo:active{
+    outline: none !important;
+    box-shadow: none !important;
+    background: none !important;
+}
+.icono-menu {
     width: 30px;
     height: 30px;
+    color: white;
+    transition: color 0.3s;
+}
+.btn-redondo:hover .icono-menu{
+    color: #921913;
 }
 .dropdown-menu{
     white-space: nowrap;
     min-width: 200px;
     position: absolute;
-    top: 50px;
-    left: 0;
-    background: white;
+    top: 60px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -38,6 +50,7 @@
     text-decoration: none;
     color: black;
     display: block;
+    text-align: left;
 }
 .dropdown-item:hover{
     background: rgba(0, 0, 0, 0.05);

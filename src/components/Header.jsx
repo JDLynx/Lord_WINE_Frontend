@@ -17,15 +17,15 @@ function Header()
 
                 <div className='header-iconos'>
 
-                    <button className="btn-redondo">
+                    <button className="icono-principales">
                         <MapPinIcon className='icono-tiendas'/>
                     </button>
 
-                    <button className="btn-redondo">
+                    <button className="icono-principales">
                         <ShoppingCartIcon className='icono-carrito-compras'/>
                     </button>
 
-                    <button className="btn-redondo">
+                    <button className="icono-principales">
                         <UserIcon className='icono-usuario-login'/>
                     </button>
 
@@ -35,30 +35,7 @@ function Header()
 
             </div>
 
-            <div className='header-parte-inferior'>
-                
-                <button class="btn-productos" id="btnVinos">
-                    Vinos
-                </button>
-
-                <button class="btn-productos" id="btnCremasWhisky">
-                    Cremas de Whisky
-                </button>
-
-                <button class="btn-productos" id="btnMistelas">
-                    Mistelas
-                </button>
-
-                <button class="btn-productos" id="btnZumo">
-                    Zumos
-                </button>
-
-                <button class="btn-productos" id="btnAccesorios">
-                    Accesorios
-                </button>
-
-            </div>
-
+            
         </header>
     );
 }

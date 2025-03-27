@@ -1,0 +1,23 @@
+.bg-vistas{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/img/Viñedo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    padding: 10px 0;
+}
+.page-container{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+main {
+    flex-grow: 1;
+}
+#map {
+    margin: 5px 0;
+}

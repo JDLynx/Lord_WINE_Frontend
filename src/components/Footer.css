@@ -1,36 +1,46 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
-
-.footer {
+html, body{
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+#root{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.main-content{
+  flex: 1;
+}
+.footer{
   background-color: black;
   color: white;
   text-align: center;
-  padding: 20px;
+  padding: 0px 0px 16px 0px;
   width: 100%;
+  position: relative;
+  bottom: 0;
+  left: 0;
 }
-
-
-.social-icons {
+.social-icons{
   display: flex;
   justify-content: center;
   gap: 15px;
-  margin-bottom: 10px;
 }
-
-/* Estilos para los enlaces de redes sociales */
-.social-link {
+.social-link{
   color: white;
   font-size: 24px;
   text-decoration: none;
   transition: color 0.3s ease;
 }
-
-
-.social-link:hover {
-  color: gray;
+.social-link:hover{
+  color: #921913;
 }
-
-
-.copyright {
-  font-size: 14px;
+.copyright{
+  font-size: 11px;
+}
+.social-icons i{
+  font-size: 16px;
 }
