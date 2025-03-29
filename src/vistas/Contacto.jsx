@@ -13,7 +13,34 @@ function Contacto()
         <Header />
         <BarraProductos />
 
-        <main>Desarrollar el contenido</main>
+        <h2 className="text-center text-2xl font-semibold text-black">Contacto</h2>
+
+        <main className="container mx-auto mt-4 px-4">
+            <form className="flex flex-col gap-4 mt-4">
+            <div className="flex flex-wrap gap-4 md:flex-nowrap">
+                {["Nombre", "Correo Electrónico"].map((label, i) => (
+                <div key={i} className="flex flex-col w-full md:w-1/2">
+                    <label htmlFor={label.toLowerCase()} className="text-sm font-medium text-black">{label}</label>
+                    <input 
+                    type={i === 0 ? "text" : "email"} 
+                    id={label.toLowerCase()} 
+                    placeholder={`Escribe tu ${label.toLowerCase()}`} 
+                    required 
+                    className="border border-gray-300 rounded-lg p-2 bg-white text-black focus:outline-none focus:ring-2 focus:ring-gray-500" />
+                </div>
+                ))}
+            </div>
+            <div className="flex flex-col w-full">
+                <label htmlFor="mensaje" className="text-sm font-medium text-black">Mensaje</label>
+                <textarea id="mensaje" rows="4" placeholder="Escribe tu mensaje aquí" required 
+                className="border border-gray-300 rounded-lg p-2 bg-white text-black focus:outline-none focus:ring-2 focus:ring-gray-500">
+                </textarea>
+            </div>
+            <div className="w-full text-center pt-12">
+                <button type="submit" className="!bg-black text-white px-6 py-2 rounded-lg">Enviar</button>
+            </div>
+            </form>
+        </main>
 
         <Footer />
 
