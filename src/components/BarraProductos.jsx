@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import "./BarraProductos.css";
 
 function BarraProductos()
@@ -7,25 +8,25 @@ function BarraProductos()
 
     <div className="header-parte-inferior">
 
-      <button className="btn-productos" id="btnVinos">
+      <Link to="/vinos" className="btn-productos">
         Vinos
-      </button>
+      </Link>
 
-      <button className="btn-productos" id="btnCremasWhisky">
+      <Link to="/cremas-whisky" className="btn-productos">
         Cremas de Whisky
-      </button>
+      </Link>
 
-      <button className="btn-productos" id="btnMistelas">
+      <Link to="/mistelas" className="btn-productos">
         Mistelas
-      </button>
+      </Link>
 
-      <button className="btn-productos" id="btnZumo">
-        Zumos
-      </button>
+      <Link to="/zumo" className="btn-productos">
+        Zumo
+      </Link>
 
-      <button className="btn-productos" id="btnAccesorios">
+      <Link to="/accesorios" className="btn-productos">
         Accesorios
-      </button>
+      </Link>
 
     </div>
   );

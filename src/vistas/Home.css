@@ -1,27 +1,76 @@
-.bg-vistas{
+.bg-vistas-home{
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     background-image: url('/img/Viñedo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    min-height: 100vh;
+    min-height: 80vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
-.product-card-modern{
-    background: rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    border-radius: 10px;
+.productos-container-home{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.product-card-modern-home{
+    background: rgb(255, 255, 255);
+    border-radius: 8px;
+    padding: 15px;
     text-align: center;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    width: 100%;
+    max-width: 280px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0.8;
 }
-.product-card-modern h5{
+.product-card-modern-home:hover{
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.product-card-modern-home h5{
     font-weight: bold;
     color: #222;
+    font-size: 18px;
 }
-.flex.flex-wrap.justify-center > div{
-    margin-bottom: 1rem;
+.detalle-home{
+    color: #222;
+    font-size: 16px;
+}
+.price-home{
+    font-size: 18px;
+    font-weight: bold;
+    color: #00C853;
+}
+@media (max-width: 1024px){
+    .product-card-modern-home{
+        width: 45%;
+    }
+}
+@media (max-width: 768px){
+    .product-card-modern-home{
+        width: 100%;
+    }
+}
+.nombre-producto-home{
+    font-size: 24px;
+    color: #12b873;
+}
+.product-image-home{
+    max-height: 120px;
+    object-fit: contain;
+    margin-bottom: 10px;
 }

@@ -27,6 +27,6 @@
     background: transparent !important;
 }
 .btn-productos:hover{
-    transform: scale(1.1);
     color: #ffcccb;
+    font-weight: bold;
 }

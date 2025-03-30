@@ -15,9 +15,31 @@
     flex-direction: column;
     min-height: 100vh;
 }
-main {
+main{
     flex-grow: 1;
 }
-#map {
+#map{
     margin: 5px 0;
+}
+h2{
+    font-size: 32px;
+}
+#store-list{
+    text-align: left;
+    padding-left: 0;
+}
+#store-list li{
+    text-align: left;
+    font-size: 16px;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+#store-list li b{
+    font-size: 24px;
+    display: block;
+    margin-bottom: 2px;
+}
+#store-list li:hover{
+    background-color: #444;
 }

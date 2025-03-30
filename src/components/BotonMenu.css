@@ -20,7 +20,7 @@
     box-shadow: none !important;
     background: none !important;
 }
-.icono-menu {
+.icono-menu{
     width: 30px;
     height: 30px;
     color: white;
@@ -54,4 +54,5 @@
 }
 .dropdown-item:hover{
     background: rgba(0, 0, 0, 0.05);
+    color: #921913;
 }

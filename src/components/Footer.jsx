@@ -10,7 +10,7 @@ function Footer()
       <div className="social-icons">
 
         <a
-          href="https://facebook.com"
+          href="https://www.facebook.com/lordrobert.colombia"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Facebook"
@@ -20,7 +20,7 @@ function Footer()
         </a>
 
         <a
-          href="https://instagram.com"
+          href="https://www.instagram.com/lordwine.cop/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Instagram"
@@ -30,7 +30,7 @@ function Footer()
         </a>
 
         <a
-          href="https://wa.me/1234567890"
+          href="https://web.whatsapp.com/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="WhatsApp"

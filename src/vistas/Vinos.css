@@ -1,17 +1,90 @@
-.page-container{
+.bg-vistas-vinos{
+    flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    align-items: center;
     background-image: url('/img/Viñedo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    width: 100%;
+    min-height: 80vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
-main{
-    flex-grow: 1;
+.productos-container-vinos{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.product-card-modern-vinos{
+    background: rgb(255, 255, 255);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    width: 100%;
+    max-width: 280px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0.8;
+}
+.product-card-modern-vinos:hover{
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.product-card-modern-vinos h5{
+    font-weight: bold;
+    color: #222;
+    font-size: 18px;
+}
+.detalle-vinos{
+    color: #222;
+    font-size: 16px;
+}
+.price-vinos{
+    font-size: 18px;
+    font-weight: bold;
+    color: #00C853;
+}
+@media (max-width: 1024px){
+    .product-card-modern-vinos{
+        width: 45%;
+    }
+}
+@media (max-width: 768px){
+    .product-card-modern-vinos{
+        width: 100%;
+    }
+}
+.nombre-producto-vinos{
+    font-size: 24px;
+    color: #12b873;
+}
+.product-image-vinos{
+    max-height: 120px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+.prox{
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
-    font-size: 1.5rem;
+    flex-grow: 1;
+}
+.titulo-vinos{
+    font-size: 32px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
 }

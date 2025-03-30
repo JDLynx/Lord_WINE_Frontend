@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./BotonMenu.css";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 
@@ -15,11 +16,11 @@ function BotonMenu()
 
             {isOpen && (
                 <ul className="dropdown-menu">
-                    <li><a className="dropdown-item" href="#">Inicio</a></li>
-                    <li><a className="dropdown-item" href="#">Álbum</a></li>
-                    <li><a className="dropdown-item" href="#">Contacto</a></li>
-                    <li><a className="dropdown-item" href="#">Servicios empresariales</a></li>
-                    <li><a className="dropdown-item" href="#">Sobre nosotros</a></li>
+                    <li><Link className="dropdown-item" to="/">Inicio</Link></li>
+                    <li><Link className="dropdown-item" to="/album">Álbum</Link></li>
+                    <li><Link className="dropdown-item" to="/contacto">Contacto</Link></li>
+                    <li><Link className="dropdown-item" to="/servicios-empresariales">Servicios empresariales</Link></li>
+                    <li><Link className="dropdown-item" to="/sobre-nosotros">Sobre nosotros</Link></li>
                 </ul>
             )}
 

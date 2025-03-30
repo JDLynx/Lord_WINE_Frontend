@@ -13,7 +13,27 @@ function Accesorios()
         <Header />
         <BarraProductos />
 
-        <main>Desarrollar el contenido</main>
+        <main className="bg-vistas-accesorios">
+
+            <h2 className="titulo-accesorios">Accesorios</h2>
+
+            <div className="productos-container-accesorios">
+
+                <div className="product-card-modern-accesorios">
+                    <img src="/img/Proximamente.png" alt="Proximamente" className="product-image-accesorios" />
+                </div>
+
+                <div className="product-card-modern-accesorios">
+                    <img src="/img/Proximamente.png" alt="Proximamente" className="product-image-accesorios" />
+                </div>
+
+                <div className="product-card-modern-accesorios">
+                    <img src="/img/Proximamente.png" alt="Proximamente" className="product-image-accesorios" />
+                </div>
+                    
+            </div>
+
+        </main>
 
         <Footer />
 
