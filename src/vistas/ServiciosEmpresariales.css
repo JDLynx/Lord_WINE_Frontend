@@ -1,4 +1,4 @@
-.page-container{
+.page-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -6,12 +6,98 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    
 }
-main{
-    flex-grow: 1;
+
+/* Contenido principal */
+.servicios-main {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilo del título y descripción */
+.text-container {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 1.5rem;
+    border-radius: 10px;
+    max-width: 800px;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+h2 span {
+    color: #a52a2a;
+}
+
+.text-container p {
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+/* Contenedor de los servicios */
+.servicios-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 1.5rem;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+/* Tarjetas de servicio */
+.servicio-card {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    max-width: 280px;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+}
+
+.servicio-card:hover {
+    transform: translateY(-5px);
+}
+
+.servicio-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.servicio-info {
+    padding: 1rem;
+}
+
+.servicio-info h3 {
+    font-size: 1.4rem;
+    color: #a52a2a;
+    margin-bottom: 0.5rem;
+}
+
+.servicio-info p {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+/* Adaptabilidad para móviles */
+@media (max-width: 768px) {
+    .text-container {
+        width: 90%;
+        padding: 1rem;
+    }
+
+    .servicios-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .servicio-card {
+        width: 90%;
+    }
 }
