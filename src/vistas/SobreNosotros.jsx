@@ -51,4 +51,3 @@ function SobreNosotros() {
 }
 
 export default SobreNosotros;
-

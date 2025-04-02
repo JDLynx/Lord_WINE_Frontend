@@ -1,47 +1,36 @@
-/* Contenedor Principal */
-.page-container {
+.page-container{
     display: flex;
     flex-direction: column;
     min-height: 120vh;
     background: url('/img/Viñedo.jpg') center/cover no-repeat;
 }
-
-/* Estilo del Main */
-.sobre-nosotros-main {
+.sobre-nosotros-main{
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 4rem 0;
 }
-
-/* Contenedor General */
-.container {
+.container{
     width: 90%;
     max-width: 1100px;
     text-align: center;
 }
-
-/* Título Dinámico */
-.titulo {
+.titulo{
     font-size: 2.2rem;
     color: #222;
     margin-bottom: 2rem;
     font-weight: bold;
 }
-
-.resaltado {
+.resaltado{
     color: #921913;
 }
-
-
-.card-grid {
+.card-grid{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
-
-.card {
+.card{
     background: rgb(0, 0, 0);
     border-radius: 12px;
     padding: 20px;
@@ -49,49 +38,36 @@
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
     opacity: 0.8;
 }
-
-.card:hover {
+.card:hover{
     transform: translateY(-8px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
-
-
-.card-img {
+.card-img{
     width: 99%;
     height: 200px;
     object-fit: cover;
     border-radius: 8px;
 }
-
-
-.card-body {
+.card-body{
     padding: 15px;
 }
-
-.card-title {
+.card-title{
     font-size: 1.5rem;
     font-weight: 600;
     color: #ffffff;
     margin-top: 10px;
 }
-
-.card-text {
+.card-text{
     font-size: 1rem;
     line-height: 1.4;
     color: #ffffff;
     text-align: justify;
-
 }
-
-
-
-/* Responsive */
-@media (max-width: 768px) {
-    .container {
+@media (max-width: 768px){
+    .container{
         width: 95%;
     }
-
-    .titulo {
+    .titulo{
         font-size: 1.8rem;
     }
 }

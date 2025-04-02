@@ -15,8 +15,7 @@ main{
     color: white;
     font-size: 1.5rem;
 }
-
-.carousel-button {
+.carousel-button{
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -24,14 +23,12 @@ main{
     background: none;
     border: none;
     font-size: 2rem;
-    color: white; /* Asegura que sean visibles */
+    color: white;
     cursor: pointer;
   }
-  
-  .left-4 {
+  .left-4{
     left: -30px;
   }
-  
-  .right-4 {
+  .right-4{
     right: -30px;
   }

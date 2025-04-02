@@ -4,7 +4,8 @@ import Footer from "../components/Footer";
 import BarraProductos from "../components/BarraProductos";
 import "./Album.css";
 
-export default function Album() {
+export default function Album()
+{
   const images = [
     "../../img/LORD WINE Slide - 1.jpeg",
     "../../img/LORD WINE Slide - 2.jpg",

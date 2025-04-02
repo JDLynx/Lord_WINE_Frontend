@@ -1,4 +1,4 @@
-.page-container {
+.page-container{
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -8,49 +8,38 @@
     background-repeat: no-repeat;
     
 }
-
-/* Contenido principal */
-.servicios-main {
+.servicios-main{
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
-/* Estilo del título y descripción */
-.text-container {
+.text-container{
     background: rgba(0, 0, 0, 0.6);
     padding: 1.5rem;
     border-radius: 10px;
     max-width: 800px;
     margin-bottom: 2rem;
 }
-
-h2 {
+h2{
     font-size: 2rem;
     color: #ffffff;
     font-weight: bold;
 }
-
-h2 span {
+h2 span{
     color: #a52a2a;
 }
-
-.text-container p {
+.text-container p{
     font-size: 1.2rem;
     color: #ffffff;
 }
-
-/* Contenedor de los servicios */
-.servicios-container {
+.servicios-container{
     display: flex;
     justify-content: center;
     gap: 3rem;
     flex-wrap: wrap;
 }
-
-/* Tarjetas de servicio */
-.servicio-card {
+.servicio-card{
     background: rgba(0, 0, 0, 0.6);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
@@ -59,45 +48,36 @@ h2 span {
     transition: all 0.3s ease-in-out;
     text-align: center;
 }
-
-.servicio-card:hover {
+.servicio-card:hover{
     transform: translateY(-5px);
 }
-
-.servicio-img {
+.servicio-img{
     width: 100%;
     height: 180px;
     object-fit: cover;
 }
-
-.servicio-info {
+.servicio-info{
     padding: 1rem;
 }
-
-.servicio-info h3 {
+.servicio-info h3{
     font-size: 1.4rem;
     color: #a52a2a;
     margin-bottom: 0.5rem;
 }
-
-.servicio-info p {
+.servicio-info p{
     font-size: 1rem;
     color: #ffffff;
 }
-
-/* Adaptabilidad para móviles */
-@media (max-width: 768px) {
+@media (max-width: 768px){
     .text-container {
         width: 90%;
         padding: 1rem;
     }
-
-    .servicios-container {
+    .servicios-container{
         flex-direction: column;
         align-items: center;
     }
-
-    .servicio-card {
+    .servicio-card{
         width: 90%;
     }
 }
