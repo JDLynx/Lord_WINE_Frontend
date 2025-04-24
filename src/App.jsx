@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";-
 
 {/*Rutas Header*/}
 
@@ -51,6 +51,7 @@ function App()
       <Route path="/accesorios" element={<Accesorios />} />
 
     </Routes>
+
   );
 }
 
