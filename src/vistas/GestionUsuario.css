@@ -1,0 +1,80 @@
+/* Solo aplica a .container dentro de .bg-vistas para evitar afectar otras páginas */
+.bg-vistas .container {
+  background-color: #fff;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezado de la sección */
+.bg-vistas .container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #800000;
+  font-weight: bold;
+}
+
+/* Tabla de usuarios */
+.bg-vistas .container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.bg-vistas .container th,
+.bg-vistas .container td {
+  border: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.bg-vistas .container th {
+  background-color: #800000;
+  color: white;
+}
+
+.bg-vistas .container tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Acciones con botones */
+.bg-vistas .container .acciones {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.bg-vistas .container .acciones button {
+  border: none;
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.bg-vistas .container .ver {
+  background-color: #3498db;
+  color: white;
+}
+
+.bg-vistas .container .editar {
+  background-color: #f1c40f;
+  color: white;
+}
+
+.bg-vistas .container .eliminar {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.bg-vistas .container .acciones button:hover {
+  opacity: 0.85;
+}
+
+/* Color del texto de las celdas dentro de .bg-vistas */
+.bg-vistas .container td {
+  color: #000; /* Negro */
+}
