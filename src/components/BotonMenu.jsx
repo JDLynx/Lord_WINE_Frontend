@@ -22,6 +22,7 @@ function BotonMenu()
                     <li><Link className="dropdown-item" to="/servicios-empresariales">Servicios empresariales</Link></li>
                     <li><Link className="dropdown-item" to="/sobre-nosotros">Sobre nosotros</Link></li>
                     <li>{/* ✅ NUEVO ENLACE: Perfil del Administrador */}<Link to="/perfil" className="dropdown-item">Perfil Admin</Link></li>
+                    <li><Link className="dropdown-item" to="/gestion-usuario">Gestion Usuario</Link></li>
                 </ul>
             )}
 

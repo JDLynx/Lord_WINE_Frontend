@@ -13,6 +13,7 @@ import Contacto from "./vistas/Contacto";
 import ServiciosEmpresariales from "./vistas/ServiciosEmpresariales";
 import SobreNosotros from "./vistas/SobreNosotros";
 import PerfilAdministrador from "./vistas/PerfilAdministrador"; // ✅ NUEVA RUTA
+import GestioUsuario from "./vistas/GestioUsuario";
 
 // Rutas BarraProductos
 import Vinos from "./vistas/Vinos";
@@ -20,6 +21,7 @@ import CremasWhisky from "./vistas/CremasWhisky";
 import Mistelas from "./vistas/Mistelas";
 import Zumo from "./vistas/Zumo";
 import Accesorios from "./vistas/Accesorios";
+
 
 function App() {
   return (
@@ -36,6 +38,7 @@ function App() {
       <Route path="/servicios-empresariales" element={<ServiciosEmpresariales />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/perfil" element={<PerfilAdministrador />} /> {/* ✅ NUEVA RUTA */}
+      <Route path="/gestion-usuario" element={<GestioUsuario/>} />
 
       {/* Rutas BarraProductos */}
       <Route path="/vinos" element={<Vinos />} />
