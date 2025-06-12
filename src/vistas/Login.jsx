@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Importa Link de react-router-dom
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
@@ -23,6 +24,8 @@ export default function Login() {
 
             if (admin) {
                 alert(`Bienvenido, ${admin.adminNombre}`);
+                // Aquí podrías redirigir al dashboard del admin, por ejemplo
+                // navigate('/admin-dashboard'); // Si usas useNavigate
             } else {
                 setError('Correo o contraseña incorrectos.');
             }
@@ -68,6 +71,9 @@ export default function Login() {
                         <button type="submit" className="submit-btn">Ingresar</button>
                     </form>
                 </div>
+                <p className="mt-5 text-center text-black">
+                    ¿No tienes una cuenta? <Link to="/registro" className="text-red-600 font-bold hover:underline">Regístrate aquí</Link> {/* Usamos Link con 'to' */}
+                </p>
             </main>
             <Footer />
         </div>
