@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
@@ -8,6 +9,7 @@ export default function Login() {
     const [correo, setCorreo] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,7 +24,7 @@ export default function Login() {
             );
 
             if (admin) {
-                alert(`Bienvenido, ${admin.adminNombre}`);
+                navigate('/perfil');
             } else {
                 setError('Correo o contraseña incorrectos.');
             }

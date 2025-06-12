@@ -11,15 +11,14 @@ export default function PerfilAdministrador() {
 
   // **Estado para almacenar la información del perfil, usando los nombres de tu tabla**
   const [profileData, setProfileData] = useState({
-    adminCodAdministrador: "ADM001", // Ejemplo: Código del administrador
-    adminIdAdministrador: "123456789", // Ejemplo: ID del administrador
-    adminNombre: "Juan Pérez González",
-    adminDireccion: "Calle Falsa 123, Ciudad", // Ejemplo: Dirección
-    adminTelefono: "3101234567", // Ejemplo: Teléfono
-    adminCorreoElectronico: "juanperez@lordwine.com",
+    adminCodAdministrador: "1", // Ejemplo: Código del administrador
+    adminIdAdministrador: "1061779346", // Ejemplo: ID del administrador
+    adminNombre: "Juan David Molina Juspian",
+    adminDireccion: "Calle 26EN # 2E - 27", // Ejemplo: Dirección
+    adminTelefono: "3016514814", // Ejemplo: Teléfono
+    adminCorreoElectronico: "jdavid.lynx@gmail.com",
     // No guardamos la contraseña aquí por seguridad, solo se maneja en el modal
-    role: "Administrador General", // Este es un campo adicional para la UI, no de la BD
-    lastAccess: "Hoy, 2:30 PM", // Este es un campo adicional para la UI, no de la BD
+    role: "Administrador", // Este es un campo adicional para la UI, no de la BD
   });
 
   const handleEditClick = () => {
@@ -133,15 +132,6 @@ export default function PerfilAdministrador() {
                       <div>
                         <p className="text-sm text-gray-500">Rol</p>
                         <p className="font-semibold text-gray-800 text-lg">{profileData.role}</p>
-                      </div>
-                    </div>
-
-                    {/* Último Acceso (si sigue siendo un campo de la UI) */}
-                    <div className="flex items-center space-x-4">
-                      <Calendar className="w-6 h-6 text-red-500" />
-                      <div>
-                        <p className="text-sm text-gray-500">Último Acceso</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.lastAccess}</p>
                       </div>
                     </div>
 
