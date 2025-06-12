@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { Link } from 'react-router-dom'; // Importa Link de react-router-dom
+=======
+import { useNavigate } from 'react-router-dom';
+>>>>>>> 03db5c3017f72dde36c4fd7a8859abc07c0448e7
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
@@ -9,6 +13,7 @@ export default function Login() {
     const [correo, setCorreo] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,9 +28,13 @@ export default function Login() {
             );
 
             if (admin) {
+<<<<<<< HEAD
                 alert(`Bienvenido, ${admin.adminNombre}`);
                 // Aquí podrías redirigir al dashboard del admin, por ejemplo
                 // navigate('/admin-dashboard'); // Si usas useNavigate
+=======
+                navigate('/perfil');
+>>>>>>> 03db5c3017f72dde36c4fd7a8859abc07c0448e7
             } else {
                 setError('Correo o contraseña incorrectos.');
             }
