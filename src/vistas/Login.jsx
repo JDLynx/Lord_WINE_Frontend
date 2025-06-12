@@ -81,7 +81,7 @@ export default function Login() {
                     </form>
                 </div>
                 <p className="mt-5 text-center text-black">
-                    ¿No tienes una cuenta? <Link to="/registro" className="text-red-600 font-bold hover:underline">Regístrate aquí</Link> {/* Usamos Link con 'to' */}
+                    ¿No tienes una cuenta? <Link to="/registro" className="text-red-600 font-bold hover:underline">Regístrate aquí</Link>
                 </p>
             </main>
             <Footer />
