@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-// Asumo que tienes un archivo CSS para los estilos de registro
-import "./Registro.css"; // Asegúrate de tener este archivo y las clases
+import "./Registro.css";
 
 export default function Registro() {
-    // Definimos los estados para cada campo del formulario
-    const [codigoUsuario, setCodigoUsuario] = useState(''); // Asumo que se genera o no es editable
+    const [codigoUsuario, setCodigoUsuario] = useState('');
     const [identificacion, setIdentificacion] = useState('');
     const [nombreCompleto, setNombreCompleto] = useState('');
     const [direccion, setDireccion] = useState('');
