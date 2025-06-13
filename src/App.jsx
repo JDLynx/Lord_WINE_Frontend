@@ -43,13 +43,8 @@ function App()
       <Route path="/contacto" element={<Contacto />} />
       <Route path="/servicios-empresariales" element={<ServiciosEmpresariales />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
-<<<<<<< HEAD
       <Route path="/perfil" element={<PerfilAdministrador />} />
       <Route path="/gestion-usuario" element={<GestioUsuario/>} />
-=======
-      <Route path="/perfil" element={<PerfilAdministrador />} /> {/* Vista del perfil del administrador */}
-      <Route path="/gestion-usuario" element={<GestioUsuario />} />
->>>>>>> 0599dab (Comentarios en el código)
 
       {/* Rutas de navegación de productos (categorías) */}
       <Route path="/vinos" element={<Vinos />} />
