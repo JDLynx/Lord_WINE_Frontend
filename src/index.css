@@ -1,12 +1,23 @@
+/* Importa todas las utilidades y directivas de TailwindCSS */
 @import "tailwindcss";
 
+/* Estilos globales definidos en el selector raíz (:root) */
 :root {
+  /* Define la familia de fuentes predeterminada del sitio */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  /* Altura de línea estándar para mejorar la legibilidad */
   line-height: 1.5;
+
+  /* Grosor del texto predeterminado */
   font-weight: 400;
+
+  /* Color de fondo global del sitio */
   background-color: #242424;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+
+  /* Mejora la forma en que los navegadores renderizan fuentes */
+  font-synthesis: none;                 /* Evita la síntesis automática de negrita o cursiva */
+  text-rendering: optimizeLegibility;  /* Optimiza el renderizado de texto para una mejor legibilidad */
+  -webkit-font-smoothing: antialiased; /* Mejora la suavidad del texto en navegadores WebKit */
+  -moz-osx-font-smoothing: grayscale;  /* Mejora el renderizado en macOS con Firefox */
 }
