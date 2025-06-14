@@ -92,18 +92,6 @@ export default function Registro() {
                     <h2 className="registro-title text-2xl font-bold text-center mb-6">Registro de Usuario</h2> {/* Título centrado */}
                     <form onSubmit={handleSubmit}>
                         {/* Código del Usuario */}
-                        <div className="input-group mb-4">
-                            <label htmlFor="codigoUsuario" className="input-label block text-gray-700 text-sm font-bold mb-2">Código del Usuario:</label>
-                            <input
-                                type="text"
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="codigoUsuario"
-                                value={codigoUsuario}
-                                onChange={(e) => setCodigoUsuario(e.target.value)}
-                                readOnly // El código de usuario no suele ser editable en el registro
-                                // Puedes quitar readOnly si el usuario lo introduce
-                            />
-                        </div>
 
                         {/* Identificación */}
                         <div className="input-group mb-4">
@@ -172,7 +160,7 @@ export default function Registro() {
 
                         {/* Nueva Contraseña */}
                         <div className="input-group mb-4">
-                            <label htmlFor="nuevaContrasena" className="input-label block text-gray-700 text-sm font-bold mb-2">Nueva Contraseña: <span className="text-gray-500 text-xs">(Opcional, dejar en blanco para no cambiar)</span></label>
+                            <label htmlFor="nuevaContrasena" className="input-label block text-gray-700 text-sm font-bold mb-2">Contraseña:</label>
                             <input
                                 type="password" // Tipo 'password'
                                 className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -180,20 +168,6 @@ export default function Registro() {
                                 value={nuevaContrasena}
                                 onChange={(e) => setNuevaContrasena(e.target.value)}
                                 // No es 'required' si es opcional
-                            />
-                        </div>
-
-                        {/* Confirmar Contraseña */}
-                        <div className="input-group mb-6"> {/* Mayor margen inferior para el botón */}
-                            <label htmlFor="confirmarContrasena" className="input-label block text-gray-700 text-sm font-bold mb-2">Confirmar Contraseña:</label>
-                            <input
-                                type="password" // Tipo 'password'
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                id="confirmarContrasena"
-                                value={confirmarContrasena}
-                                onChange={(e) => setConfirmarContrasena(e.target.value)}
-                                // No es 'required' si el campo anterior es opcional, pero es buena práctica validarlo.
-                                // Si se introduce nueva contraseña, este debería ser requerido.
                             />
                         </div>
 
