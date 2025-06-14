@@ -1,13 +1,16 @@
 @import "tailwindcss";
-
-.bg-login{
+.bg-vistas-login{
+  flex: 1;
   display: flex;
-  align-content: center;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   background-image: url('/img/Viñedo.jpg');
   background-size: cover;
   background-position: center;
-  padding: 2rem;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 70vh;
 }
 .login-card{
   padding: 20px;

@@ -42,7 +42,7 @@ export default function Login() {
         <div className="page-container">
             <Header />
             <BarraProductos />
-            <main className="bg-vistas">
+            <main className="bg-vistas-login">
                 <div className="login-card">
                     <h2 className="login-title">Iniciar Sesión</h2>
                     <form onSubmit={handleSubmit}>
