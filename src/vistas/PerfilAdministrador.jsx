@@ -1,37 +1,76 @@
-import React, { useState } from 'react';
-import { User, Mail, Shield, Edit, Key, Calendar, Home, Phone } from 'lucide-react'; // Importamos Home y Phone para Dirección y Teléfono
+import React, { useState, useEffect } from 'react';
+// Importamos íconos de lucide-react para mostrar datos del perfil
+import { User, Mail, Shield, Edit, Key, Calendar, Home, Phone } from 'lucide-react';
+// Importamos componentes reutilizables
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
 import EditarPerfil from '../components/EditarPerfil';
+// Importamos estilos específicos para esta vista
 import "./PerfilAdministrador.css";
 
-export default function PerfilAdministrador() {
+export default function PerfilAdministrador()
+{
+  // Estado para mostrar u ocultar el modal de edición
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Estado para guardar los datos del perfil del administrador
+  const [profileData, setProfileData] = useState(null);
 
-  // **Estado para almacenar la información del perfil, usando los nombres de tu tabla**
-  const [profileData, setProfileData] = useState({
-    adminCodAdministrador: "1", // Ejemplo: Código del administrador
-    adminIdAdministrador: "1061779346", // Ejemplo: ID del administrador
-    adminNombre: "Juan David Molina Juspian",
-    adminDireccion: "Calle 26EN # 2E - 27", // Ejemplo: Dirección
-    adminTelefono: "3016514814", // Ejemplo: Teléfono
-    adminCorreoElectronico: "jdavid.lynx@gmail.com",
-    // No guardamos la contraseña aquí por seguridad, solo se maneja en el modal
-    role: "Administrador", // Este es un campo adicional para la UI, no de la BD
-  });
+  // useEffect se ejecuta al montar el componente para cargar los datos del administrador
+  useEffect(() =>
+  {
+    const fetchData = async () =>
+    {
+      // Obtenemos el código del administrador almacenado en localStorage
+      const adminCod = localStorage.getItem('adminCodAdministrador');
 
-  const handleEditClick = () => {
+      if (!adminCod) return;
+
+      try
+      {
+        // Llamada a la API para obtener los datos del administrador por su código
+        const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`);
+        const data = await response.json();
+
+        // Guardamos los datos obtenidos en el estado
+        setProfileData({
+          adminCodAdministrador: data.adminCodAdministrador,
+          adminIdAdministrador: data.adminIdAdministrador,
+          adminNombre: data.adminNombre,
+          adminDireccion: data.adminDireccion,
+          adminTelefono: data.adminTelefono,
+          adminCorreoElectronico: data.adminCorreoElectronico,
+          role: "Administrador" // Rol fijo para mostrar en el perfil
+        });
+
+      }
+      catch (error)
+      {
+        // Mostramos el error en consola si ocurre algún fallo
+        console.error("Error al cargar los datos del perfil:", error);
+      }
+    };
+
+    // Ejecutamos la función para obtener los datos
+    fetchData();
+  }, []);
+
+  // Función para abrir el modal de edición
+  const handleEditClick = () =>
+  {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  // Función para cerrar el modal de edición
+  const handleCloseModal = () =>
+  {
     setIsModalOpen(false);
   };
 
-  // Función que se llama cuando el modal guarda los cambios exitosamente
-  // Recibirá solo los campos que pueden mostrarse después de la actualización (sin contraseña)
-  const handleProfileSave = (updatedData) => {
+  // Función que se ejecuta al guardar cambios en el perfil
+  const handleProfileSave = (updatedData) =>
+  {
+    // Actualizamos el estado del perfil con los nuevos datos
     setProfileData((prevData) => ({
       ...prevData,
       adminCodAdministrador: updatedData.adminCodAdministrador,
@@ -40,106 +79,111 @@ export default function PerfilAdministrador() {
       adminDireccion: updatedData.adminDireccion,
       adminTelefono: updatedData.adminTelefono,
       adminCorreoElectronico: updatedData.adminCorreoElectronico,
-      // Los campos 'role' y 'lastAccess' se mantienen si no se editan en el modal
-      // Si el rol también se edita en el modal, se añadiría aquí:
-      // role: updatedData.role,
     }));
   };
 
   return (
     <>
       <div className="page-container">
+        // Encabezado y barra de navegación
         <Header />
         <BarraProductos />
-        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
 
+        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
           <div className="max-w-6xl mx-auto">
+            // Título de la vista
             <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Perfil del Administrador</h1>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-1">
-                <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center justify-center h-full">
-                  <div className="w-32 h-32 bg-gradient-to-br from-red-600 to-red-800 rounded-full mx-auto mb-6 flex items-center justify-center shadow-md">
-                    <User className="w-16 h-16 text-white" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{profileData.adminNombre}</h2> {/* Muestra adminNombre */}
-                  <p className="text-red-700 font-semibold mb-4">{profileData.role}</p>
-                </div>
-              </div>
-
-              <div className="lg:col-span-2">
-                <div className="bg-white rounded-2xl shadow-lg p-10 h-full">
-                  <h3 className="text-xl font-bold text-gray-800 mb-8 border-b pb-4 border-gray-200">Información Personal</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-6">
-
-                    {/* adminCodAdministrador */}
-                    <div className="flex items-center space-x-4">
-                      <Shield className="w-6 h-6 text-red-500" /> {/* Icono de escudo para código */}
-                      <div>
-                        <p className="text-sm text-gray-500">Código de Administrador</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.adminCodAdministrador}</p>
-                      </div>
+            // Si hay datos del perfil, se muestran
+            {profileData && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                // Tarjeta de perfil (foto, nombre y rol)
+                <div className="lg:col-span-1">
+                  <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center justify-center h-full">
+                    <div className="w-32 h-32 bg-gradient-to-br from-red-600 to-red-800 rounded-full mx-auto mb-6 flex items-center justify-center shadow-md">
+                      <User className="w-16 h-16 text-white" />
                     </div>
-
-                    {/* adminIdAdministrador */}
-                    <div className="flex items-center space-x-4">
-                      <User className="w-6 h-6 text-red-500" /> {/* Icono de usuario para ID */}
-                      <div>
-                        <p className="text-sm text-gray-500">Identificación</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.adminIdAdministrador}</p>
-                      </div>
-                    </div>
-
-                    {/* adminNombre */}
-                    <div className="flex items-center space-x-4">
-                      <User className="w-6 h-6 text-red-500" />
-                      <div>
-                        <p className="text-sm text-gray-500">Nombre Completo</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.adminNombre}</p>
-                      </div>
-                    </div>
-
-                    {/* adminDireccion */}
-                    <div className="flex items-center space-x-4">
-                      <Home className="w-6 h-6 text-red-500" /> {/* Icono de casa para dirección */}
-                      <div>
-                        <p className="text-sm text-gray-500">Dirección</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.adminDireccion}</p>
-                      </div>
-                    </div>
-
-                    {/* adminTelefono */}
-                    <div className="flex items-center space-x-4">
-                      <Phone className="w-6 h-6 text-red-500" /> {/* Icono de teléfono */}
-                      <div>
-                        <p className="text-sm text-gray-500">Teléfono</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.adminTelefono}</p>
-                      </div>
-                    </div>
-
-                    {/* adminCorreoElectronico */}
-                    <div className="flex items-center space-x-4">
-                      <Mail className="w-6 h-6 text-red-500" />
-                      <div>
-                        <p className="text-sm text-gray-500">Correo Electrónico</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.adminCorreoElectronico}</p>
-                      </div>
-                    </div>
-
-                    {/* Rol (si sigue siendo un campo de la UI) */}
-                    <div className="flex items-center space-x-4">
-                      <Shield className="w-6 h-6 text-red-500" />
-                      <div>
-                        <p className="text-sm text-gray-500">Rol</p>
-                        <p className="font-semibold text-gray-800 text-lg">{profileData.role}</p>
-                      </div>
-                    </div>
-
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{profileData.adminNombre}</h2>
+                    <p className="text-red-700 font-semibold mb-4">{profileData.role}</p>
                   </div>
                 </div>
-              </div>
-            </div>
 
+                // Sección con información detallada
+                <div className="lg:col-span-2">
+                  <div className="bg-white rounded-2xl shadow-lg p-10 h-full">
+                    <h3 className="text-xl font-bold text-gray-800 mb-8 border-b pb-4 border-gray-200">Información Personal</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-6">
+
+                      // Código de administrador
+                      <div className="flex items-center space-x-4">
+                        <Shield className="w-6 h-6 text-red-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">Código de Administrador</p>
+                          <p className="font-semibold text-gray-800 text-lg">{profileData.adminCodAdministrador}</p>
+                        </div>
+                      </div>
+
+                      // Identificación
+                      <div className="flex items-center space-x-4">
+                        <User className="w-6 h-6 text-red-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">Identificación</p>
+                          <p className="font-semibold text-gray-800 text-lg">{profileData.adminIdAdministrador}</p>
+                        </div>
+                      </div>
+
+                      // Nombre completo
+                      <div className="flex items-center space-x-4">
+                        <User className="w-6 h-6 text-red-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">Nombre Completo</p>
+                          <p className="font-semibold text-gray-800 text-lg">{profileData.adminNombre}</p>
+                        </div>
+                      </div>
+
+                      // Dirección
+                      <div className="flex items-center space-x-4">
+                        <Home className="w-6 h-6 text-red-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">Dirección</p>
+                          <p className="font-semibold text-gray-800 text-lg">{profileData.adminDireccion}</p>
+                        </div>
+                      </div>
+
+                      // Teléfono
+                      <div className="flex items-center space-x-4">
+                        <Phone className="w-6 h-6 text-red-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">Teléfono</p>
+                          <p className="font-semibold text-gray-800 text-lg">{profileData.adminTelefono}</p>
+                        </div>
+                      </div>
+
+                      // Correo electrónico
+                      <div className="flex items-center space-x-4">
+                        <Mail className="w-6 h-6 text-red-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">Correo Electrónico</p>
+                          <p className="font-semibold text-gray-800 text-lg">{profileData.adminCorreoElectronico}</p>
+                        </div>
+                      </div>
+
+                      // Rol
+                      <div className="flex items-center space-x-4">
+                        <Shield className="w-6 h-6 text-red-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">Rol</p>
+                          <p className="font-semibold text-gray-800 text-lg">{profileData.role}</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            // Botones para editar perfil y cambiar contraseña
             <div className="flex justify-center space-x-6 mt-12">
               <button
                 onClick={handleEditClick}
@@ -157,12 +201,13 @@ export default function PerfilAdministrador() {
             </div>
 
           </div>
-
         </main>
 
+        // Pie de página
         <Footer />
 
-        {isModalOpen && (
+        // Modal de edición, se muestra solo si isModalOpen es true y hay datos
+        {isModalOpen && profileData && (
           <EditarPerfil
             onClose={handleCloseModal}
             currentProfileData={profileData}
