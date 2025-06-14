@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Importa Link de react-router-dom
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -12,27 +12,28 @@ export default function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e) =>
+    {
         e.preventDefault();
 
-        try {
+        try
+        {
             const response = await fetch("http://localhost:3000/api/administradores/");
             const data = await response.json();
+            const admin = data.find(a => a.adminCorreoElectronico === correo && a.adminContrasena === contrasena);
 
-            const admin = data.find(a =>
-                a.adminCorreoElectronico === correo &&
-                a.adminContrasena === contrasena
-            );
-
-            if (admin) {
+            if (admin)
+            {
                 alert(`Bienvenido, ${admin.adminNombre}`);
-                // Aquí podrías redirigir al dashboard del admin, por ejemplo
-                // navigate('/admin-dashboard'); // Si usas useNavigate
                 navigate('/perfil');
-            } else {
+            }
+            else
+            {
                 setError('Correo o contraseña incorrectos.');
             }
-        } catch (err) {
+        }
+        catch (error)
+        {
             setError('Error al conectar con el servidor.');
         }
     };
@@ -46,7 +47,7 @@ export default function Login() {
                     <h2 className="login-title">Iniciar Sesión</h2>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
-                            <label htmlFor="username" className="input-label">Usuario o Correo:</label>
+                            <label htmlFor="username" className="input-label">Correo electrónico:</label>
                             <input
                                 type="text"
                                 className="input-field"
