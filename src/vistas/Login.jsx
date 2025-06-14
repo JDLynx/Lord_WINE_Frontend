@@ -18,12 +18,10 @@ export default function Login() {
     const navigate = useNavigate(); // Hook de navegación
 
     // Función que se ejecuta al enviar el formulario
-    const handleSubmit = async (e) =>
-    {
+    const handleSubmit = async (e) => {
         e.preventDefault(); // Prevenir comportamiento por defecto del formulario
 
-        try
-        {
+        try {
             // Consultamos la lista de administradores desde la API
             const response = await fetch("http://localhost:3000/api/administradores/");
             const data = await response.json();
@@ -31,8 +29,7 @@ export default function Login() {
             // Buscamos si hay un administrador con el correo y contraseña ingresados
             const admin = data.find(a => a.adminCorreoElectronico === correo && a.adminContrasena === contrasena);
 
-            if (admin)
-            {
+            if (admin) {
                 // Si se encuentra, se guarda su ID en localStorage
                 localStorage.setItem('adminCodAdministrador', admin.adminCodAdministrador);
 
@@ -41,15 +38,11 @@ export default function Login() {
 
                 // Redirigimos al perfil del administrador
                 navigate('/perfil');
-            }
-            else
-            {
+            } else {
                 // Si no coincide, mostramos mensaje de error
                 setError('Correo o contraseña incorrectos.');
             }
-        }
-        catch (error)
-        {
+        } catch (error) {
             // En caso de error en la conexión con el servidor
             setError('Error al conectar con el servidor.');
         }
@@ -57,15 +50,15 @@ export default function Login() {
 
     return (
         <div className="page-container">
-            // Encabezado de la página
+            {/* Encabezado de la página */}
             <Header />
-            // Barra de navegación de productos
+            {/* Barra de navegación de productos */}
             <BarraProductos />
             <main className="bg-vistas">
                 <div className="login-card">
-                    // Título del formulario
+                    {/* Título del formulario */}
                     <h2 className="login-title">Iniciar Sesión</h2>
-                    // Formulario de inicio de sesión
+                    {/* Formulario de inicio de sesión */}
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="username" className="input-label">Correo electrónico:</label>
@@ -91,19 +84,23 @@ export default function Login() {
                             />
                         </div>
 
-                        // Si hay error, se muestra en rojo
+                        {/* Si hay error, se muestra en rojo */}
                         {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
 
-                        // Botón de envío del formulario
+                        {/* Botón de envío del formulario */}
                         <button type="submit" className="submit-btn">Ingresar</button>
                     </form>
                 </div>
-                // Enlace para redirigir a la página de registro
+
+                {/* Enlace para redirigir a la página de registro */}
                 <p className="mt-5 text-center text-black">
-                    ¿No tienes una cuenta? <Link to="/registro" className="text-red-600 font-bold hover:underline">Regístrate aquí</Link>
+                    ¿No tienes una cuenta?{' '}
+                    <Link to="/registro" className="text-red-600 font-bold hover:underline">
+                        Regístrate aquí
+                    </Link>
                 </p>
             </main>
-            // Pie de página
+            {/* Pie de página */}
             <Footer />
         </div>
     );
