@@ -17,6 +17,7 @@ import Contacto from "./vistas/Contacto";
 import ServiciosEmpresariales from "./vistas/ServiciosEmpresariales";
 import SobreNosotros from "./vistas/SobreNosotros";
 import PerfilAdministrador from "./vistas/PerfilAdministrador";
+import EditarPerfil from "./vistas/EditarPerfil";
 import GestioUsuario from "./vistas/GestioUsuario";
 
 // Vistas relacionadas con las categorías de productos (barra de navegación por producto)
@@ -44,6 +45,7 @@ function App()
       <Route path="/servicios-empresariales" element={<ServiciosEmpresariales />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/perfil" element={<PerfilAdministrador />} />
+      <Route path="/editar-perfil-administrador" element={<EditarPerfil />} />
       <Route path="/gestion-usuario" element={<GestioUsuario/>} />
 
       {/* Rutas de navegación de productos (categorías) */}
