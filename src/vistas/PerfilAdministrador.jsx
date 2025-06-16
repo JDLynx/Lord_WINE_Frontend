@@ -40,7 +40,7 @@ export default function PerfilAdministrador()
           adminDireccion: data.adminDireccion,
           adminTelefono: data.adminTelefono,
           adminCorreoElectronico: data.adminCorreoElectronico,
-          role: "Administrador" // Asignamos el rol manualmente
+          role: "Administrador" // Asignamos el rol manualmente ya que en el modelo no existe
         });
 
       }
