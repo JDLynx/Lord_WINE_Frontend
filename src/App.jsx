@@ -18,6 +18,8 @@ import ServiciosEmpresariales from "./vistas/ServiciosEmpresariales";
 import SobreNosotros from "./vistas/SobreNosotros";
 import PerfilAdministrador from "./vistas/PerfilAdministrador";
 import GestioUsuario from "./vistas/GestioUsuario";
+import EditarPerfil from "./vistas/EditarPerfil"; // ¡IMPORTANTE! Importamos EditarPerfil como una vista
+import CambiarContraseña from "./components/CambiarContraseña";
 
 // Vistas relacionadas con las categorías de productos (barra de navegación por producto)
 import Vinos from "./vistas/Vinos";
@@ -45,6 +47,8 @@ function App()
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/perfil" element={<PerfilAdministrador />} />
       <Route path="/gestion-usuario" element={<GestioUsuario/>} />
+      <Route path="/editar-perfil" element={<EditarPerfil />} /> {/* ¡NUEVA RUTA para la vista de edición! */}
+      <Route path="/cambiar-contrasena" element={<CambiarContraseña />} />
 
       {/* Rutas de navegación de productos (categorías) */}
       <Route path="/vinos" element={<Vinos />} />
