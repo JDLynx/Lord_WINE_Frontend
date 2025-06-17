@@ -1,191 +1,197 @@
+// Importa React y useState para gestionar el estado del componente
 import React, { useState } from 'react';
+
+// Importa componentes reutilizables de la aplicación
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
+
+// Importa los estilos específicos para el formulario de registro
 import "./Registro.css";
 
+// Importa useNavigate para redireccionar después del registro
+import { useNavigate } from 'react-router-dom';
+
+// Componente principal de registro de administradores
 export default function Registro() {
-    const [codigoUsuario, setCodigoUsuario] = useState('');
-    const [identificacion, setIdentificacion] = useState('');
-    const [nombreCompleto, setNombreCompleto] = useState('');
-    const [direccion, setDireccion] = useState('');
-    const [telefono, setTelefono] = useState('');
-    const [correoElectronico, setCorreoElectronico] = useState('');
-    const [nuevaContrasena, setNuevaContrasena] = useState('');
+    // Estados para guardar los datos del formulario
+    const [adminIdAdministrador, setIdentificacion] = useState('');
+    const [adminNombre, setNombreCompleto] = useState('');
+    const [adminDireccion, setDireccion] = useState('');
+    const [adminTelefono, setTelefono] = useState('');
+    const [adminCorreoElectronico, setCorreoElectronico] = useState('');
+    const [adminContrasena, setContrasena] = useState('');
     const [confirmarContrasena, setConfirmarContrasena] = useState('');
+
+    // Estado para mostrar mensajes de error o éxito
     const [error, setError] = useState('');
-    const [mensajeExito, setMensajeExito] = useState('');
+    const [mensaje, setMensajeExito] = useState('');
 
-    // Función para manejar el envío del formulario
+    // Hook de navegación para redirigir a otra ruta
+    const navigate = useNavigate();
+
+    // Función que se ejecuta al enviar el formulario
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(''); // Limpiar errores previos
-        setMensajeExito(''); // Limpiar mensajes de éxito previos
+        e.preventDefault(); // Previene que la página se recargue al enviar el formulario
+        setError('');       // Limpia errores anteriores
+        setMensajeExito('');// Limpia mensajes anteriores
 
-        // Validaciones básicas (puedes añadir más si es necesario)
-        if (nuevaContrasena !== confirmarContrasena) {
+        // Validación: las contraseñas deben coincidir
+        if (adminContrasena !== confirmarContrasena) {
             setError('Las contraseñas no coinciden.');
-            return;
+            return; // Detiene el envío del formulario
         }
 
-        // Si "Nueva Contraseña" es opcional y se deja en blanco, asegúrate de cómo lo maneja tu backend.
-        // Aquí simplemente no la enviaríamos si está vacía, o la enviaríamos en blanco si el backend lo acepta.
-
-        // Datos a enviar (ajusta los nombres de las propiedades según tu API)
-        const userData = {
-            // Asumo que el código de usuario no lo envía el frontend al registrar
-            // Si tu backend lo requiere, podrías generarlo aquí o manejarlo
-            // userId: codigoUsuario, // Si el campo es editable y se espera un valor
-            identificacion: identificacion,
-            nombreCompleto: nombreCompleto,
-            direccion: direccion,
-            telefono: telefono,
-            correoElectronico: correoElectronico,
-            // Solo envía la contraseña si no está vacía
-            contrasena: nuevaContrasena, // En un entorno real, ¡nunca envíes contraseñas en texto plano!
-                                         // Debes hashearla en el backend.
-        };
-
         try {
-            // Reemplaza esta URL con tu endpoint de registro real
-            const response = await fetch("http://localhost:3000/api/usuarios/registro", {
-                method: 'POST',
+            // Envío de datos al servidor mediante una solicitud POST
+            const response = await fetch("http://localhost:3000/api/administradores/", {
+                method: "POST", // Método HTTP
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json", // Tipo de contenido enviado
                 },
-                body: JSON.stringify(userData),
+                body: JSON.stringify({ // Convierte los datos del formulario a JSON
+                    adminIdAdministrador,
+                    adminNombre,
+                    adminDireccion,
+                    adminTelefono,
+                    adminCorreoElectronico,
+                    adminContrasena
+                }),
             });
 
+            // Obtiene la respuesta del servidor en formato JSON
             const data = await response.json();
 
+            // Si la respuesta fue exitosa
             if (response.ok) {
-                setMensajeExito('¡Registro exitoso! Ahora puedes iniciar sesión.');
-                // Opcional: Redirigir al usuario a la página de login
-                // setTimeout(() => {
-                //     window.location.href = '/login';
-                // }, 2000);
-                // Limpiar el formulario
-                setCodigoUsuario('');
-                setIdentificacion('');
-                setNombreCompleto('');
-                setDireccion('');
-                setTelefono('');
-                setCorreoElectronico('');
-                setNuevaContrasena('');
-                setConfirmarContrasena('');
-
+                // Muestra mensaje de éxito
+                setMensajeExito("Registro exitoso. Redirigiendo al inicio de sesión...");
+                // Redirige al login después de 2 segundos
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
             } else {
-                setError(data.message || 'Error en el registro. Inténtalo de nuevo.');
+                // Muestra el mensaje de error proporcionado por el servidor
+                setError(data.error || "Ocurrió un error al registrarse.");
             }
         } catch (err) {
-            console.error("Error al registrar:", err);
-            setError('Error al conectar con el servidor. Por favor, inténtalo más tarde.');
+            // Error al conectarse con el servidor
+            setError("Error en la conexión con el servidor.");
         }
     };
 
+    // Renderizado del formulario
     return (
-        <div className="page-container">
+        <>
+            {/* Encabezado y barra de navegación */}
             <Header />
             <BarraProductos />
-            <main className="bg-registro flex justify-center items-center py-8"> {/* Añadimos flexbox para centrar */}
-                <div className="registro-card p-6 rounded-lg shadow-lg bg-white w-full max-w-md"> {/* Clases de Tailwind para el diseño de la tarjeta */}
-                    <h2 className="registro-title text-2xl font-bold text-center mb-6">Registro de Usuario</h2> {/* Título centrado */}
+
+            {/* Contenedor principal del formulario */}
+            <div className="bg-registro">
+                <div className="registro-card">
+                    <h2 className="registro-title">Registro de Administrador</h2>
+
+                    {/* Mensajes de error o éxito */}
+                    {error && <p className="error">{error}</p>}
+                    {mensaje && <p className="exito">{mensaje}</p>}
+
+                    {/* Formulario con campos de entrada */}
                     <form onSubmit={handleSubmit}>
-                        {/* Código del Usuario */}
-
-                        {/* Identificación */}
-                        <div className="input-group mb-4">
-                            <label htmlFor="identificacion" className="input-label block text-gray-700 text-sm font-bold mb-2">Identificación:</label>
+                        {/* Campo ID */}
+                        <div className="input-group">
                             <input
                                 type="text"
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="identificacion"
-                                value={identificacion}
+                                placeholder="ID"
+                                value={adminIdAdministrador}
                                 onChange={(e) => setIdentificacion(e.target.value)}
+                                className="input-field"
                                 required
                             />
                         </div>
 
-                        {/* Nombre Completo */}
-                        <div className="input-group mb-4">
-                            <label htmlFor="nombreCompleto" className="input-label block text-gray-700 text-sm font-bold mb-2">Nombre Completo:</label>
+                        {/* Campo Nombre */}
+                        <div className="input-group">
                             <input
                                 type="text"
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="nombreCompleto"
-                                value={nombreCompleto}
+                                placeholder="Nombre completo"
+                                value={adminNombre}
                                 onChange={(e) => setNombreCompleto(e.target.value)}
+                                className="input-field"
                                 required
                             />
                         </div>
 
-                        {/* Dirección */}
-                        <div className="input-group mb-4">
-                            <label htmlFor="direccion" className="input-label block text-gray-700 text-sm font-bold mb-2">Dirección:</label>
+                        {/* Campo Dirección */}
+                        <div className="input-group">
                             <input
                                 type="text"
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="direccion"
-                                value={direccion}
+                                placeholder="Dirección"
+                                value={adminDireccion}
                                 onChange={(e) => setDireccion(e.target.value)}
+                                className="input-field"
                                 required
                             />
                         </div>
 
-                        {/* Teléfono */}
-                        <div className="input-group mb-4">
-                            <label htmlFor="telefono" className="input-label block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
+                        {/* Campo Teléfono */}
+                        <div className="input-group">
                             <input
-                                type="tel" // Tipo 'tel' para teléfonos
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="telefono"
-                                value={telefono}
+                                type="text"
+                                placeholder="Teléfono"
+                                value={adminTelefono}
                                 onChange={(e) => setTelefono(e.target.value)}
+                                className="input-field"
                                 required
                             />
                         </div>
 
-                        {/* Correo Electrónico */}
-                        <div className="input-group mb-4">
-                            <label htmlFor="correoElectronico" className="input-label block text-gray-700 text-sm font-bold mb-2">Correo Electrónico:</label>
+                        {/* Campo Correo Electrónico */}
+                        <div className="input-group">
                             <input
-                                type="email" // Tipo 'email' para correos electrónicos
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="correoElectronico"
-                                value={correoElectronico}
+                                type="email"
+                                placeholder="Correo electrónico"
+                                value={adminCorreoElectronico}
                                 onChange={(e) => setCorreoElectronico(e.target.value)}
+                                className="input-field"
                                 required
                             />
                         </div>
 
-                        {/* Nueva Contraseña */}
-                        <div className="input-group mb-4">
-                            <label htmlFor="nuevaContrasena" className="input-label block text-gray-700 text-sm font-bold mb-2">Contraseña:</label>
+                        {/* Campo Contraseña */}
+                        <div className="input-group">
                             <input
-                                type="password" // Tipo 'password'
-                                className="input-field shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                id="nuevaContrasena"
-                                value={nuevaContrasena}
-                                onChange={(e) => setNuevaContrasena(e.target.value)}
-                                // No es 'required' si es opcional
+                                type="password"
+                                placeholder="Contraseña"
+                                value={adminContrasena}
+                                onChange={(e) => setContrasena(e.target.value)}
+                                className="input-field"
+                                required
                             />
                         </div>
 
-                        {/* Mensajes de error/éxito */}
-                        {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
-                        {mensajeExito && <p className="text-green-500 text-xs italic mb-4">{mensajeExito}</p>}
+                        {/* Campo Confirmar Contraseña */}
+                        <div className="input-group">
+                            <input
+                                type="password"
+                                placeholder="Confirmar contraseña"
+                                value={confirmarContrasena}
+                                onChange={(e) => setConfirmarContrasena(e.target.value)}
+                                className="input-field"
+                                required
+                            />
+                        </div>
 
-                        {/* Botón de Registro */}
-                        <button
-                            type="submit"
-                            className="submit-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                        >
+                        {/* Botón de envío */}
+                        <button type="submit" className="submit-btn">
                             Registrarse
                         </button>
                     </form>
                 </div>
-            </main>
+            </div>
+
+            {/* Pie de página */}
             <Footer />
-        </div>
+        </>
     );
 }
