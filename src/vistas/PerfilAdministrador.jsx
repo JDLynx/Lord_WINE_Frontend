@@ -5,34 +5,36 @@ import { User, Mail, Shield, Edit, Key, Calendar, Home, Phone } from 'lucide-rea
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-import EditarPerfil from '../components/EditarPerfil';
+
+// Importamos el hook de navegación de React Router DOM
+import { useNavigate } from 'react-router-dom';
+
 // Importamos los estilos específicos para este componente
 import "./PerfilAdministrador.css";
 
-export default function PerfilAdministrador()
-{
-  // Estado para controlar la visibilidad del modal de edición
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  // Estado que almacena los datos del perfil del administrador
+export default function PerfilAdministrador() {
   const [profileData, setProfileData] = useState(null);
+  const navigate = useNavigate();
 
   // useEffect se ejecuta una vez al cargar el componente
-  useEffect(() =>
-  {
-    const fetchData = async () =>
-    {
-      // Obtenemos el ID del administrador desde localStorage
+  useEffect(() => {
+    const fetchData = async () => {
       const adminCod = localStorage.getItem('adminCodAdministrador');
 
-      if (!adminCod) return;
+      if (!adminCod) {
+        console.error("No se encontró el adminCodAdministrador en localStorage.");
+        // Optionally, redirect to login or show an error message to the user
+        // navigate('/login');
+        return;
+      }
 
-      try
-      {
-        // Hacemos la solicitud al backend para obtener los datos del administrador
+      try {
         const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
 
-        // Guardamos los datos obtenidos en el estado
         setProfileData({
           adminCodAdministrador: data.adminCodAdministrador,
           adminIdAdministrador: data.adminIdAdministrador,
@@ -43,42 +45,41 @@ export default function PerfilAdministrador()
           role: "Administrador" // Asignamos el rol manualmente ya que en el modelo no existe
         });
 
-      }
-      catch (error)
-      {
+      } catch (error) {
         console.error("Error al cargar los datos del perfil:", error);
+        // Set an error state to display to the user if needed
       }
     };
 
     fetchData();
-  }, []);
+  }, []); // Empty dependency array means this runs once on mount
 
-  // Función para abrir el modal de edición
-  const handleEditClick = () =>
-  {
-    setIsModalOpen(true);
+  // Function to redirect to the new edit profile view (already exists)
+  const handleEditClick = () => {
+    navigate('/editar-perfil'); // This will navigate to your general profile edit page
   };
 
-  // Función para cerrar el modal
-  const handleCloseModal = () =>
-  {
-    setIsModalOpen(false);
+  // NEW: Function to redirect to the change password view
+  const handleChangePasswordClick = () => {
+    navigate('/cambiar-contrasena'); // This will navigate to your password change page
   };
 
-  // Función que se ejecuta al guardar cambios desde el modal
-  const handleProfileSave = (updatedData) =>
-  {
-    // Actualizamos el estado con los nuevos datos
-    setProfileData((prevData) => ({
-      ...prevData,
-      adminCodAdministrador: updatedData.adminCodAdministrador,
-      adminIdAdministrador: updatedData.adminIdAdministrador,
-      adminNombre: updatedData.adminNombre,
-      adminDireccion: updatedData.adminDireccion,
-      adminTelefono: updatedData.adminTelefono,
-      adminCorreoElectronico: updatedData.adminCorreoElectronico,
-    }));
-  };
+  // handleProfileSave is currently unused in this context because you navigate to a new page.
+  // The 'EditarPerfil' page/component itself should handle saving and then perhaps refresh this page's data.
+  // If 'EditarPerfil' also saves password, that logic should move to CambiarContraseña.
+  // For now, if EditarPerfil updates other fields, you might re-fetch profileData after navigating back.
+  // For the password, CambiarContraseña will handle its own update and then navigate back.
+  // const handleProfileSave = (updatedData) => {
+  //   setProfileData((prevData) => ({
+  //     ...prevData,
+  //     adminCodAdministrador: updatedData.adminCodAdministrador,
+  //     adminIdAdministrador: updatedData.adminIdAdministrador,
+  //     adminNombre: updatedData.adminNombre,
+  //     adminDireccion: updatedData.adminDireccion,
+  //     adminTelefono: updatedData.adminTelefono,
+  //     adminCorreoElectronico: updatedData.adminCorreoElectronico,
+  //   }));
+  // };
 
   return (
     <>
@@ -94,7 +95,7 @@ export default function PerfilAdministrador()
             <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Perfil del Administrador</h1>
 
             {/* Verificamos si los datos del perfil están disponibles */}
-            {profileData && (
+            {profileData ? (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 {/* Tarjeta lateral con avatar y nombre */}
@@ -183,11 +184,13 @@ export default function PerfilAdministrador()
                   </div>
                 </div>
               </div>
+            ) : (
+                <div className="text-center text-gray-600 text-lg">Cargando información del perfil...</div>
             )}
 
             {/* Botones de acción */}
             <div className="flex justify-center space-x-6 mt-12">
-              {/* Botón para abrir el modal de edición */}
+              {/* Botón para redirigir a la vista de edición */}
               <button
                 onClick={handleEditClick}
                 className="bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
@@ -196,8 +199,9 @@ export default function PerfilAdministrador()
                 <span>Editar Perfil</span>
               </button>
 
-              {/* Botón para cambiar contraseña (aún sin funcionalidad) */}
+              {/* Botón para cambiar contraseña - NOW WITH FUNCTIONALITY! */}
               <button
+                onClick={handleChangePasswordClick} // <--- Added onClick handler here
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
               >
                 <Key className="w-5 h-5" />
@@ -210,15 +214,6 @@ export default function PerfilAdministrador()
 
         {/* Pie de página */}
         <Footer />
-
-        {/* Modal de edición, visible solo si está activado y hay datos del perfil */}
-        {isModalOpen && profileData && (
-          <EditarPerfil
-            onClose={handleCloseModal}
-            currentProfileData={profileData}
-            onSaveSuccess={handleProfileSave}
-          />
-        )}
       </div>
     </>
   );
