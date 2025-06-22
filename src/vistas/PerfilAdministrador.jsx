@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // Importamos los íconos necesarios desde lucide-react
-import { User, Mail, Shield, Edit, Key, Calendar, Home, Phone } from 'lucide-react';
+import { User, Mail, Shield, Edit, Key, Calendar, Home, Phone, Settings, ShoppingBag, Store, Boxes, LayoutGrid, BarChart, Users, Building, Package, ClipboardList, TrendingUp } from 'lucide-react';
 // Importamos componentes reutilizables
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -9,8 +9,9 @@ import BarraProductos from "../components/BarraProductos";
 // Importamos el hook de navegación de React Router DOM
 import { useNavigate } from 'react-router-dom';
 
-// Importamos los estilos específicos para este componente
-import "./PerfilAdministrador.css";
+// Importamos los estilos específicos para este componente.
+// Si ya no se usa .bg-vistas-home aquí, puedes considerar eliminar este import si no hay otros estilos.
+import "./PerfilAdministrador.css"; 
 
 export default function PerfilAdministrador() {
   const [profileData, setProfileData] = useState(null);
@@ -64,39 +65,42 @@ export default function PerfilAdministrador() {
     navigate('/cambiar-contrasena'); // This will navigate to your password change page
   };
 
-  // handleProfileSave is currently unused in this context because you navigate to a new page.
-  // The 'EditarPerfil' page/component itself should handle saving and then perhaps refresh this page's data.
-  // If 'EditarPerfil' also saves password, that logic should move to CambiarContraseña.
-  // For now, if EditarPerfil updates other fields, you might re-fetch profileData after navigating back.
-  // For the password, CambiarContraseña will handle its own update and then navigate back.
-  // const handleProfileSave = (updatedData) => {
-  //   setProfileData((prevData) => ({
-  //     ...prevData,
-  //     adminCodAdministrador: updatedData.adminCodAdministrador,
-  //     adminIdAdministrador: updatedData.adminIdAdministrador,
-  //     adminNombre: updatedData.adminNombre,
-  //     adminDireccion: updatedData.adminDireccion,
-  //     adminTelefono: updatedData.adminTelefono,
-  //     adminCorreoElectronico: updatedData.adminCorreoElectronico,
-  //   }));
-  // };
+  // NEW: Handler for the management options
+  const handleManagementClick = (path) => {
+    navigate(path);
+  };
+
+  const managementOptions = [
+    { name: 'Administradores', description: 'Ver y administrar otros administradores', icon: Users, path: '/administradores' },
+    { name: 'Empleados', description: 'Crear, editar, asignar a tiendas e inventarios', icon: User, path: '/empleados' },
+    { name: 'Tiendas Físicas', description: 'Crear, administrar datos básicos', icon: Store, path: '/tiendas-fisicas' },
+    { name: 'Categorías y Productos', description: 'Crear, actualizar y organizar productos', icon: Package, path: '/productos' },
+    { name: 'Inventario General y Tienda', description: 'Administrar existencias', icon: Boxes, path: '/inventario' },
+    { name: 'Servicios Empresariales', description: 'Crear, actualizar y establecer precios', icon: Settings, path: '/servicios' },
+    { name: 'Pedidos', description: 'Ver todos, cambiar estados, asignar empleados', icon: ClipboardList, path: '/pedidos' },
+    { name: 'Gestión Admin. Inventario General', description: 'Ver qué administrador gestiona cada inventario', icon: LayoutGrid, path: '/gestion-admin-inventario' },
+    { name: 'Gestión Empleado Inventario Tienda', description: 'Asignar o cambiar responsables de inventario en tiendas', icon: ShoppingBag, path: '/gestion-empleado-inventario' },
+    { name: 'Ventas y Reportes', description: 'Ver detalles de ventas, productos vendidos, stock', icon: TrendingUp, path: '/reportes' },
+  ];
 
   return (
     <>
-      <div className="page-container">
-        {/* Encabezado y barra de navegación */}
+      <div className="flex flex-col min-h-screen overflow-x-hidden"> 
         <Header />
         <BarraProductos />
 
-        {/* Contenido principal */}
-        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-          <div className="max-w-6xl mx-auto">
+        {/* Contenido principal - Ahora con las propiedades de fondo y paddings en Tailwind */}
+        <main 
+          className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
+        >
+          <div className="max-w-6xl mx-auto w-full"> {/* Añadido w-full para asegurar que el contenido interno ocupe el ancho disponible del max-w-6xl */}
             {/* Título de la página */}
             <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Perfil del Administrador</h1>
 
             {/* Verificamos si los datos del perfil están disponibles */}
             {profileData ? (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12"> {/* Añadido mb-12 para dar espacio antes de los botones */}
 
                 {/* Tarjeta lateral con avatar y nombre */}
                 <div className="lg:col-span-1">
@@ -189,7 +193,7 @@ export default function PerfilAdministrador() {
             )}
 
             {/* Botones de acción */}
-            <div className="flex justify-center space-x-6 mt-12">
+            <div className="flex justify-center space-x-6 mt-12 mb-12"> {/* Añadido mb-12 para dar espacio después de los botones */}
               {/* Botón para redirigir a la vista de edición */}
               <button
                 onClick={handleEditClick}
@@ -201,13 +205,31 @@ export default function PerfilAdministrador() {
 
               {/* Botón para cambiar contraseña - NOW WITH FUNCTIONALITY! */}
               <button
-                onClick={handleChangePasswordClick} // <--- Added onClick handler here
+                onClick={handleChangePasswordClick}
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
               >
                 <Key className="w-5 h-5" />
                 <span>Cambiar Contraseña</span>
               </button>
             </div>
+
+            {/* NEW: Sección "Qué podría ver y administrar" */}
+            <section className="bg-white rounded-2xl shadow-lg p-10 max-w-6xl mx-auto"> 
+              <h3 className="text-xl font-bold text-gray-800 mb-8 border-b pb-4 border-gray-200">Qué podría ver y administrar</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                {managementOptions.map((option) => (
+                  <button
+                    key={option.name}
+                    onClick={() => handleManagementClick(option.path)}
+                    className="flex flex-col items-center justify-center p-4 sm:p-6 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition-all duration-200 ease-in-out transform hover:scale-105 text-center"
+                  >
+                    <option.icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-600 mb-2 sm:mb-3" />
+                    <span className="font-semibold text-gray-900 text-base sm:text-lg mb-1">{option.name}</span>
+                    <p className="text-xs sm:text-sm text-gray-600">{option.description}</p>
+                  </button>
+                ))}
+              </div>
+            </section>
 
           </div>
         </main>
