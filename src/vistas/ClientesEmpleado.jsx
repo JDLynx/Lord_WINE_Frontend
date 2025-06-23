@@ -50,23 +50,23 @@ export default function ClientesEmpleado() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Gestión de Clientes</h2>
-          
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center">Gestión de Clientes</h2>
+
           <button
             onClick={() => setIsAdding(!isAdding)}
-            className="mb-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
+            className="mb-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
           >
             <PlusCircle className="w-5 h-5" />
             <span>{isAdding ? 'Cancelar' : 'Añadir Nuevo Cliente'}</span>
           </button>
 
           {isAdding && (
-            <div className="bg-blue-50 p-6 rounded-md mb-6 shadow-sm">
+            <div className="bg-red-50 p-6 rounded-md mb-6 shadow-sm"> {/* Fondo de la sección de añadir cambiado a rojo claro */}
               <h3 className="text-xl font-semibold text-gray-700 mb-4">Añadir Nuevo Cliente</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <input type="text" placeholder="Nombre" value={newClient.name} onChange={(e) => setNewClient({ ...newClient, name: e.target.value })} className="p-2 border rounded-md" />
@@ -116,7 +116,7 @@ export default function ClientesEmpleado() {
                           <td className="py-3 px-4 flex items-center space-x-2"><Phone className="w-4 h-4 text-gray-500" /><span>{client.phone}</span></td>
                           <td className="py-3 px-4 flex items-center space-x-2"><Home className="w-4 h-4 text-gray-500" /><span>{client.address}</span></td>
                           <td className="py-3 px-4 flex space-x-2">
-                            <button onClick={() => handleEditClick(client)} className="text-blue-600 hover:text-blue-800"><Edit className="w-5 h-5" /></button>
+                            <button onClick={() => handleEditClick(client)} className="text-red-600 hover:text-red-800"><Edit className="w-5 h-5" /></button>
                             <button onClick={() => handleDeleteClient(client.id)} className="text-red-600 hover:text-red-800"><Trash2 className="w-5 h-5" /></button>
                           </td>
                         </>

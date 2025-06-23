@@ -50,10 +50,10 @@ export default function MisPedidos() {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case 'Pendiente': return 'bg-yellow-100 text-yellow-800';
-      case 'En Proceso': return 'bg-blue-100 text-blue-800';
-      case 'Completado': return 'bg-green-100 text-green-800';
-      case 'Cancelado': return 'bg-red-100 text-red-800';
+      case 'Pendiente': return 'bg-red-100 text-red-800'; // Changed from yellow to red
+      case 'En Proceso': return 'bg-red-200 text-red-900'; // Changed from blue to a darker red shade
+      case 'Completado': return 'bg-green-100 text-green-800'; // Kept green for completion
+      case 'Cancelado': return 'bg-red-100 text-red-800'; // Already red, kept for consistency
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -81,8 +81,8 @@ export default function MisPedidos() {
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center space-x-2">
-            <ClipboardList className="w-8 h-8 text-yellow-600" />
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center flex items-center justify-center space-x-2">
+            <ClipboardList className="w-8 h-8 text-red-600" />
             <span>Mi Historial de Pedidos</span>
           </h2>
           
@@ -112,7 +112,7 @@ export default function MisPedidos() {
                       <td className="py-3 px-4">
                         <button
                           onClick={() => handleViewDetails(order)}
-                          className="text-blue-600 hover:text-blue-800 font-medium"
+                          className="text-red-600 hover:text-red-800 font-medium"
                         >
                           Ver Detalles
                         </button>
@@ -128,7 +128,7 @@ export default function MisPedidos() {
               Aún no has realizado ningún pedido.
               <button
                 onClick={() => alert('Navegar a la página de productos (simulado)')}
-                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors"
+                className="mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors"
               >
                 Explorar Productos
               </button>

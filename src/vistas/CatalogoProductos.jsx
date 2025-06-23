@@ -23,16 +23,16 @@ export default function CatalogoProductos() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center space-x-2">
-            <Package className="w-8 h-8 text-yellow-600" />
+            <Package className="w-8 h-8 text-red-600" /> {/* Changed from yellow to red */}
             <span>Catálogo de Productos</span>
           </h2>
-          
+
           {products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map(product => (
@@ -43,11 +43,12 @@ export default function CatalogoProductos() {
                     <Tag className="w-4 h-4" /><span>{product.category}</span>
                   </p>
                   <p className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-1">
+                    {/* Kept green for price, as it signifies money/positive */}
                     <DollarSign className="w-5 h-5 text-green-600" /><span>${product.price.toFixed(2)}</span>
                   </p>
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full shadow-md transition-colors flex items-center space-x-2"
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-md transition-colors flex items-center space-x-2" // Changed from yellow to red
                   >
                     <ShoppingCart size={20} />
                     <span>Añadir al Carrito</span>

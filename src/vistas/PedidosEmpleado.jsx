@@ -16,7 +16,7 @@ export default function PedidosEmpleado() {
   const [editedAssignedTo, setEditedAssignedTo] = useState('');
 
   const statuses = ['Pendiente', 'En Proceso', 'Completado', 'Cancelado'];
-  const employees = ['Sin Asignar', 'María F. Restrepo', 'Pedro Gómez', 'Laura Fernández']; // Simulación de empleados
+  const employees = ['Sin Asignar', 'María F. Restrepo', 'Pedro Gómez', 'Laura Fernández'];
 
   const handleEditClick = (order) => {
     setEditingId(order.id);
@@ -38,8 +38,8 @@ export default function PedidosEmpleado() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'Pendiente': return <Clock className="w-4 h-4 text-yellow-500" />;
-      case 'En Proceso': return <Truck className="w-4 h-4 text-blue-500" />;
+      case 'Pendiente': return <Clock className="w-4 h-4 text-red-500" />;
+      case 'En Proceso': return <Truck className="w-4 h-4 text-red-700" />;
       case 'Completado': return <CheckCircle className="w-4 h-4 text-green-500" />;
       case 'Cancelado': return <XCircle className="w-4 h-4 text-red-500" />;
       default: return null;
@@ -50,13 +50,13 @@ export default function PedidosEmpleado() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Gestión de Pedidos</h2>
-          
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center">Gestión de Pedidos</h2>
+
           {orders.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -77,7 +77,7 @@ export default function PedidosEmpleado() {
                       <td className="py-3 px-4">{order.id}</td>
                       <td className="py-3 px-4 flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{order.customer}</span></td>
                       <td className="py-3 px-4 flex items-center space-x-2"><Calendar className="w-4 h-4 text-gray-500" /><span>{order.date}</span></td>
-                      
+
                       {editingId === order.id ? (
                         <>
                           <td className="py-3 px-4">
@@ -102,7 +102,7 @@ export default function PedidosEmpleado() {
                           <td className="py-3 px-4 flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{order.assignedTo}</span></td>
                           <td className="py-3 px-4">{order.details}</td>
                           <td className="py-3 px-4 flex space-x-2">
-                            <button onClick={() => handleEditClick(order)} className="text-blue-600 hover:text-blue-800"><Edit className="w-5 h-5" /></button>
+                            <button onClick={() => handleEditClick(order)} className="text-red-600 hover:text-red-800"><Edit className="w-5 h-5" /></button>
                           </td>
                         </>
                       )}

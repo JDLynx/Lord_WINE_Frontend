@@ -53,29 +53,30 @@ export default function MisServiciosEmpresariales() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center space-x-2">
-            <Briefcase className="w-8 h-8 text-yellow-600" />
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center flex items-center justify-center space-x-2">
+            <Briefcase className="w-8 h-8 text-red-600" />
             <span>Nuestros Servicios Empresariales</span>
           </h2>
-          
+
           {services.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {services.map(service => (
                 <div key={service.id} className="bg-gray-50 rounded-lg shadow-sm p-6 flex flex-col justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center space-x-2">
-                      <Briefcase className="w-5 h-5 text-yellow-600" />
+                      <Briefcase className="w-5 h-5 text-red-600" />
                       <span>{service.name}</span>
                     </h3>
                     <p className="text-gray-700 mb-4">{service.description}</p>
                   </div>
                   <div>
                     <p className="text-lg font-bold text-gray-800 flex items-center space-x-2 mb-2">
+                      {/* Kept green for price, as it signifies money/positive */}
                       <DollarSign className="w-5 h-5 text-green-600" />
                       <span>Precio: {typeof service.price === 'number' ? `$${service.price.toFixed(2)}` : service.price}</span>
                     </p>
@@ -87,7 +88,7 @@ export default function MisServiciosEmpresariales() {
                     )}
                     <button
                       onClick={() => handleRequestInfo(service.name)}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors flex items-center space-x-2"
+                      className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors flex items-center space-x-2"
                     >
                       <Info size={20} />
                       <span>Solicitar Información</span>

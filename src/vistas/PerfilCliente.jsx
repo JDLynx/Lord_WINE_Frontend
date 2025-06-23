@@ -78,13 +78,13 @@ export default function PerfilCliente() {
                 {/* Tarjeta lateral con avatar y nombre */}
                 <div className="lg:col-span-1">
                   <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center justify-center h-full">
-                    <div className="w-32 h-32 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-full mx-auto mb-6 flex items-center justify-center shadow-md">
+                    <div className="w-32 h-32 bg-gradient-to-br from-red-500 to-red-700 rounded-full mx-auto mb-6 flex items-center justify-center shadow-md">
                       <User className="w-16 h-16 text-white" />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">{clientData.clientNombre}</h2>
-                    <p className="text-yellow-700 font-semibold mb-4">{clientData.role}</p>
+                    <p className="text-red-700 font-semibold mb-4">{clientData.role}</p>
                     <p className="text-gray-600 text-sm mt-2 text-center">
-                      <CreditCard className="inline-block w-4 h-4 mr-1 text-yellow-500" />
+                      <CreditCard className="inline-block w-4 h-4 mr-1 text-red-500" />
                       Último inicio: {clientData.lastLogin}
                     </p>
                   </div>
@@ -97,7 +97,7 @@ export default function PerfilCliente() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-6">
                       <div className="flex items-start space-x-4">
-                        <CreditCard className="w-6 h-6 text-yellow-500 mt-1" />
+                        <CreditCard className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Código de Cliente</p>
                           <p className="font-semibold text-gray-800 text-lg">{clientData.clientCod}</p>
@@ -105,7 +105,7 @@ export default function PerfilCliente() {
                       </div>
 
                       <div className="flex items-start space-x-4">
-                        <User className="w-6 h-6 text-yellow-500 mt-1" />
+                        <User className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Identificación</p>
                           <p className="font-semibold text-gray-800 text-lg">{clientData.clientId}</p>
@@ -113,7 +113,7 @@ export default function PerfilCliente() {
                       </div>
 
                       <div className="flex items-start space-x-4">
-                        <Home className="w-6 h-6 text-yellow-500 mt-1" />
+                        <Home className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Dirección</p>
                           <p className="font-semibold text-gray-800 text-lg">{clientData.clientDireccion}</p>
@@ -121,7 +121,7 @@ export default function PerfilCliente() {
                       </div>
 
                       <div className="flex items-start space-x-4">
-                        <Phone className="w-6 h-6 text-yellow-500 mt-1" />
+                        <Phone className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Teléfono</p>
                           <p className="font-semibold text-gray-800 text-lg">{clientData.clientTelefono}</p>
@@ -129,7 +129,7 @@ export default function PerfilCliente() {
                       </div>
 
                       <div className="flex items-start space-x-4">
-                        <Mail className="w-6 h-6 text-yellow-500 mt-1" />
+                        <Mail className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Correo Electrónico</p>
                           <p className="font-semibold text-gray-800 text-lg">{clientData.clientCorreoElectronico}</p>
@@ -147,7 +147,7 @@ export default function PerfilCliente() {
             <div className="flex justify-center space-x-6 mt-12 mb-12">
               <button
                 onClick={handleEditClick}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
               >
                 <Edit className="w-5 h-5" />
                 <span>Editar Perfil</span>
@@ -169,9 +169,9 @@ export default function PerfilCliente() {
                   <button
                     key={option.name}
                     onClick={() => handleManagementClick(option.path)}
-                    className="flex flex-col items-center justify-center p-4 sm:p-6 bg-yellow-50 rounded-lg shadow-sm hover:bg-yellow-100 transition-all duration-200 ease-in-out transform hover:scale-105 text-center"
+                    className="flex flex-col items-center justify-center p-4 sm:p-6 bg-red-50 rounded-lg shadow-sm hover:bg-red-100 transition-all duration-200 ease-in-out transform hover:scale-105 text-center"
                   >
-                    <option.icon className="w-7 h-7 sm:w-8 sm:h-8 text-yellow-600 mb-2 sm:mb-3" />
+                    <option.icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-600 mb-2 sm:mb-3" />
                     <span className="font-semibold text-gray-900 text-base sm:text-lg mb-1">{option.name}</span>
                     <p className="text-xs sm:text-sm text-gray-600">{option.description}</p>
                   </button>

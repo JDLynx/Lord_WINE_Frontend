@@ -78,11 +78,11 @@ export default function PerfilEmpleado() {
                     {/* Tarjeta lateral con avatar y nombre */}
                     <div className="lg:col-span-1">
                     <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center justify-center h-full">
-                        <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-6 flex items-center justify-center shadow-md"> {/* Changed color to blue for employee */}
+                        <div className="w-32 h-32 bg-gradient-to-br from-red-600 to-red-800 rounded-full mx-auto mb-6 flex items-center justify-center shadow-md"> {/* Changed color to red for employee */}
                         <User className="w-16 h-16 text-white" />
                         </div>
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">{profileData.employeeName}</h2>
-                        <p className="text-blue-700 font-semibold mb-4">{profileData.role}</p> {/* Changed color for role */}
+                        <p className="text-red-700 font-semibold mb-4">{profileData.role}</p> {/* Changed color for role */}
                         {profileData.storeAssigned && (
                         <p className="text-gray-600 font-medium text-lg flex items-center space-x-2">
                             <Store className="w-5 h-5 text-gray-500" />
@@ -102,7 +102,7 @@ export default function PerfilEmpleado() {
 
                         {/* Código de Empleado */}
                         <div className="flex items-start space-x-4">
-                            <User className="w-6 h-6 text-blue-500 mt-1" />
+                            <User className="w-6 h-6 text-red-500 mt-1" />
                             <div className="text-left">
                             <p className="text-sm text-gray-500">Código de Empleado</p>
                             <p className="font-semibold text-gray-800 text-lg">{profileData.employeeCod}</p>
@@ -111,7 +111,7 @@ export default function PerfilEmpleado() {
 
                         {/* Identificación */}
                         <div className="flex items-start space-x-4">
-                            <User className="w-6 h-6 text-blue-500 mt-1" />
+                            <User className="w-6 h-6 text-red-500 mt-1" />
                             <div className="text-left">
                             <p className="text-sm text-gray-500">Identificación</p>
                             <p className="font-semibold text-gray-800 text-lg">{profileData.employeeId}</p>
@@ -120,7 +120,7 @@ export default function PerfilEmpleado() {
 
                         {/* Nombre */}
                         <div className="flex items-start space-x-4">
-                            <User className="w-6 h-6 text-blue-500 mt-1" />
+                            <User className="w-6 h-6 text-red-500 mt-1" />
                             <div className="text-left">
                             <p className="text-sm text-gray-500">Nombre Completo</p>
                             <p className="font-semibold text-gray-800 text-lg">{profileData.employeeName}</p>
@@ -129,7 +129,7 @@ export default function PerfilEmpleado() {
 
                         {/* Dirección */}
                         <div className="flex items-start space-x-4">
-                            <Home className="w-6 h-6 text-blue-500 mt-1" />
+                            <Home className="w-6 h-6 text-red-500 mt-1" />
                             <div className="text-left">
                             <p className="text-sm text-gray-500">Dirección</p>
                             <p className="font-semibold text-gray-800 text-lg">{profileData.employeeAddress}</p>
@@ -138,7 +138,7 @@ export default function PerfilEmpleado() {
 
                         {/* Teléfono */}
                         <div className="flex items-start space-x-4">
-                            <Phone className="w-6 h-6 text-blue-500 mt-1" />
+                            <Phone className="w-6 h-6 text-red-500 mt-1" />
                             <div className="text-left">
                             <p className="text-sm text-gray-500">Teléfono</p>
                             <p className="font-semibold text-gray-800 text-lg">{profileData.employeePhone}</p>
@@ -147,7 +147,7 @@ export default function PerfilEmpleado() {
 
                         {/* Correo electrónico */}
                         <div className="flex items-start space-x-4">
-                            <Mail className="w-6 h-6 text-blue-500 mt-1" />
+                            <Mail className="w-6 h-6 text-red-500 mt-1" />
                             <div className="text-left">
                             <p className="text-sm text-gray-500">Correo Electrónico</p>
                             <p className="font-semibold text-gray-800 text-lg">{profileData.employeeEmail}</p>
@@ -156,7 +156,7 @@ export default function PerfilEmpleado() {
 
                         {/* Rol */}
                         <div className="flex items-start space-x-4">
-                            <Store className="w-6 h-6 text-blue-500 mt-1" />
+                            <Store className="w-6 h-6 text-red-500 mt-1" />
                             <div className="text-left">
                             <p className="text-sm text-gray-500">Rol</p>
                             <p className="font-semibold text-gray-800 text-lg">{profileData.role}</p>
@@ -181,7 +181,7 @@ export default function PerfilEmpleado() {
                         onClick={() => handleManagementClick(option.path)}
                         className="flex flex-col items-center justify-center p-4 sm:p-6 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition-all duration-200 ease-in-out transform hover:scale-105 text-center"
                     >
-                        <option.icon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mb-2 sm:mb-3" /> {/* Changed color to blue for employee icons */}
+                        <option.icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-600 mb-2 sm:mb-3" /> {/* Changed color to red for employee icons */}
                         <span className="font-semibold text-gray-900 text-base sm:text-lg mb-1">{option.name}</span>
                         <p className="text-xs sm:text-sm text-gray-600">{option.description}</p>
                     </button>
