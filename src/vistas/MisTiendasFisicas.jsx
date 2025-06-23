@@ -48,23 +48,23 @@ export default function MisTiendasFisicas() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center space-x-2">
-            <Store className="w-8 h-8 text-yellow-600" />
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center flex items-center justify-center space-x-2">
+            <Store className="w-8 h-8 text-red-600" />
             <span>Nuestras Tiendas Físicas</span>
           </h2>
-          
+
           {stores.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {stores.map(store => (
                 <div key={store.id} className="bg-gray-50 rounded-lg shadow-sm p-6 flex flex-col justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center space-x-2">
-                      <Store className="w-5 h-5 text-yellow-600" />
+                      <Store className="w-5 h-5 text-red-600" />
                       <span>{store.name}</span>
                     </h3>
                     <p className="text-gray-700 mb-1 flex items-center space-x-2"><MapPin className="w-4 h-4 text-gray-500" /><span>{store.address}</span></p>
@@ -74,7 +74,7 @@ export default function MisTiendasFisicas() {
                   <div>
                     <button
                       onClick={() => handleOpenMap(store.mapUrl)}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors flex items-center space-x-2"
+                      className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors flex items-center space-x-2"
                     >
                       <Globe size={20} />
                       <span>Ver en Mapa</span>

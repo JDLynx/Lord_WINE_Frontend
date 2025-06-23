@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import './Header.css';
 import BotonMenu from './BotonMenu';
-import { ShoppingCartIcon, MapPinIcon, UserIcon } from "@heroicons/react/24/solid";
+import UserMenu from './UserMenu'; // Importa el nuevo componente UserMenu
+import { ShoppingCartIcon, MapPinIcon } from "@heroicons/react/24/solid";
 
 function Header() {
   return (
@@ -28,13 +29,9 @@ function Header() {
             <ShoppingCartIcon className='icono-carrito-compras' />
           </Link>
 
-          <Link to="/login" className="icono-principales">
-            <UserIcon className="icono-usuario-login" />
-          </Link>
+          <UserMenu /> 
 
           <BotonMenu />
-
-          
 
         </div>
 

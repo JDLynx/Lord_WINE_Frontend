@@ -98,18 +98,18 @@ export default function MiPerfil() {
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-4xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Mi Perfil</h2>
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center">Mi Perfil</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="flex items-center space-x-4">
-              <CreditCard className="w-6 h-6 text-yellow-600" />
+              <CreditCard className="w-6 h-6 text-red-600" />
               <div>
                 <p className="text-sm text-gray-500">Código de Cliente</p>
                 <p className="font-semibold text-gray-800">{profileData.clientCod}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <User className="w-6 h-6 text-yellow-600" />
+              <User className="w-6 h-6 text-red-600" />
               <div>
                 <p className="text-sm text-gray-500">Identificación</p>
                 <p className="font-semibold text-gray-800">{profileData.clientId}</p>
@@ -117,7 +117,7 @@ export default function MiPerfil() {
             </div>
 
             <div className="flex items-start space-x-4">
-              <User className="w-6 h-6 text-yellow-600 mt-1" />
+              <User className="w-6 h-6 text-red-600 mt-1" />
               <div className="w-full">
                 <label htmlFor="clientNombre" className="block text-sm text-gray-500 mb-1">Nombre Completo</label>
                 {isEditing ? (
@@ -128,7 +128,7 @@ export default function MiPerfil() {
                       name="clientNombre"
                       value={editedData.clientNombre}
                       onChange={handleChange}
-                      className={`shadow appearance-none border ${formErrors.clientNombre ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent`}
+                      className={`shadow appearance-none border ${formErrors.clientNombre ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
                     />
                     {formErrors.clientNombre && <p className="text-red-500 text-xs italic mt-1">{formErrors.clientNombre}</p>}
                   </>
@@ -139,7 +139,7 @@ export default function MiPerfil() {
             </div>
 
             <div className="flex items-start space-x-4">
-              <Home className="w-6 h-6 text-yellow-600 mt-1" />
+              <Home className="w-6 h-6 text-red-600 mt-1" />
               <div className="w-full">
                 <label htmlFor="clientDireccion" className="block text-sm text-gray-500 mb-1">Dirección</label>
                 {isEditing ? (
@@ -150,7 +150,7 @@ export default function MiPerfil() {
                       name="clientDireccion"
                       value={editedData.clientDireccion}
                       onChange={handleChange}
-                      className={`shadow appearance-none border ${formErrors.clientDireccion ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent`}
+                      className={`shadow appearance-none border ${formErrors.clientDireccion ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
                     />
                     {formErrors.clientDireccion && <p className="text-red-500 text-xs italic mt-1">{formErrors.clientDireccion}</p>}
                   </>
@@ -161,7 +161,7 @@ export default function MiPerfil() {
             </div>
 
             <div className="flex items-start space-x-4">
-              <Phone className="w-6 h-6 text-yellow-600 mt-1" />
+              <Phone className="w-6 h-6 text-red-600 mt-1" />
               <div className="w-full">
                 <label htmlFor="clientTelefono" className="block text-sm text-gray-500 mb-1">Teléfono</label>
                 {isEditing ? (
@@ -172,7 +172,7 @@ export default function MiPerfil() {
                       name="clientTelefono"
                       value={editedData.clientTelefono}
                       onChange={handleChange}
-                      className={`shadow appearance-none border ${formErrors.clientTelefono ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent`}
+                      className={`shadow appearance-none border ${formErrors.clientTelefono ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
                     />
                     {formErrors.clientTelefono && <p className="text-red-500 text-xs italic mt-1">{formErrors.clientTelefono}</p>}
                   </>
@@ -183,7 +183,7 @@ export default function MiPerfil() {
             </div>
 
             <div className="flex items-start space-x-4">
-              <Mail className="w-6 h-6 text-yellow-600 mt-1" />
+              <Mail className="w-6 h-6 text-red-600 mt-1" />
               <div className="w-full">
                 <label htmlFor="clientCorreoElectronico" className="block text-sm text-gray-500 mb-1">Correo Electrónico</label>
                 {isEditing ? (
@@ -194,7 +194,7 @@ export default function MiPerfil() {
                       name="clientCorreoElectronico"
                       value={editedData.clientCorreoElectronico}
                       onChange={handleChange}
-                      className={`shadow appearance-none border ${formErrors.clientCorreoElectronico ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent`}
+                      className={`shadow appearance-none border ${formErrors.clientCorreoElectronico ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
                     />
                     {formErrors.clientCorreoElectronico && <p className="text-red-500 text-xs italic mt-1">{formErrors.clientCorreoElectronico}</p>}
                   </>
@@ -210,7 +210,7 @@ export default function MiPerfil() {
               <>
                 <button
                   onClick={handleSaveClick}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                 >
                   <Save className="w-5 h-5" />
                   <span>Guardar Cambios</span>
@@ -226,7 +226,7 @@ export default function MiPerfil() {
             ) : (
               <button
                 onClick={handleEditClick}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
               >
                 <Edit className="w-5 h-5" />
                 <span>Editar Perfil</span>

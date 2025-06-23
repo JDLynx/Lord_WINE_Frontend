@@ -56,8 +56,8 @@ export default function MiCarrito() {
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-4xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center space-x-2">
-            <ShoppingCart className="w-8 h-8 text-yellow-600" />
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center flex items-center justify-center space-x-2">
+            <ShoppingCart className="w-8 h-8 text-red-600" />
             <span>Mi Carrito de Compras</span>
           </h2>
           
@@ -72,9 +72,9 @@ export default function MiCarrito() {
                       <p className="text-gray-600">${item.price.toFixed(2)} c/u</p>
                     </div>
                     <div className="flex items-center space-x-2 mr-4">
-                      <button onClick={() => handleQuantityChange(item.id, -1)} className="p-1 rounded-full bg-yellow-200 hover:bg-yellow-300 text-yellow-800 transition-colors"><MinusCircle size={20} /></button>
+                      <button onClick={() => handleQuantityChange(item.id, -1)} className="p-1 rounded-full bg-red-200 hover:bg-red-300 text-red-800 transition-colors"><MinusCircle size={20} /></button>
                       <span className="font-bold text-gray-800">{item.quantity}</span>
-                      <button onClick={() => handleQuantityChange(item.id, 1)} className="p-1 rounded-full bg-yellow-200 hover:bg-yellow-300 text-yellow-800 transition-colors"><PlusCircle size={20} /></button>
+                      <button onClick={() => handleQuantityChange(item.id, 1)} className="p-1 rounded-full bg-red-200 hover:bg-red-300 text-red-800 transition-colors"><PlusCircle size={20} /></button>
                     </div>
                     <button onClick={() => handleRemoveItem(item.id)} className="text-red-600 hover:text-red-800 transition-colors" title="Eliminar"><Trash2 size={24} /></button>
                   </div>
@@ -88,7 +88,7 @@ export default function MiCarrito() {
               <div className="flex justify-end">
                 <button
                   onClick={handleCheckout}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 flex items-center space-x-2 text-lg"
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 flex items-center space-x-2 text-lg"
                 >
                   <CheckCircle className="w-5 h-5" />
                   <span>Proceder al Pago</span>
@@ -102,7 +102,7 @@ export default function MiCarrito() {
               <p className="text-lg mt-2">¡Explora nuestros productos y agrega tus favoritos!</p>
               <button
                 onClick={() => alert('Navegar a la página de productos (simulado)')}
-                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors"
+                className="mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-md transition-colors"
               >
                 Ver Productos
               </button>

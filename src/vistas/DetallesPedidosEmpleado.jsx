@@ -8,8 +8,6 @@ export default function DetallesPedidosEmpleado() {
   const [orderDetail, setOrderDetail] = useState(null);
 
   useEffect(() => {
-    // Simular la carga de un detalle de pedido específico
-    // En una app real, el ID del pedido vendría de los parámetros de la URL (ej. /detalles-pedidos-empleado/102)
     const simulatedOrderDetail = {
       id: 102,
       customerName: 'Ana López',
@@ -36,7 +34,7 @@ export default function DetallesPedidosEmpleado() {
       <div className="flex flex-col min-h-screen overflow-x-hidden">
         <Header />
         <BarraProductos />
-        <main 
+        <main
           className="flex-grow flex items-center justify-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
         >
@@ -51,16 +49,16 @@ export default function DetallesPedidosEmpleado() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-4xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center space-x-2">
-            <ShoppingBag className="w-8 h-8 text-blue-600" />
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center flex items-center justify-center space-x-2">
+            <ShoppingBag className="w-8 h-8 text-red-600" />
             <span>Detalles del Pedido #{orderDetail.id}</span>
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b pb-6">
             <div>
               <h3 className="text-xl font-semibold text-gray-700 mb-4 flex items-center space-x-2"><User className="w-5 h-5" /><span>Información del Cliente</span></h3>
@@ -73,7 +71,7 @@ export default function DetallesPedidosEmpleado() {
               <p className="flex items-center space-x-2 text-gray-700 mb-2"><Calendar className="w-4 h-4 text-gray-500" /><span>Fecha: {orderDetail.orderDate}</span></p>
               <p className="flex items-center space-x-2 text-gray-700 mb-2">
                 <Truck className="w-4 h-4 text-gray-500" />
-                <span>Estado: <span className={`font-semibold ${orderDetail.status === 'Completado' ? 'text-green-600' : orderDetail.status === 'En Proceso' ? 'text-blue-600' : 'text-yellow-600'}`}>{orderDetail.status}</span></span>
+                <span>Estado: <span className={`font-semibold ${orderDetail.status === 'Completado' ? 'text-green-600' : orderDetail.status === 'En Proceso' ? 'text-red-600' : 'text-yellow-600'}`}>{orderDetail.status}</span></span>
               </p>
               <p className="flex items-center space-x-2 text-gray-700 mb-2"><User className="w-4 h-4 text-gray-500" /><span>Asignado a: {orderDetail.assignedTo}</span></p>
               {orderDetail.deliveryInstructions && (

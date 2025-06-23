@@ -55,27 +55,27 @@ export default function InventarioTienda() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Inventario de Tienda</h2>
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center">Inventario de Tienda</h2>
           <p className="text-gray-600 mb-6 text-center flex items-center justify-center">
-            <Store className="w-5 h-5 mr-2" />
+            <Store className="w-5 h-5 mr-2 text-red-600" />
             Inventario de: **Tienda Central Popayán**
           </p>
 
           <button
             onClick={() => setIsAdding(!isAdding)}
-            className="mb-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
+            className="mb-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
           >
             <PlusCircle className="w-5 h-5" />
             <span>{isAdding ? 'Cancelar' : 'Añadir Nuevo Producto'}</span>
           </button>
 
           {isAdding && (
-            <div className="bg-blue-50 p-6 rounded-md mb-6 shadow-sm">
+            <div className="bg-red-50 p-6 rounded-md mb-6 shadow-sm">
               <h3 className="text-xl font-semibold text-gray-700 mb-4">Añadir Producto</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <input type="text" placeholder="Nombre Producto" value={newProduct.product} onChange={(e) => setNewProduct({ ...newProduct, product: e.target.value })} className="p-2 border rounded-md" />
@@ -125,7 +125,7 @@ export default function InventarioTienda() {
                           <td className="py-3 px-4 flex items-center space-x-2"><Boxes className="w-4 h-4 text-gray-500" /><span>{product.stock}</span></td>
                           <td className="py-3 px-4">{product.location}</td>
                           <td className="py-3 px-4 flex space-x-2">
-                            <button onClick={() => handleEditClick(product)} className="text-blue-600 hover:text-blue-800"><Edit className="w-5 h-5" /></button>
+                            <button onClick={() => handleEditClick(product)} className="text-red-600 hover:text-red-800"><Edit className="w-5 h-5" /></button>
                             <button onClick={() => handleDeleteProduct(product.id)} className="text-red-600 hover:text-red-800"><Trash2 className="w-5 h-5" /></button>
                           </td>
                         </>

@@ -16,14 +16,14 @@ export default function GestionEmpleadoInventarioTienda() {
     <div className="flex flex-col min-h-screen overflow-x-hidden">
       <Header />
       <BarraProductos />
-      <main 
+      <main
         className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-6xl mx-auto w-full bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Gestión de Inventario por Empleado</h2>
+          <h2 className="text-3xl font-bold text-red-600 mb-6 text-center">Gestión de Inventario por Empleado</h2>
           <p className="text-gray-600 mb-6 text-center">
-            <LayoutGrid className="inline-block w-5 h-5 mr-2" />
+            <LayoutGrid className="inline-block w-5 h-5 mr-2 text-red-600" />
             Visibilidad de asignaciones de inventario a empleados.
           </p>
 
