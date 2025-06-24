@@ -1,65 +1,70 @@
 import React, { useState } from 'react';
-// Importamos el componente Link para navegar entre rutas
-import { Link } from 'react-router-dom';
-// Importamos el hook useNavigate para redirigir programáticamente
-import { useNavigate } from 'react-router-dom';
-// Componentes reutilizables de la aplicación
+import { Link, useNavigate } from 'react-router-dom';
+// Importación de componentes para la estructura de la pantalla
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-// Estilos específicos para esta vista
+// Importación de los estilos para la pantalla de login
 import "./Login.css";
 
-export default function Login() {
-    // Estados para correo, contraseña y mensaje de error
+export default function Login()
+{
+    // Definición de los estados para guardar correo, contraseña y error
     const [correo, setCorreo] = useState('');
     const [contrasena, setContrasena] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // Hook de navegación
 
-    // Función que se ejecuta al enviar el formulario
+    // Hook para navegar a otras rutas según el rol
+    const navigate = useNavigate();
+
+    // Función para procesar el envío del formulario de login
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevenir comportamiento por defecto del formulario
+        e.preventDefault();
 
         try {
-            // Consultamos la lista de administradores desde la API
-            const response = await fetch("http://localhost:3000/api/administradores/");
+            // Petición al backend para autenticar al usuario
+            const response = await fetch("http://localhost:3000/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ correo, contrasena }),
+            });
+            
             const data = await response.json();
 
-            // Buscamos si hay un administrador con el correo y contraseña ingresados
-            const admin = data.find(a => a.adminCorreoElectronico === correo && a.adminContrasena === contrasena);
-
-            if (admin) {
-                // Si se encuentra, se guarda su ID en localStorage
-                localStorage.setItem('adminCodAdministrador', admin.adminCodAdministrador);
-
-                // Mostramos un mensaje de bienvenida con su nombre
-                alert(`Bienvenido, ${admin.adminNombre}`);
-
-                // Redirigimos al perfil del administrador
-                navigate('/perfil');
+            // Si la respuesta es correcta, guarda datos en localStorage y redirige según el rol
+            if (response.ok) {
+                alert(`Bienvenido, ${data.rol}`);
+                if (data.rol === 'Administrador') {
+                    localStorage.setItem('adminCodAdministrador', data.id);
+                    navigate("/perfil"); 
+                } else if (data.rol === 'Empleado') {
+                    localStorage.setItem('empleadoCodEmpleado', data.id);
+                    navigate("/perfil-empleado"); 
+                } else if (data.rol === 'Cliente') {
+                    localStorage.setItem('clienteCodCliente', data.id);
+                    navigate("/perfil-cliente"); 
+                }
             } else {
-                // Si no coincide, mostramos mensaje de error
-                setError('Correo o contraseña incorrectos.');
+                // Si falla, muestra el error proporcionado por la API
+                setError(data.error || "Usuario o contraseña incorrectos.");
             }
         } catch (error) {
-            // En caso de error en la conexión con el servidor
-            setError('Error al conectar con el servidor.');
+            // Si falla la conexión, muestra un error genérico
+            setError("Error al conectar con el servidor.");
         }
     };
 
     return (
         <div className="page-container">
-            {/* Encabezado de la página */}
             <Header />
-            {/* Barra de navegación de productos */}
             <BarraProductos />
             <main className="bg-vistas">
                 <div className="login-card">
-                    {/* Título del formulario */}
                     <h2 className="login-title">Iniciar Sesión</h2>
-                    {/* Formulario de inicio de sesión */}
                     <form onSubmit={handleSubmit}>
+                        {/* Campo para ingresar el correo electrónico */}
                         <div className="input-group">
                             <label htmlFor="username" className="input-label">Correo electrónico:</label>
                             <input
@@ -72,6 +77,7 @@ export default function Login() {
                             />
                         </div>
 
+                        {/* Campo para ingresar la contraseña */}
                         <div className="input-group">
                             <label htmlFor="password" className="input-label">Contraseña:</label>
                             <input
@@ -84,15 +90,13 @@ export default function Login() {
                             />
                         </div>
 
-                        {/* Si hay error, se muestra en rojo */}
+                        {/* Muestra el error en caso de que exista */}
                         {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
 
-                        {/* Botón de envío del formulario */}
                         <button type="submit" className="submit-btn">Ingresar</button>
                     </form>
                 </div>
 
-                {/* Enlace para redirigir a la página de registro */}
                 <p className="mt-5 text-center text-black">
                     ¿No tienes una cuenta?{' '}
                     <Link to="/registro" className="text-red-600 font-bold hover:underline">
@@ -100,7 +104,6 @@ export default function Login() {
                     </Link>
                 </p>
             </main>
-            {/* Pie de página */}
             <Footer />
         </div>
     );
