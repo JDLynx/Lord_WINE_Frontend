@@ -1,56 +1,53 @@
 import React, { useState, useEffect } from 'react';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
-// Importamos los íconos necesarios desde lucide-react para el perfil y las funcionalidades
-import {
-  User, Mail, Phone, Home, CreditCard, // Para la información del perfil
-  ShoppingCart, ClipboardList, Package, Briefcase, Store, Edit, Key // Para las funcionalidades y botones
-} from 'lucide-react';
-
-// Importamos componentes reutilizables
+import { User, Mail, Phone, Home, CreditCard, ShoppingCart, ClipboardList, Package, Briefcase, Store, Edit, Key } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
 
 export default function PerfilCliente() {
   const navigate = useNavigate();
-  // Estado para simular los datos del cliente (sin conexión a backend)
   const [clientData, setClientData] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simular la carga de datos del cliente
-    const simulatedClient = {
-      clientCod: 'CLI001',
-      clientId: '123456789',
-      clientNombre: 'Sofía Isabel Ramírez',
-      clientDireccion: 'Avenida Siempre Viva 742, Springfield',
-      clientTelefono: '3159876543',
-      clientCorreoElectronico: 'sofia.ramirez@example.com',
-      lastLogin: '2025-06-22',
-      role: 'Cliente'
-    };
+    const fetchClientData = async () => {
+      const clienteId = localStorage.getItem('clienteCodCliente');
+      if (!clienteId) {
+        setError('No hay ID de cliente en localStorage.');
+        setLoading(false);
+        return;
+      }
 
-    // Usamos un setTimeout para simular una carga asíncrona de datos
-    setTimeout(() => {
-      setClientData(simulatedClient);
-    }, 500); // Retraso de 500ms
+      try {
+        const response = await fetch(`http://localhost:3000/api/clientes/${clienteId}`);
+        if (!response.ok) {
+          throw new Error('Error al obtener datos del cliente');
+        }
+        const data = await response.json();
+        setClientData(data);
+      } catch (error) {
+        console.error(error);
+        setError(error.message || 'Error al obtener datos del cliente');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchClientData();
   }, []);
 
-  // Función para redirigir a la vista de edición de perfil del cliente
   const handleEditClick = () => {
-    navigate('/editar-perfil-cliente'); // Ruta a crear para edición de perfil de cliente
+    navigate('/editar-perfil-cliente');
   };
-
-  // Función para redirigir a la vista de cambio de contraseña del cliente
   const handleChangePasswordClick = () => {
-    navigate('/cambiar-contrasena-cliente'); // Ruta a crear para cambio de contraseña de cliente
+    navigate('/cambiar-contrasena-cliente');
   };
-
-  // Handler para las opciones de gestión
   const handleManagementClick = (path) => {
     navigate(path);
   };
-
-  // Definición de las opciones de gestión del cliente según la imagen
+  
   const managementOptions = [
     { name: 'Su Perfil', description: 'Ver y actualizar sus datos básicos', icon: User, path: '/mi-perfil' },
     { name: 'Carrito de Compras', description: 'Crear y administrar productos en su carrito', icon: ShoppingCart, path: '/mi-carrito' },
@@ -68,29 +65,32 @@ export default function PerfilCliente() {
 
         <main
           className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/img/Viñedo.jpg')" }} // Asegúrate de que esta ruta sea correcta
+          style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
         >
           <div className="max-w-6xl mx-auto w-full">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Perfil del Cliente</h1>
+            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Perfil Cliente</h1>
 
-            {clientData ? (
+            {error && <div className="text-center text-red-600 font-bold">{error}</div>}
+
+            {loading ? (
+
+              <div className="flex flex-col items-center justify-center p-10">
+                <AiOutlineLoading3Quarters className="w-12 h-12 text-red-600 animate-spin" />
+                <p className="mt-4 text-gray-600 text-lg">Cargando información del perfil...</p>
+              </div>
+            ) : clientData ? (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-                {/* Tarjeta lateral con avatar y nombre */}
+
                 <div className="lg:col-span-1">
                   <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center justify-center h-full">
                     <div className="w-32 h-32 bg-gradient-to-br from-red-500 to-red-700 rounded-full mx-auto mb-6 flex items-center justify-center shadow-md">
                       <User className="w-16 h-16 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{clientData.clientNombre}</h2>
-                    <p className="text-red-700 font-semibold mb-4">{clientData.role}</p>
-                    <p className="text-gray-600 text-sm mt-2 text-center">
-                      <CreditCard className="inline-block w-4 h-4 mr-1 text-red-500" />
-                      Último inicio: {clientData.lastLogin}
-                    </p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{clientData.clNombre}</h2>
+                    <p className="text-red-700 font-semibold mb-4">Cliente</p>
                   </div>
                 </div>
 
-                {/* Sección de información personal */}
                 <div className="lg:col-span-2">
                   <div className="bg-white rounded-2xl shadow-lg p-10 h-full">
                     <h3 className="text-xl font-bold text-gray-800 mb-8 border-b pb-4 border-gray-200">Información Personal</h3>
@@ -100,39 +100,35 @@ export default function PerfilCliente() {
                         <CreditCard className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Código de Cliente</p>
-                          <p className="font-semibold text-gray-800 text-lg">{clientData.clientCod}</p>
+                          <p className="font-semibold text-gray-800 text-lg">{clientData.clCodCliente}</p>
                         </div>
                       </div>
-
                       <div className="flex items-start space-x-4">
                         <User className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Identificación</p>
-                          <p className="font-semibold text-gray-800 text-lg">{clientData.clientId}</p>
+                          <p className="font-semibold text-gray-800 text-lg">{clientData.clIdCliente}</p>
                         </div>
                       </div>
-
                       <div className="flex items-start space-x-4">
                         <Home className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Dirección</p>
-                          <p className="font-semibold text-gray-800 text-lg">{clientData.clientDireccion}</p>
+                          <p className="font-semibold text-gray-800 text-lg">{clientData.clDireccion}</p>
                         </div>
                       </div>
-
                       <div className="flex items-start space-x-4">
                         <Phone className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Teléfono</p>
-                          <p className="font-semibold text-gray-800 text-lg">{clientData.clientTelefono}</p>
+                          <p className="font-semibold text-gray-800 text-lg">{clientData.clTelefono}</p>
                         </div>
                       </div>
-
                       <div className="flex items-start space-x-4">
                         <Mail className="w-6 h-6 text-red-500 mt-1" />
                         <div className="text-left">
                           <p className="text-sm text-gray-500">Correo Electrónico</p>
-                          <p className="font-semibold text-gray-800 text-lg">{clientData.clientCorreoElectronico}</p>
+                          <p className="font-semibold text-gray-800 text-lg">{clientData.clCorreoElectronico}</p>
                         </div>
                       </div>
                     </div>
@@ -140,48 +136,49 @@ export default function PerfilCliente() {
                 </div>
               </div>
             ) : (
-                <div className="text-center text-gray-600 text-lg">Cargando información del perfil...</div>
+              !error && <div className="text-center text-gray-600 text-lg">No se encontraron datos para este cliente</div>
             )}
 
-            {/* Botones de acción - para el cliente */}
-            <div className="flex justify-center space-x-6 mt-12 mb-12">
-              <button
-                onClick={handleEditClick}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
-              >
-                <Edit className="w-5 h-5" />
-                <span>Editar Perfil</span>
-              </button>
-              <button
-                onClick={handleChangePasswordClick}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
-              >
-                <Key className="w-5 h-5" />
-                <span>Cambiar Contraseña</span>
-              </button>
-            </div>
+            {!loading && clientData && (
+              <>
 
-            {/* Sección "Qué podría ver y administrar" para el cliente */}
-            <section className="bg-white rounded-2xl shadow-lg p-10 max-w-6xl mx-auto">
-              <h3 className="text-xl font-bold text-gray-800 mb-8 border-b pb-4 border-gray-200">Qué podría ver y administrar</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
-                {managementOptions.map((option) => (
+                <div className="flex justify-center space-x-6 mt-12 mb-12">
                   <button
-                    key={option.name}
-                    onClick={() => handleManagementClick(option.path)}
-                    className="flex flex-col items-center justify-center p-4 sm:p-6 bg-red-50 rounded-lg shadow-sm hover:bg-red-100 transition-all duration-200 ease-in-out transform hover:scale-105 text-center"
+                    onClick={handleEditClick}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                   >
-                    <option.icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-600 mb-2 sm:mb-3" />
-                    <span className="font-semibold text-gray-900 text-base sm:text-lg mb-1">{option.name}</span>
-                    <p className="text-xs sm:text-sm text-gray-600">{option.description}</p>
+                    <Edit className="w-5 h-5" />
+                    <span>Editar Perfil</span>
                   </button>
-                ))}
-              </div>
-            </section>
+                  <button
+                    onClick={handleChangePasswordClick}
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  >
+                    <Key className="w-5 h-5" />
+                    <span>Cambiar Contraseña</span>
+                  </button>
+                </div>
 
+                <section className="bg-white rounded-2xl shadow-lg p-10 max-w-6xl mx-auto">
+                  <h3 className="text-xl font-bold text-gray-800 mb-8 border-b pb-4 border-gray-200">Qué podría ver y administrar</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+                    {managementOptions.map((option) => (
+                      <button
+                        key={option.name}
+                        onClick={() => handleManagementClick(option.path)}
+                        className="flex flex-col items-center justify-center p-4 sm:p-6 bg-red-50 rounded-lg shadow-sm hover:bg-red-100 transition-all duration-200 ease-in-out transform hover:scale-105 text-center"
+                      >
+                        <option.icon className="w-7 h-7 sm:w-8 sm:h-8 text-red-600 mb-2 sm:mb-3" />
+                        <span className="font-semibold text-gray-900 text-base sm:text-lg mb-1">{option.name}</span>
+                        <p className="text-xs sm:text-sm text-gray-600">{option.description}</p>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
           </div>
         </main>
-
         <Footer />
       </div>
     </>
