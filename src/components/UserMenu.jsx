@@ -1,11 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-import "./UserMenu.css";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./UserMenu.css"; 
 import { UserIcon } from "@heroicons/react/24/solid";
+import { AuthContext } from "../context/AuthContext";
 
 function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -14,35 +17,44 @@ function UserMenu() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
+    return () =>
       document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, [menuRef]);
 
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+    navigate("/login");
+  };
+  
   return (
-    <div className="user-menu-container" ref={menuRef}>
-      {/* Aplicamos las mismas clases que los otros íconos principales */}
-      <button className="icono-principales" onClick={() => setIsOpen(!isOpen)}> 
-        <UserIcon className="icono-usuario-login" /> {/* Usamos la clase original para el ícono de usuario */}
+    <div className="user-menu-wrapper" ref={menuRef}>
+      <button className="user-menu-button" onClick={() => setIsOpen(!isOpen)}>
+        <UserIcon className="user-menu-icon" />
       </button>
-
       {isOpen && (
-        <ul className="user-dropdown-menu">
-          <li>
-            <Link className="user-dropdown-item" to="/login" onClick={() => setIsOpen(false)}>
-              Login
-            </Link>
-          </li>
-          <li>
-            <Link className="user-dropdown-item" to="/perfil" onClick={() => setIsOpen(false)}>
-              Ver perfil
-            </Link>
-          </li>
-          <li>
-            <Link className="user-dropdown-item" to="/logout" onClick={() => setIsOpen(false)}>
-              Cerrar sesión
-            </Link>
-          </li>
+        <ul className="user-menu-dropdown">
+          {!user && (
+            <li>
+              <Link className="user-menu-item" to="/login" onClick={() => setIsOpen(false)}>
+                Iniciar sesión
+              </Link>
+            </li>
+          )}
+          {user && (
+            <>
+              <li>
+                <Link className="user-menu-item" to="/perfil" onClick={() => setIsOpen(false)}>
+                  Ver perfil
+                </Link>
+              </li>
+              <li>
+                <button className="user-menu-item" onClick={handleLogout}>
+                  Cerrar sesión
+                </button>
+              </li>
+            </>
+          )}
         </ul>
       )}
     </div>
