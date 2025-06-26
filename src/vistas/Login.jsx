@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BarraProductos from "../components/BarraProductos";
 import { AiOutlineLoading } from "react-icons/ai";
-import { AuthContext } from "../context/AuthContext"; // ✅ Importamos AuthContext
+import { AuthContext } from "../context/AuthContext";
 import "./Login.css";
 
 export default function Login() {
@@ -13,7 +13,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // ✅ Obtenemos la función login
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,19 +27,23 @@ export default function Login() {
         },
         body: JSON.stringify({ correo, contrasena }),
       });
+
       const data = await response.json();
       console.log("[Login] Respuesta del backend:", data);
 
       if (response.ok) {
         alert(`Bienvenido, ${data.rol}`);
-        // ✅ Ahora guardamos la información en AuthContext
-        login({ id: data.id, role: data.rol }); 
+        login({ id: data.id, role: data.rol });
 
+        // ✅ Guardamos el ID según el rol en localStorage
         if (data.rol === "Administrador") {
+          localStorage.setItem("adminCodAdministrador", data.id);
           navigate("/perfil");
         } else if (data.rol === "Empleado") {
+          localStorage.setItem("empleadoCodEmpleado", data.id);
           navigate("/perfil-empleado");
         } else if (data.rol === "Cliente") {
+          localStorage.setItem("clienteCodCliente", data.id);
           navigate("/perfil-cliente");
         }
       } else {
@@ -51,7 +55,7 @@ export default function Login() {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="page-container">
       <Header />
@@ -59,13 +63,13 @@ export default function Login() {
       <main className="bg-vistas">
         <div className="login-card">
           <h2 className="login-title">Iniciar Sesión</h2>
-          
+
           {loading && (
             <div className="text-center my-4 flex justify-center">
               <AiOutlineLoading className="animate-spin text-red-600 w-8 h-8" />
             </div>
           )}
-          
+
           <form onSubmit={handleSubmit}>
             <div className="input-group">
               <label htmlFor="username" className="input-label">Correo electrónico:</label>
