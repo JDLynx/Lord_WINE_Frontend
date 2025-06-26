@@ -35,15 +35,14 @@ export default function Login() {
         alert(`Bienvenido, ${data.rol}`);
         login({ id: data.id, role: data.rol });
 
-        // ✅ Guardamos el ID según el rol en localStorage
         if (data.rol === "Administrador") {
-          localStorage.setItem("adminCodAdministrador", data.id);
+          localStorage.setItem("adminCodAdministrador", data.adminCodAdministrador);
           navigate("/perfil");
         } else if (data.rol === "Empleado") {
-          localStorage.setItem("empleadoCodEmpleado", data.id);
+          localStorage.setItem("employeeCod", data.emplCodEmpleado);
           navigate("/perfil-empleado");
         } else if (data.rol === "Cliente") {
-          localStorage.setItem("clienteCodCliente", data.id);
+          localStorage.setItem("clienteCodCliente", data.clCodCliente);
           navigate("/perfil-cliente");
         }
       } else {
