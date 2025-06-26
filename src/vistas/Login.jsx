@@ -33,7 +33,7 @@ export default function Login() {
 
       if (response.ok) {
         alert(`Bienvenido, ${data.rol}`);
-        login({ id: data.id, role: data.rol });
+        login({ role: data.rol });
 
         if (data.rol === "Administrador") {
           localStorage.setItem("adminCodAdministrador", data.adminCodAdministrador);
