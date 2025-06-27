@@ -19,8 +19,8 @@ import SobreNosotros from "./vistas/SobreNosotros";
 // Importación de vistas del perfil de administrador
 import PerfilAdministrador from "./vistas/PerfilAdministrador";
 import GestioUsuario from "./vistas/GestioUsuario";
-import EditarPerfil from "./vistas/EditarPerfil";
-import CambiarContraseña from "./components/CambiarContraseña";
+import EditarPerfil from "./vistas/EditarPerfil"; // Este es para el perfil de administrador
+import CambiarContraseña from "./components/CambiarContraseña"; // Este es para el perfil de administrador
 
 // Importación de vistas relacionadas con productos
 import Vinos from "./vistas/Vinos";
@@ -48,6 +48,8 @@ import InventarioTienda from "./vistas/InventarioTienda";
 import ProductosTienda from "./vistas/ProductosTienda";
 import DetallesPedidosEmpleado from "./vistas/DetallesPedidosEmpleado";
 import GestionEmpleadoInventarioTienda from "./vistas/GestionEmpleadoInventarioTienda";
+import EditarPerfilEmpleado from "./vistas/EditarPerfilEmpleado";
+import CambiarContraseñaEmpleado from "./vistas/CambiarContraseñaEmpleado";
 
 // Importación de vistas del perfil de cliente
 import PerfilCliente from "./vistas/PerfilCliente";
@@ -57,6 +59,9 @@ import MisPedidos from "./vistas/MisPedidos";
 import CatalogoProductos from "./vistas/CatalogoProductos";
 import MisServiciosEmpresariales from "./vistas/MisServiciosEmpresariales";
 import MisTiendasFisicas from "./vistas/MisTiendasFisicas";
+import EditarPerfilCliente from "./vistas/EditarPerfilCliente";
+import CambiarContraseñaCliente from "./vistas/CambiarContraseñaCliente";
+
 
 // Componente principal de la aplicación que define las rutas
 function App()
@@ -98,7 +103,6 @@ function App()
       <Route path="/servicios" element={<GestionServicios />} />
       <Route path="/pedidos" element={<GestionPedidos />} />
       <Route path="/gestion-admin-inventario" element={<GestionAdminInventarioGeneral />} />
-      <Route path="/gestion-empleado-inventario" element={<GestionEmpleadoInventarioTienda />} />
       <Route path="/reportes" element={<ReportesVentas />} />
 
       {/* Rutas del perfil de empleado */}
@@ -109,8 +113,8 @@ function App()
       <Route path="/gestion-empleado-inventario-tienda" element={<GestionEmpleadoInventarioTienda />} />
       <Route path="/productos-tienda" element={<ProductosTienda />} />
       <Route path="/detalles-pedidos-empleado" element={<DetallesPedidosEmpleado />} />
-      <Route path="/editar-perfil-empleado" element={<div>Editar Perfil Empleado (Vista Pendiente)</div>} />
-      <Route path="/cambiar-contrasena-empleado" element={<div>Cambiar Contraseña Empleado (Vista Pendiente)</div>} />
+      <Route path="/editar-perfil-empleado" element={<EditarPerfilEmpleado />} />
+      <Route path="/cambiar-contrasena-empleado" element={<CambiarContraseñaEmpleado />} />
 
       {/* Rutas del perfil de cliente */}
       <Route path="/perfil-cliente" element={<PerfilCliente />} />
@@ -120,8 +124,8 @@ function App()
       <Route path="/catalogo-productos" element={<CatalogoProductos />} />
       <Route path="/mis-servicios-empresariales" element={<MisServiciosEmpresariales />} />
       <Route path="/mis-tiendas-fisicas" element={<MisTiendasFisicas />} />
-      <Route path="/editar-perfil-cliente" element={<div>Editar Perfil Cliente (Vista Pendiente)</div>} />
-      <Route path="/cambiar-contrasena-cliente" element={<div>Cambiar Contraseña Cliente (Vista Pendiente)</div>} />
+      <Route path="/editar-perfil-cliente" element={<EditarPerfilCliente />} />
+      <Route path="/cambiar-contrasena-cliente" element={<CambiarContraseñaCliente />} />
     </Routes>
   );
 }
