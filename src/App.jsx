@@ -19,8 +19,8 @@ import SobreNosotros from "./vistas/SobreNosotros";
 // Importación de vistas del perfil de administrador
 import PerfilAdministrador from "./vistas/PerfilAdministrador";
 import GestioUsuario from "./vistas/GestioUsuario";
-import EditarPerfil from "./vistas/EditarPerfil"; // Este es para el perfil de administrador
-import CambiarContraseña from "./components/CambiarContraseña"; // Este es para el perfil de administrador
+import EditarPerfilAdministrador from "./vistas/EditarPerfilAdministrador";
+import CambiarContraseñaAdministrador from "./vistas/CambiarContraseñaAdministrador";
 
 // Importación de vistas relacionadas con productos
 import Vinos from "./vistas/Vinos";
@@ -84,8 +84,8 @@ function App()
       {/* Rutas del perfil de administrador */}
       <Route path="/perfil" element={<PerfilAdministrador />} />
       <Route path="/gestion-usuario" element={<GestioUsuario />} />
-      <Route path="/editar-perfil" element={<EditarPerfil />} />
-      <Route path="/cambiar-contrasena" element={<CambiarContraseña />} />
+      <Route path="/editar-perfil-administrador" element={<EditarPerfilAdministrador />} />
+      <Route path="/cambiar-contrasena-administrador" element={<CambiarContraseñaAdministrador />} />
 
       {/* Rutas de productos por categoría */}
       <Route path="/vinos" element={<Vinos />} />
