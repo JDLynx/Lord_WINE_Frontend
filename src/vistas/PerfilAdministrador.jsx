@@ -47,10 +47,10 @@ export default function PerfilAdministrador() {
   }, []);
 
   const handleEditClick = () => {
-    navigate('/editar-perfil');
+    navigate('/editar-perfil-administrador');
   };
   const handleChangePasswordClick = () => {
-    navigate('/cambiar-contrasena');
+    navigate('/cambiar-contrasena-administrador');
   };
   const handleManagementClick = (path) => {
     navigate(path);

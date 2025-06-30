@@ -39,11 +39,15 @@ export default function PerfilCliente() {
   }, []);
 
   const handleEditClick = () => {
-    navigate('/editar-perfil-cliente');
+    // Asegúrate de que esta ruta coincida con la ruta definida para EditarPerfilCliente en tu router
+    navigate('/editar-perfil-cliente'); 
   };
+
   const handleChangePasswordClick = () => {
-    navigate('/cambiar-contrasena-cliente');
+    // Asegúrate de que esta ruta coincida con la ruta definida para CambiarContraseñaCliente en tu router
+    navigate('/cambiar-contrasena-cliente'); 
   };
+
   const handleManagementClick = (path) => {
     navigate(path);
   };
