@@ -1,28 +1,54 @@
 import React, { createContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
+
+const getUserFromToken = (token) => {
+    try {
+        const decoded = jwtDecode(token);
+        
+        const now = Date.now() / 1000;
+        if (decoded.exp && decoded.exp < now) {
+        console.warn("Token expirado");
+        return null;
+        }
+
+        return {
+        id: decoded.id,
+        role: decoded.rol,
+        };
+    } catch (error) {
+        console.error("Token inválido:", error);
+        return null;
+    }
+};
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const userId = localStorage.getItem("userId");
-        const userType = localStorage.getItem("userType");
-        if (userId && userType) {
-        setUser({ id: userId, role: userType }); 
+        const token = localStorage.getItem("token");
+        if (token) {
+        const userData = getUserFromToken(token);
+        if (userData) {
+            setUser(userData);
+        } else {
+            localStorage.removeItem("token");
+        }
         }
     }, []);
 
-    const login = (userData) => {
+    const login = (token) => {
+        const userData = getUserFromToken(token);
+        if (userData) {
         setUser(userData);
-        localStorage.setItem("userId", userData.id);
-        localStorage.setItem("userType", userData.role);
+        localStorage.setItem("token", token);
+        }
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem("userId");
-        localStorage.removeItem("userType");
+        localStorage.removeItem("token");
     };
 
     return (

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./UserMenu.css"; 
+import "./UserMenu.css";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { AuthContext } from "../context/AuthContext";
 
@@ -17,16 +17,30 @@ function UserMenu() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
+    return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-  }, [menuRef]);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
     setIsOpen(false);
     navigate("/login");
   };
-  
+
+  const goToProfile = () => {
+    if (!user) return;
+
+    if (user.role === "Administrador") {
+      navigate("/perfil");
+    } else if (user.role === "Empleado") {
+      navigate("/perfil-empleado");
+    } else if (user.role === "Cliente") {
+      navigate("/perfil-cliente");
+    }
+    setIsOpen(false);
+  };
+
   return (
     <div className="user-menu-wrapper" ref={menuRef}>
       <button className="user-menu-button" onClick={() => setIsOpen(!isOpen)}>
@@ -34,19 +48,18 @@ function UserMenu() {
       </button>
       {isOpen && (
         <ul className="user-menu-dropdown">
-          {!user && (
+          {!user ? (
             <li>
               <Link className="user-menu-item" to="/login" onClick={() => setIsOpen(false)}>
                 Iniciar sesión
               </Link>
             </li>
-          )}
-          {user && (
+          ) : (
             <>
               <li>
-                <Link className="user-menu-item" to="/perfil" onClick={() => setIsOpen(false)}>
+                <button className="user-menu-item" onClick={goToProfile}>
                   Ver perfil
-                </Link>
+                </button>
               </li>
               <li>
                 <button className="user-menu-item" onClick={handleLogout}>

@@ -1,4 +1,3 @@
-//Restaurando versión
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
@@ -19,6 +18,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -34,22 +34,20 @@ export default function Login() {
 
       if (response.ok) {
         alert(`Bienvenido, ${data.rol}`);
-        login({ role: data.rol });
+        login(data.token);
 
         if (data.rol === "Administrador") {
-          localStorage.setItem("adminCodAdministrador", data.adminCodAdministrador);
           navigate("/perfil");
         } else if (data.rol === "Empleado") {
-          localStorage.setItem("employeeCod", data.emplCodEmpleado);
           navigate("/perfil-empleado");
         } else if (data.rol === "Cliente") {
-          localStorage.setItem("clienteCodCliente", data.clCodCliente);
           navigate("/perfil-cliente");
         }
       } else {
         setError(data.error || "Usuario o contraseña incorrectos.");
       }
     } catch (error) {
+      console.error("Error en login:", error);
       setError("Error al conectar con el servidor.");
     } finally {
       setLoading(false);
