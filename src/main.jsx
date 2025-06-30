@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import "./index.css";
 import App from "./App.jsx";
-import { AuthProvider } from "./context/AuthContext"; // <-- IMPORTA AQUí
+import { AuthProvider } from "./context/AuthContext";
 
 console.log("El archivo main.jsx se está ejecutando correctamente");
 

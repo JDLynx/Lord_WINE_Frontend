@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react' //Import
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
