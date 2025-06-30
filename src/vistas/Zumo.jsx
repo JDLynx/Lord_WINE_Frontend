@@ -1,40 +1,35 @@
-import React from 'react'
+import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
+import TarjetaProducto from '../components/TarjetaProducto';
+import datosProductos from '../data/DatosProductos';
 import "./Zumo.css";
 
-function Zumo()
-{
-    return(
-        <>
-            <div className="page-container">
+function Zumo() {
+  // Filtrar los productos para esta categoría
+  const zumoProductos = datosProductos.filter(producto => producto.category === 'zumo');
 
-            <Header />
-            <BarraProductos />
+  return (
+    <>
+      <div className="page-container">
+        <Header />
+        <BarraProductos />
 
-            <main className="bg-vistas-zumo">
+        <main className="bg-vistas-zumo">
+          <h2 className="titulo-zumo">Zumo</h2>
 
-                <h2 className="titulo-zumo">Zumo</h2>
+          <div className="productos-container-zumo">
+            {zumoProductos.map(producto => (
+              <TarjetaProducto key={producto.id} producto={producto} sufijoClaseCategoria="zumo" />
+            ))}
+          </div>
+        </main>
 
-                <div className="productos-container-zumo">
-
-                    <div className="product-card-modern-zumo">
-                        <img src="/img/Zumo De Uva.jpg" alt="Zumo De Uva" className="product-image-zumo" />
-                        <h5 className="nombre-producto-zumo">Zumo Integral de Uva</h5>
-                        <p className="detalle-zumo">Presentación: Caja x 24 unds<br />Botella: 250 ml</p>
-                        <p className="price-zumo">Precio Caja: $179.990<br />Precio Detal: $10.000</p>
-                    </div>
-
-                </div>
-
-            </main>
-
-            <Footer />
-
-            </div>
-        </>
-    )
+        <Footer />
+      </div>
+    </>
+  );
 }
 
-export default Zumo
+export default Zumo;
