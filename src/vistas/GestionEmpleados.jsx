@@ -1,58 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import BarraProductos from "../components/BarraProductos";
-import { PlusCircle, Edit, Trash2, Save, XCircle, User, Briefcase, MapPin } from 'lucide-react';
+import BarraProductos from '../components/BarraProductos';
+import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 
 export default function GestionEmpleados() {
   const [employees, setEmployees] = useState([]);
-  const [stores, setStores] = useState([]); // For assigning employees to stores
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState(null);
   const [formErrors, setFormErrors] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Simulate fetching employees and stores
-    const simulatedEmployees = [
-      { id: 'EMP001', nombre: 'Ana Gómez', cargo: 'Vendedor', telefono: '555-1111', tiendaAsignada: 'Tienda Centro' },
-      { id: 'EMP002', nombre: 'Roberto Soto', cargo: 'Logística', telefono: '555-2222', tiendaAsignada: 'Tienda Norte' },
-      { id: 'EMP003', nombre: 'Sofía Díaz', cargo: 'Inventario', telefono: '555-3333', tiendaAsignada: 'Tienda Sur' },
-    ];
-    const simulatedStores = ['Tienda Centro', 'Tienda Norte', 'Tienda Sur']; // Simulate store names for assignment
-
-    setEmployees(simulatedEmployees);
-    setStores(simulatedStores);
+    fetchEmpleados();
   }, []);
+
+  const fetchEmpleados = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/empleados');
+      const data = await res.json();
+      setEmployees(data);
+    } catch (error) {
+      console.error('Error al cargar empleados:', error);
+    }
+  };
 
   const validateForm = (data) => {
     const errors = {};
-    if (!data.nombre || data.nombre.trim() === '') errors.nombre = 'El nombre es obligatorio.';
-    if (!data.cargo || data.cargo.trim() === '') errors.cargo = 'El cargo es obligatorio.';
-    if (!data.telefono || data.telefono.trim() === '') errors.telefono = 'El teléfono es obligatorio.';
-    // tiendaAsignada can be null for some employees initially
+    if (!data.emplNombre) errors.emplNombre = 'El nombre es obligatorio.';
+    if (!data.emplIdEmpleado) errors.emplIdEmpleado = 'El documento es obligatorio.';
+    if (!data.emplDireccion) errors.emplDireccion = 'La dirección es obligatoria.';
+    if (!data.emplTelefono) errors.emplTelefono = 'El teléfono es obligatorio.';
+    if (!data.emplCorreoElectronico) {
+      errors.emplCorreoElectronico = 'El correo es obligatorio.';
+    } else if (!/\S+@\S+\.\S+/.test(data.emplCorreoElectronico)) {
+      errors.emplCorreoElectronico = 'Correo inválido.';
+    }
     return errors;
   };
 
   const handleCreateNew = () => {
-    setCurrentEmployee({ id: '', nombre: '', cargo: '', telefono: '', tiendaAsignada: '' });
-    setIsModalOpen(true);
+    setCurrentEmployee({
+      emplIdEmpleado: '',
+      emplNombre: '',
+      emplDireccion: '',
+      emplTelefono: '',
+      emplCorreoElectronico: '',
+      emplContrasena: '',
+      adminCodAdministrador: 1,
+    });
     setFormErrors({});
+    setIsModalOpen(true);
   };
 
   const handleEdit = (employee) => {
     setCurrentEmployee({ ...employee });
-    setIsModalOpen(true);
     setFormErrors({});
+    setIsModalOpen(true);
   };
 
-  const handleDelete = (employeeId) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar al empleado con ID: ${employeeId}?`)) {
-      setEmployees(employees.filter(emp => emp.id !== employeeId));
-      alert('Empleado eliminado (simulado).');
+  const handleDelete = async (id) => {
+    if (window.confirm('¿Seguro que deseas eliminar este empleado?')) {
+      try {
+        await fetch(`http://localhost:3000/api/empleados/${id}`, {
+          method: 'DELETE',
+        });
+        fetchEmpleados();
+        alert('Empleado eliminado correctamente.');
+      } catch (error) {
+        console.error('Error al eliminar:', error);
+        alert('Hubo un error al eliminar el empleado.');
+      }
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validateForm(currentEmployee);
     if (Object.keys(errors).length > 0) {
@@ -60,19 +82,32 @@ export default function GestionEmpleados() {
       return;
     }
 
-    if (currentEmployee.id) {
-      // Update existing employee
-      setEmployees(employees.map(emp =>
-        emp.id === currentEmployee.id ? currentEmployee : emp
-      ));
-      alert('Empleado actualizado (simulado).');
-    } else {
-      // Create new employee
-      const newId = `EMP${String(employees.length + 1).padStart(3, '0')}`;
-      setEmployees([...employees, { ...currentEmployee, id: newId }]);
-      alert('Nuevo empleado creado (simulado).');
+    try {
+      const method = currentEmployee.emplCodEmpleado ? 'PUT' : 'POST';
+      const url = currentEmployee.emplCodEmpleado
+        ? `http://localhost:3000/api/empleados/${currentEmployee.emplCodEmpleado}`
+        : 'http://localhost:3000/api/empleados';
+
+      const body = {
+        ...currentEmployee,
+        emplContrasena: currentEmployee.emplContrasena || 'cambiame123',
+        adminCodAdministrador: currentEmployee.adminCodAdministrador || 1,
+      };
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) throw new Error('Error en la solicitud');
+      alert(currentEmployee.emplCodEmpleado ? 'Empleado actualizado' : 'Empleado creado');
+      fetchEmpleados();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error al guardar empleado:', error);
+      alert('Error al guardar el empleado.');
     }
-    setIsModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -81,162 +116,145 @@ export default function GestionEmpleados() {
     setFormErrors(prev => ({ ...prev, [name]: undefined }));
   };
 
+  const filtered = employees.filter(emp =>
+    emp.emplNombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <>
-      <div className="page-container">
-        <Header />
-        <BarraProductos />
-        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Gestión de Empleados</h1>
-            <p className="text-center text-gray-600 text-lg mb-8">
-              Crea, edita y asigna empleados a tiendas físicas e inventarios.
-            </p>
+    <div className="page-container">
+      <Header />
+      <BarraProductos />
+      <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
+        <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+          <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">
+            Gestión de Empleados
+          </h1>
 
-            <div className="flex justify-end mb-6">
-              <button
-                onClick={handleCreateNew}
-                className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md transition-colors duration-200 flex items-center space-x-2"
-              >
-                <PlusCircle size={20} />
-                <span>Nuevo Empleado</span>
-              </button>
-            </div>
-
-            {employees.length > 0 ? (
-              <div className="overflow-x-auto rounded-lg shadow-md">
-                <table className="min-w-full bg-white">
-                  <thead className="bg-gray-100 border-b border-gray-200">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Nombre</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Cargo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Teléfono</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Tienda Asignada</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {employees.map((employee) => (
-                      <tr key={employee.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.nombre}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.cargo}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{employee.telefono}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                          {employee.tiendaAsignada || 'No Asignada'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex justify-center space-x-3">
-                            <button
-                              onClick={() => handleEdit(employee)}
-                              className="text-blue-600 hover:text-blue-900 transition-colors duration-200"
-                              title="Editar"
-                            >
-                              <Edit size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(employee.id)}
-                              className="text-red-600 hover:text-red-900 transition-colors duration-200"
-                              title="Eliminar"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-center text-gray-500 mt-8">No hay empleados registrados.</p>
-            )}
-
-            {/* Modal para Crear/Editar Empleado */}
-            {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-                <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                    {currentEmployee.id ? 'Editar Empleado' : 'Crear Nuevo Empleado'}
-                  </h2>
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                      <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
-                      <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        value={currentEmployee?.nombre || ''}
-                        onChange={handleChange}
-                        className={`shadow appearance-none border ${formErrors.nombre ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                      />
-                      {formErrors.nombre && <p className="text-red-500 text-xs italic mt-1">{formErrors.nombre}</p>}
-                    </div>
-                    <div className="mb-4">
-                      <label htmlFor="cargo" className="block text-gray-700 text-sm font-bold mb-2">Cargo:</label>
-                      <input
-                        type="text"
-                        id="cargo"
-                        name="cargo"
-                        value={currentEmployee?.cargo || ''}
-                        onChange={handleChange}
-                        className={`shadow appearance-none border ${formErrors.cargo ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                      />
-                      {formErrors.cargo && <p className="text-red-500 text-xs italic mt-1">{formErrors.cargo}</p>}
-                    </div>
-                    <div className="mb-4">
-                      <label htmlFor="telefono" className="block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
-                      <input
-                        type="text"
-                        id="telefono"
-                        name="telefono"
-                        value={currentEmployee?.telefono || ''}
-                        onChange={handleChange}
-                        className={`shadow appearance-none border ${formErrors.telefono ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                      />
-                      {formErrors.telefono && <p className="text-red-500 text-xs italic mt-1">{formErrors.telefono}</p>}
-                    </div>
-                    <div className="mb-6">
-                      <label htmlFor="tiendaAsignada" className="block text-gray-700 text-sm font-bold mb-2">Tienda Asignada:</label>
-                      <select
-                        id="tiendaAsignada"
-                        name="tiendaAsignada"
-                        value={currentEmployee?.tiendaAsignada || ''}
-                        onChange={handleChange}
-                        className="shadow appearance-none border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      >
-                        <option value="">Sin Asignar</option>
-                        {stores.map(store => (
-                          <option key={store} value={store}>{store}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex justify-end space-x-4">
-                      <button
-                        type="button"
-                        onClick={() => setIsModalOpen(false)}
-                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
-                      >
-                        <XCircle size={20} />
-                        <span>Cancelar</span>
-                      </button>
-                      <button
-                        type="submit"
-                        className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
-                      >
-                        <Save size={20} />
-                        <span>{currentEmployee.id ? 'Guardar Cambios' : 'Crear'}</span>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
+          <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6 gap-4">
+            <input
+              type="text"
+              placeholder="Buscar por nombre..."
+              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+            <button
+              onClick={handleCreateNew}
+              className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2"
+            >
+              <PlusCircle size={20} />
+              <span>Nuevo Empleado</span>
+            </button>
           </div>
-        </main>
-        <Footer />
-      </div>
-    </>
+
+          <div className="overflow-auto max-h-[60vh] shadow-md rounded">
+            <table className="min-w-full bg-white text-black">
+              <thead className="bg-gray-100 sticky top-0">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">ID</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Nombre</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Correo</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Teléfono</th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-600">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(emp => (
+                  <tr key={emp.emplCodEmpleado} className="border-b last:border-b-0">
+                    <td className="px-6 py-4 text-black text-left">{emp.emplIdEmpleado}</td>
+                    <td className="px-6 py-4 text-black text-left">{emp.emplNombre}</td>
+                    <td className="px-6 py-4 text-black text-left">{emp.emplCorreoElectronico}</td>
+                    <td className="px-6 py-4 text-black text-left">{emp.emplTelefono}</td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex justify-center gap-4">
+                        <button onClick={() => handleEdit(emp)} className="text-blue-600 hover:text-blue-800">
+                          <Edit size={18} />
+                        </button>
+                        <button onClick={() => handleDelete(emp.emplCodEmpleado)} className="text-red-600 hover:text-red-800">
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {isModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
+                <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+                  {currentEmployee.emplCodEmpleado ? 'Editar Empleado' : 'Nuevo Empleado'}
+                </h2>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    type="text"
+                    name="emplIdEmpleado"
+                    placeholder="ID / Documento"
+                    value={currentEmployee.emplIdEmpleado}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.emplIdEmpleado && <p className="text-red-500 text-sm">{formErrors.emplIdEmpleado}</p>}
+
+                  <input
+                    type="text"
+                    name="emplNombre"
+                    placeholder="Nombre"
+                    value={currentEmployee.emplNombre}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.emplNombre && <p className="text-red-500 text-sm">{formErrors.emplNombre}</p>}
+
+                  <input
+                    type="text"
+                    name="emplDireccion"
+                    placeholder="Dirección"
+                    value={currentEmployee.emplDireccion}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.emplDireccion && <p className="text-red-500 text-sm">{formErrors.emplDireccion}</p>}
+
+                  <input
+                    type="text"
+                    name="emplTelefono"
+                    placeholder="Teléfono"
+                    value={currentEmployee.emplTelefono}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.emplTelefono && <p className="text-red-500 text-sm">{formErrors.emplTelefono}</p>}
+
+                  <input
+                    type="email"
+                    name="emplCorreoElectronico"
+                    placeholder="Correo electrónico"
+                    value={currentEmployee.emplCorreoElectronico}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.emplCorreoElectronico && <p className="text-red-500 text-sm">{formErrors.emplCorreoElectronico}</p>}
+
+                  <div className="flex justify-end gap-4 mt-4">
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+                      <XCircle size={18} className="inline mr-1" /> Cancelar
+                    </button>
+                    <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
+                      <Save size={18} className="inline mr-1" />
+                      {currentEmployee.emplCodEmpleado ? 'Guardar' : 'Crear'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 }
