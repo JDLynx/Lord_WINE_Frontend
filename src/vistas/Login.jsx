@@ -43,14 +43,7 @@ export default function Login() {
       if (response.ok) {
         alert(`Bienvenido, ${data.rol}`);
         login(data.token);
-
-        if (data.rol === "Administrador") {
-          navigate("/perfil");
-        } else if (data.rol === "Empleado") {
-          navigate("/perfil-empleado");
-        } else if (data.rol === "Cliente") {
-          navigate("/perfil-cliente");
-        }
+        navigate("/perfil");
       } else {
         setError(data.error || "Usuario o contraseña incorrectos.");
       }

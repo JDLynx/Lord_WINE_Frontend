@@ -15,6 +15,9 @@ import Contacto from "./vistas/Contacto";
 import ServiciosEmpresariales from "./vistas/ServiciosEmpresariales";
 import SobreNosotros from "./vistas/SobreNosotros";
 
+// Perfil redirección por rol (nuevo)
+import Perfil from "./vistas/Perfil";
+
 // Perfil administrador
 import PerfilAdministrador from "./vistas/PerfilAdministrador";
 import GestioUsuario from "./vistas/GestioUsuario";
@@ -78,8 +81,11 @@ function App() {
         <Route path="/servicios-empresariales" element={<ServiciosEmpresariales />} />
         <Route path="/sobre-nosotros" element={<SobreNosotros />} />
 
+        {/* Ruta de redirección por rol */}
+        <Route path="/perfil" element={<Perfil />} />
+
         {/* Admin */}
-        <Route path="/perfil" element={<PerfilAdministrador />} />
+        <Route path="/perfil-admin" element={<PerfilAdministrador />} />
         <Route path="/gestion-usuario" element={<GestioUsuario />} />
         <Route path="/editar-perfil-administrador" element={<EditarPerfilAdministrador />} />
         <Route path="/cambiar-contrasena-administrador" element={<CambiarContraseñaAdministrador />} />

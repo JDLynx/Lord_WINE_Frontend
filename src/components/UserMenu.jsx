@@ -31,13 +31,20 @@ function UserMenu() {
   const goToProfile = () => {
     if (!user) return;
 
-    if (user.role === "Administrador") {
-      navigate("/perfil");
-    } else if (user.role === "Empleado") {
-      navigate("/perfil-empleado");
-    } else if (user.role === "Cliente") {
-      navigate("/perfil-cliente");
+    switch (user.role) {
+      case "Administrador":
+        navigate("/perfil-admin");
+        break;
+      case "Empleado":
+        navigate("/perfil-empleado");
+        break;
+      case "Cliente":
+        navigate("/perfil-cliente");
+        break;
+      default:
+        navigate("/login");
     }
+
     setIsOpen(false);
   };
 
@@ -50,7 +57,11 @@ function UserMenu() {
         <ul className="user-menu-dropdown">
           {!user ? (
             <li>
-              <Link className="user-menu-item" to="/login" onClick={() => setIsOpen(false)}>
+              <Link
+                className="user-menu-item"
+                to="/login"
+                onClick={() => setIsOpen(false)}
+              >
                 Iniciar sesión
               </Link>
             </li>
