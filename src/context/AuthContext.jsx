@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 const getUserFromToken = (token) => {
     try {
         const decoded = jwtDecode(token);
-        
+
         const now = Date.now() / 1000;
         if (decoded.exp && decoded.exp < now) {
         console.warn("Token expirado");
@@ -49,6 +49,10 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setUser(null);
         localStorage.removeItem("token");
+
+        localStorage.removeItem("adminCodAdministrador");
+        localStorage.removeItem("employeeCod");
+        localStorage.removeItem("clienteCodCliente");
     };
 
     return (
