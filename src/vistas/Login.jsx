@@ -43,7 +43,17 @@ export default function Login() {
       if (response.ok) {
         alert(`Bienvenido, ${data.rol}`);
         login(data.token);
-        navigate("/perfil");
+
+        if (data.rol === "Administrador") {
+          localStorage.setItem("adminCodAdministrador", data.id);
+          navigate("/perfil");
+        } else if (data.rol === "Cliente") {
+          localStorage.setItem("clienteCodCliente", data.id);
+          navigate("/perfil");
+        } else if (data.rol === "Empleado") {
+          localStorage.setItem("employeeCod", data.id);
+          navigate("/perfil-empleado");
+        }
       } else {
         setError(data.error || "Usuario o contraseña incorrectos.");
       }
