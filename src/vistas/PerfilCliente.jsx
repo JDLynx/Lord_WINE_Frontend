@@ -43,7 +43,7 @@ export default function PerfilCliente() {
 
   const managementOptions = [
     { name: 'Su Perfil', description: 'Ver y actualizar sus datos básicos', icon: User, path: '/mi-perfil' },
-    { name: 'Carrito de Compras', description: 'Crear y administrar productos en su carrito', icon: ShoppingCart, path: '/mi-carrito' },
+    { name: 'Carrito de Compras', description: 'Crear y administrar productos en su carrito', icon: ShoppingCart, path: '/carrito-compras' },
     { name: 'Pedidos', description: 'Ver historial de pedidos, estado y detalles', icon: ClipboardList, path: '/mis-pedidos' },
     { name: 'Productos y Categorías', description: 'Ver catálogo general de productos', icon: Package, path: '/catalogo-productos' },
     { name: 'Servicios Empresariales', description: 'Ver servicios disponibles', icon: Briefcase, path: '/mis-servicios-empresariales' },
