@@ -151,21 +151,25 @@ export default function GestionEmpleados() {
             <table className="min-w-full bg-white text-black">
               <thead className="bg-gray-100 sticky top-0">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Nombre</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Correo</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Teléfono</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-600">Acciones</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">ID</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Identificación</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Nombre</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Dirección</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Correo electrónico</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Teléfono</th>
+                  <th className="px-4 py-2 text-center text-xs font-medium text-gray-600">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(emp => (
-                  <tr key={emp.emplCodEmpleado} className="border-b last:border-b-0">
-                    <td className="px-6 py-4 text-black text-left">{emp.emplIdEmpleado}</td>
-                    <td className="px-6 py-4 text-black text-left">{emp.emplNombre}</td>
-                    <td className="px-6 py-4 text-black text-left">{emp.emplCorreoElectronico}</td>
-                    <td className="px-6 py-4 text-black text-left">{emp.emplTelefono}</td>
-                    <td className="px-6 py-4 text-center">
+                  <tr key={emp.emplCodEmpleado} className="border-b">
+                    <td className="px-4 py-2 text-left">{emp.emplCodEmpleado}</td>
+                    <td className="px-4 py-2 text-left">{emp.emplIdEmpleado}</td>
+                    <td className="px-4 py-2 text-left whitespace-nowrap">{emp.emplNombre}</td>
+                    <td className="px-4 py-2 text-left break-words max-w-[250px] whitespace-normal">{emp.emplDireccion}</td>
+                    <td className="px-4 py-2 text-left">{emp.emplCorreoElectronico}</td>
+                    <td className="px-4 py-2 text-left">{emp.emplTelefono}</td>
+                    <td className="px-4 py-2 text-center">
                       <div className="flex justify-center gap-4">
                         <button onClick={() => handleEdit(emp)} className="text-blue-600 hover:text-blue-800">
                           <Edit size={18} />
@@ -188,54 +192,24 @@ export default function GestionEmpleados() {
                   {currentEmployee.emplCodEmpleado ? 'Editar Empleado' : 'Nuevo Empleado'}
                 </h2>
                 <form onSubmit={handleSubmit}>
-                  <input
-                    type="text"
-                    name="emplIdEmpleado"
-                    placeholder="ID / Documento"
-                    value={currentEmployee.emplIdEmpleado}
-                    onChange={handleChange}
-                    className="w-full mb-3 border px-3 py-2 rounded text-black"
-                  />
+                  <input type="text" name="emplIdEmpleado" placeholder="ID / Documento" value={currentEmployee.emplIdEmpleado}
+                    onChange={handleChange} className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.emplIdEmpleado && <p className="text-red-500 text-sm">{formErrors.emplIdEmpleado}</p>}
 
-                  <input
-                    type="text"
-                    name="emplNombre"
-                    placeholder="Nombre"
-                    value={currentEmployee.emplNombre}
-                    onChange={handleChange}
-                    className="w-full mb-3 border px-3 py-2 rounded text-black"
-                  />
+                  <input type="text" name="emplNombre" placeholder="Nombre" value={currentEmployee.emplNombre}
+                    onChange={handleChange} className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.emplNombre && <p className="text-red-500 text-sm">{formErrors.emplNombre}</p>}
 
-                  <input
-                    type="text"
-                    name="emplDireccion"
-                    placeholder="Dirección"
-                    value={currentEmployee.emplDireccion}
-                    onChange={handleChange}
-                    className="w-full mb-3 border px-3 py-2 rounded text-black"
-                  />
+                  <input type="text" name="emplDireccion" placeholder="Dirección" value={currentEmployee.emplDireccion}
+                    onChange={handleChange} className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.emplDireccion && <p className="text-red-500 text-sm">{formErrors.emplDireccion}</p>}
 
-                  <input
-                    type="text"
-                    name="emplTelefono"
-                    placeholder="Teléfono"
-                    value={currentEmployee.emplTelefono}
-                    onChange={handleChange}
-                    className="w-full mb-3 border px-3 py-2 rounded text-black"
-                  />
+                  <input type="text" name="emplTelefono" placeholder="Teléfono" value={currentEmployee.emplTelefono}
+                    onChange={handleChange} className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.emplTelefono && <p className="text-red-500 text-sm">{formErrors.emplTelefono}</p>}
 
-                  <input
-                    type="email"
-                    name="emplCorreoElectronico"
-                    placeholder="Correo electrónico"
-                    value={currentEmployee.emplCorreoElectronico}
-                    onChange={handleChange}
-                    className="w-full mb-3 border px-3 py-2 rounded text-black"
-                  />
+                  <input type="email" name="emplCorreoElectronico" placeholder="Correo electrónico" value={currentEmployee.emplCorreoElectronico}
+                    onChange={handleChange} className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.emplCorreoElectronico && <p className="text-red-500 text-sm">{formErrors.emplCorreoElectronico}</p>}
 
                   <div className="flex justify-end gap-4 mt-4">
@@ -243,15 +217,13 @@ export default function GestionEmpleados() {
                       <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>
                     <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
-                      <Save size={18} className="inline mr-1" />
-                      {currentEmployee.emplCodEmpleado ? 'Guardar' : 'Crear'}
+                      <Save size={18} className="inline mr-1" /> {currentEmployee.emplCodEmpleado ? 'Guardar' : 'Crear'}
                     </button>
                   </div>
                 </form>
               </div>
             </div>
           )}
-
         </div>
       </main>
       <Footer />

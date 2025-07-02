@@ -56,7 +56,7 @@ export default function GestionAdministradores() {
   const handleEdit = (admin) => {
     setCurrentAdmin({
       ...admin,
-      rol: '', // Mapear el rol si lo tienes
+      rol: '',
     });
     setFormErrors({});
     setIsModalOpen(true);
@@ -102,9 +102,7 @@ export default function GestionAdministradores() {
 
       const response = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
@@ -154,35 +152,37 @@ export default function GestionAdministradores() {
             </button>
           </div>
 
-          {/* Scroll horizontal y vertical */}
+          {/* Tabla scrolleable */}
           <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg border">
             <table className="min-w-full bg-white">
               <thead className="bg-gray-100 sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Nombre</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">Correo</th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-600">Acciones</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">ID</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Identificación</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Nombres</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Dirección</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Teléfono</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Correo electrónico</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-600">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredAdmins.map((admin) => (
-                  <tr key={admin.adminCodAdministrador} className="border-b">
-                    <td className="px-6 py-4 text-black text-left">{admin.adminCodAdministrador}</td>
-                    <td className="px-6 py-4 text-black text-left">{admin.adminNombre}</td>
-                    <td className="px-6 py-4 text-black text-left">{admin.adminCorreoElectronico}</td>
-                    <td className="px-6 py-4 text-center">
+                  <tr key={admin.adminCodAdministrador} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3 text-black text-left">{admin.adminCodAdministrador}</td>
+                    <td className="px-4 py-3 text-black text-left">{admin.adminIdAdministrador}</td>
+                    <td className="px-4 py-3 text-black text-left whitespace-nowrap">{admin.adminNombre}</td>
+                    <td className="px-4 py-3 text-black text-left whitespace-normal break-words max-w-xs">
+                      {admin.adminDireccion}
+                    </td>
+                    <td className="px-4 py-3 text-black text-left">{admin.adminTelefono}</td>
+                    <td className="px-4 py-3 text-black text-left">{admin.adminCorreoElectronico}</td>
+                    <td className="px-4 py-3 text-center">
                       <div className="flex justify-center gap-4">
-                        <button
-                          onClick={() => handleEdit(admin)}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
+                        <button onClick={() => handleEdit(admin)} className="text-blue-600 hover:text-blue-800">
                           <Edit size={18} />
                         </button>
-                        <button
-                          onClick={() => handleDelete(admin.adminCodAdministrador)}
-                          className="text-red-600 hover:text-red-800"
-                        >
+                        <button onClick={() => handleDelete(admin.adminCodAdministrador)} className="text-red-600 hover:text-red-800">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -201,32 +201,25 @@ export default function GestionAdministradores() {
                   {currentAdmin.adminCodAdministrador ? 'Editar' : 'Nuevo'} Administrador
                 </h2>
                 <form onSubmit={handleSubmit}>
-                  <input
-                    type="text"
-                    name="adminNombre"
-                    placeholder="Nombre"
-                    value={currentAdmin.adminNombre}
-                    onChange={handleChange}
-                    className="w-full mb-3 border px-3 py-2 rounded text-black"
-                  />
+                  <input type="text" name="adminNombre" placeholder="Nombre" value={currentAdmin.adminNombre} onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.adminNombre && <p className="text-red-500 text-sm">{formErrors.adminNombre}</p>}
 
-                  <input
-                    type="email"
-                    name="adminCorreoElectronico"
-                    placeholder="Correo"
-                    value={currentAdmin.adminCorreoElectronico}
-                    onChange={handleChange}
-                    className="w-full mb-3 border px-3 py-2 rounded text-black"
-                  />
+                  <input type="text" name="adminIdAdministrador" placeholder="Identificación" value={currentAdmin.adminIdAdministrador} onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black" />
+
+                  <input type="text" name="adminDireccion" placeholder="Dirección" value={currentAdmin.adminDireccion} onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black" />
+
+                  <input type="text" name="adminTelefono" placeholder="Teléfono" value={currentAdmin.adminTelefono} onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black" />
+
+                  <input type="email" name="adminCorreoElectronico" placeholder="Correo" value={currentAdmin.adminCorreoElectronico} onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.adminCorreoElectronico && <p className="text-red-500 text-sm">{formErrors.adminCorreoElectronico}</p>}
 
-                  <select
-                    name="rol"
-                    value={currentAdmin.rol}
-                    onChange={handleChange}
-                    className="w-full mb-4 border px-3 py-2 rounded text-black"
-                  >
+                  <select name="rol" value={currentAdmin.rol} onChange={handleChange}
+                    className="w-full mb-4 border px-3 py-2 rounded text-black">
                     <option value="">Selecciona un rol</option>
                     <option value="SuperAdmin">Super Administrador</option>
                     <option value="AdminInventario">Admin Inventario</option>
@@ -236,20 +229,11 @@ export default function GestionAdministradores() {
                   {formErrors.rol && <p className="text-red-500 text-sm">{formErrors.rol}</p>}
 
                   <div className="flex justify-end gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setIsModalOpen(false)}
-                      className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-                    >
-                      <XCircle size={18} className="inline mr-1" />
-                      Cancelar
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+                      <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>
-                    <button
-                      type="submit"
-                      className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800"
-                    >
-                      <Save size={18} className="inline mr-1" />
-                      {currentAdmin.adminCodAdministrador ? 'Guardar' : 'Crear'}
+                    <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
+                      <Save size={18} className="inline mr-1" /> {currentAdmin.adminCodAdministrador ? 'Guardar' : 'Crear'}
                     </button>
                   </div>
                 </form>
