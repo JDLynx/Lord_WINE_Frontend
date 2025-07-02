@@ -36,6 +36,13 @@ export default function GestionEmpleados() {
     } else if (!/\S+@\S+\.\S+/.test(data.emplCorreoElectronico)) {
       errors.emplCorreoElectronico = 'Correo inválido.';
     }
+
+    if (!data.emplCodEmpleado && !data.emplContrasena?.trim()) {
+      errors.emplContrasena = 'La contraseña es obligatoria.';
+    } else if (!data.emplCodEmpleado && data.emplContrasena.length < 6) {
+      errors.emplContrasena = 'La contraseña debe tener al menos 6 caracteres.';
+    }
+
     return errors;
   };
 
@@ -54,7 +61,7 @@ export default function GestionEmpleados() {
   };
 
   const handleEdit = (employee) => {
-    setCurrentEmployee({ ...employee });
+    setCurrentEmployee({ ...employee, emplContrasena: '' });
     setFormErrors({});
     setIsModalOpen(true);
   };
@@ -90,7 +97,7 @@ export default function GestionEmpleados() {
 
       const body = {
         ...currentEmployee,
-        emplContrasena: currentEmployee.emplContrasena || 'cambiame123',
+        ...(method === 'POST' && { emplContrasena: currentEmployee.emplContrasena?.trim() }),
         adminCodAdministrador: currentEmployee.adminCodAdministrador || 1,
       };
 
@@ -185,7 +192,7 @@ export default function GestionEmpleados() {
             </table>
           </div>
 
-          {/* Modal*/}
+          {/* Modal */}
           {isModalOpen && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -213,6 +220,16 @@ export default function GestionEmpleados() {
                   <input type="email" name="emplCorreoElectronico" placeholder="Correo electrónico" value={currentEmployee.emplCorreoElectronico}
                     onChange={handleChange} className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.emplCorreoElectronico && <p className="text-red-500 text-sm">{formErrors.emplCorreoElectronico}</p>}
+
+                  {!currentEmployee.emplCodEmpleado && (
+                    <>
+                      <input type="password" name="emplContrasena" placeholder="Contraseña"
+                        value={currentEmployee.emplContrasena}
+                        onChange={handleChange}
+                        className="w-full mb-3 border px-3 py-2 rounded text-black" />
+                      {formErrors.emplContrasena && <p className="text-red-500 text-sm">{formErrors.emplContrasena}</p>}
+                    </>
+                  )}
 
                   <div className="flex justify-end gap-4 mt-4">
                     <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-gray-800">
