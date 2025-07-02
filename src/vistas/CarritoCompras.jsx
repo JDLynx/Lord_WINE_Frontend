@@ -72,7 +72,6 @@ export default function CarritoCompras() {
                         <p className="text-gray-600 text-sm">{item.presentation}</p>
                       </div>
                       <div className="flex items-center justify-end md:justify-start">
-                        {/* Precio total por item en azul (mantengo el color actual) */}
                         <span className="text-lg font-bold text-blue-600 mr-4">${(item.price * item.quantity).toLocaleString('es-CO')}</span>
                         <input
                           type="number"
@@ -81,7 +80,6 @@ export default function CarritoCompras() {
                           onChange={(e) => handleActualizarCantidad(item.id, e)}
                           className="w-20 text-center border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                         />
-                        {/* Botón de eliminar item en rojo */}
                         <button
                           onClick={() => eliminarDelCarrito(item.id)}
                           className="ml-4 p-2 text-red-500 hover:text-red-700 transition duration-200 rounded-full hover:bg-red-100"
@@ -93,7 +91,6 @@ export default function CarritoCompras() {
                     </div>
                   </div>
                 ))}
-                {/* Botón para vaciar todo el carrito en rojo */}
                 <div className="flex justify-end mt-6">
                     <button
                         onClick={vaciarCarrito}
@@ -115,13 +112,11 @@ export default function CarritoCompras() {
                     <span>Envío:</span>
                     <span className="font-semibold">Gratis</span>
                   </div>
-                  {/* Total final en rojo */}
                   <div className="border-t border-gray-300 pt-4 flex justify-between items-center text-xl font-bold text-gray-900">
                     <span>Total:</span>
                     <span className="text-red-700">${total.toLocaleString('es-CO')}</span>
                   </div>
                 </div>
-                {/* Botón "Proceder al Pago" en verde (mantengo el color ya que es una acción de éxito) */}
                 <button
                   onClick={handleProcederPago}
                   className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full shadow-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -136,12 +131,11 @@ export default function CarritoCompras() {
 
       {/* Modal de Pago */}
       {mostrarModalPago && (
-        <div className="fixed inset-0 flex justify-center items-center z-50"> {/* Contenedor principal del modal */}
-          {/* Overlay con desenfoque, similar al de tu ejemplo */}
+        <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
 
           {/* Contenido del modal */}
-          <div className="bg-white rounded-lg shadow-xl p-8 max-w-lg w-full relative z-10"> {/* Añadido z-10 para asegurar que el contenido esté sobre el overlay */}
+          <div className="bg-white rounded-lg shadow-xl p-8 max-w-lg w-full relative z-10">
             <button
               onClick={() => setMostrarModalPago(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition duration-200"
