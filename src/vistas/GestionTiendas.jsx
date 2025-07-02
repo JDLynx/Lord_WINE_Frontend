@@ -2,38 +2,69 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-import { PlusCircle, Edit, Trash2, Save, XCircle, Store, MapPin, Phone } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 
 export default function GestionTiendas() {
   const [tiendas, setTiendas] = useState([]);
+  const [filteredTiendas, setFilteredTiendas] = useState([]);
+  const [admins, setAdmins] = useState({});
+  const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTienda, setCurrentTienda] = useState(null);
   const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
-    // Simular carga de datos
-    const simulatedData = [
-      { id: 'TIEN001', nombre: 'Tienda Centro', direccion: 'Calle Falsa 123, Popayán', telefono: '555-1234' },
-      { id: 'TIEN002', nombre: 'Tienda Norte', direccion: 'Av. Siempre Viva 456, Popayán', telefono: '555-5678' },
-      { id: 'TIEN003', nombre: 'Tienda Sur', direccion: 'Carrera 10 #20-30, Popayán', telefono: '555-9012' },
-    ];
-    setTiendas(simulatedData);
+    fetchTiendas();
+    fetchAdministradores();
   }, []);
+
+  useEffect(() => {
+    setFilteredTiendas(
+      tiendas.filter(t =>
+        t.tiendNombre.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, tiendas]);
+
+  const fetchTiendas = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/tiendas-fisicas');
+      const data = await res.json();
+      setTiendas(data);
+    } catch (error) {
+      console.error('Error al cargar tiendas:', error);
+    }
+  };
+
+  const fetchAdministradores = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/administradores');
+      const data = await res.json();
+      const map = {};
+      data.forEach(a => map[a.adminCodAdministrador] = a.adminNombre);
+      setAdmins(map);
+    } catch (e) {
+      console.error('Error al cargar administradores:', e);
+    }
+  };
 
   const validateForm = (data) => {
     const errors = {};
-    if (!data.nombre || data.nombre.trim() === '') errors.nombre = 'El nombre es obligatorio.';
-    if (!data.direccion || data.direccion.trim() === '') errors.direccion = 'La dirección es obligatoria.';
-    if (!data.telefono || data.telefono.trim() === '') {
-      errors.telefono = 'El teléfono es obligatorio.';
-    } else if (!/^\d{7,10}$/.test(data.telefono)) { // Basic phone validation
-      errors.telefono = 'El formato del teléfono es inválido (7-10 dígitos).';
+    if (!data.tiendNombre?.trim()) errors.tiendNombre = 'El nombre es obligatorio.';
+    if (!data.tiendDireccion?.trim()) errors.tiendDireccion = 'La dirección es obligatoria.';
+    if (!data.tiendTelefono?.trim()) {
+      errors.tiendTelefono = 'El teléfono es obligatorio.';
+    } else if (!/^\d{7,10}$/.test(data.tiendTelefono)) {
+      errors.tiendTelefono = 'Formato inválido (7 a 10 dígitos).';
+    }
+    if (!data.adminCodAdministrador) {
+      errors.adminCodAdministrador = 'El código de administrador es obligatorio.';
     }
     return errors;
   };
 
   const handleCreateNew = () => {
-    setCurrentTienda({ id: '', nombre: '', direccion: '', telefono: '' });
+    setCurrentTienda({ tiendNombre: '', tiendDireccion: '', tiendTelefono: '', adminCodAdministrador: 1 });
     setIsModalOpen(true);
     setFormErrors({});
   };
@@ -44,14 +75,18 @@ export default function GestionTiendas() {
     setFormErrors({});
   };
 
-  const handleDelete = (tiendaId) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar la tienda con ID: ${tiendaId}?`)) {
-      setTiendas(tiendas.filter(tienda => tienda.id !== tiendaId));
-      alert('Tienda eliminada (simulada).');
+  const handleDelete = async (id) => {
+    if (confirm('¿Eliminar esta tienda?')) {
+      try {
+        await fetch(`http://localhost:3000/api/tiendas-fisicas/${id}`, { method: 'DELETE' });
+        fetchTiendas();
+      } catch (error) {
+        console.error('Error al eliminar:', error);
+      }
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validateForm(currentTienda);
     if (Object.keys(errors).length > 0) {
@@ -59,19 +94,24 @@ export default function GestionTiendas() {
       return;
     }
 
-    if (currentTienda.id) {
-      // Actualizar existente
-      setTiendas(tiendas.map(tienda =>
-        tienda.id === currentTienda.id ? currentTienda : tienda
-      ));
-      alert('Tienda actualizada (simulada).');
-    } else {
-      // Crear nueva
-      const newId = `TIEN${String(tiendas.length + 1).padStart(3, '0')}`;
-      setTiendas([...tiendas, { ...currentTienda, id: newId }]);
-      alert('Nueva tienda creada (simulada).');
+    const url = currentTienda.tiendIdTiendaFisica
+      ? `http://localhost:3000/api/tiendas-fisicas/${currentTienda.tiendIdTiendaFisica}`
+      : 'http://localhost:3000/api/tiendas-fisicas';
+    const method = currentTienda.tiendIdTiendaFisica ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentTienda),
+      });
+
+      if (!res.ok) throw new Error('Error en la petición');
+      fetchTiendas();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error al guardar:', error);
     }
-    setIsModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -81,142 +121,141 @@ export default function GestionTiendas() {
   };
 
   return (
-    <>
-      <div className="page-container">
-        <Header />
-        <BarraProductos />
-        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Gestión de Tiendas Físicas</h1>
-            <p className="text-center text-gray-600 text-lg mb-8">
-              Crea, administra y visualiza tus tiendas físicas.
-            </p>
+    <div className="page-container">
+      <Header />
+      <BarraProductos />
+      <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
+        <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+          <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-left">
+            Gestión de Tiendas Físicas
+          </h1>
 
-            <div className="flex justify-end mb-6">
-              <button
-                onClick={handleCreateNew}
-                className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md transition-colors duration-200 flex items-center space-x-2"
-              >
-                <PlusCircle size={20} />
-                <span>Nueva Tienda</span>
-              </button>
-            </div>
-
-            {tiendas.length > 0 ? (
-              <div className="overflow-x-auto rounded-lg shadow-md">
-                <table className="min-w-full bg-white">
-                  <thead className="bg-gray-100 border-b border-gray-200">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Nombre</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Dirección</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Teléfono</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {tiendas.map((tienda) => (
-                      <tr key={tienda.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{tienda.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{tienda.nombre}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{tienda.direccion}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{tienda.telefono}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex justify-center space-x-3">
-                            <button
-                              onClick={() => handleEdit(tienda)}
-                              className="text-blue-600 hover:text-blue-900 transition-colors duration-200"
-                              title="Editar"
-                            >
-                              <Edit size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(tienda.id)}
-                              className="text-red-600 hover:text-red-900 transition-colors duration-200"
-                              title="Eliminar"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-center text-gray-500 mt-8">No hay tiendas registradas.</p>
-            )}
-
-            {/* Modal para Crear/Editar Tienda */}
-            {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-                <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                    {currentTienda.id ? 'Editar Tienda' : 'Crear Nueva Tienda'}
-                  </h2>
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                      <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
-                      <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        value={currentTienda?.nombre || ''}
-                        onChange={handleChange}
-                        className={`shadow appearance-none border ${formErrors.nombre ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                      />
-                      {formErrors.nombre && <p className="text-red-500 text-xs italic mt-1">{formErrors.nombre}</p>}
-                    </div>
-                    <div className="mb-4">
-                      <label htmlFor="direccion" className="block text-gray-700 text-sm font-bold mb-2">Dirección:</label>
-                      <input
-                        type="text"
-                        id="direccion"
-                        name="direccion"
-                        value={currentTienda?.direccion || ''}
-                        onChange={handleChange}
-                        className={`shadow appearance-none border ${formErrors.direccion ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                      />
-                      {formErrors.direccion && <p className="text-red-500 text-xs italic mt-1">{formErrors.direccion}</p>}
-                    </div>
-                    <div className="mb-6">
-                      <label htmlFor="telefono" className="block text-gray-700 text-sm font-bold mb-2">Teléfono:</label>
-                      <input
-                        type="text"
-                        id="telefono"
-                        name="telefono"
-                        value={currentTienda?.telefono || ''}
-                        onChange={handleChange}
-                        className={`shadow appearance-none border ${formErrors.telefono ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                      />
-                      {formErrors.telefono && <p className="text-red-500 text-xs italic mt-1">{formErrors.telefono}</p>}
-                    </div>
-                    <div className="flex justify-end space-x-4">
-                      <button
-                        type="button"
-                        onClick={() => setIsModalOpen(false)}
-                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
-                      >
-                        <XCircle size={20} />
-                        <span>Cancelar</span>
-                      </button>
-                      <button
-                        type="submit"
-                        className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
-                      >
-                        <Save size={20} />
-                        <span>{currentTienda.id ? 'Guardar Cambios' : 'Crear'}</span>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <input
+              type="text"
+              placeholder="Buscar por nombre..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full sm:w-1/2 border border-gray-300 px-4 py-2 rounded text-black"
+            />
+            <button
+              onClick={handleCreateNew}
+              className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2"
+            >
+              <PlusCircle size={20} />
+              <span>Nueva Tienda</span>
+            </button>
           </div>
-        </main>
-        <Footer />
-      </div>
-    </>
+
+          <div className="overflow-auto max-h-[60vh]">
+            <table className="min-w-full text-left border-collapse">
+              <thead className="bg-gray-100 text-black">
+                <tr>
+                  <th className="px-6 py-3 text-sm font-medium">ID</th>
+                  <th className="px-6 py-3 text-sm font-medium">Nombre</th>
+                  <th className="px-6 py-3 text-sm font-medium">Dirección</th>
+                  <th className="px-6 py-3 text-sm font-medium">Teléfono</th>
+                  <th className="px-6 py-3 text-sm font-medium">Admin ID</th>
+                  <th className="px-6 py-3 text-sm font-medium">Admin Nombre</th>
+                  <th className="px-6 py-3 text-sm font-medium text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTiendas.map((t) => (
+                  <tr key={t.tiendIdTiendaFisica} className="border-b hover:bg-gray-50 text-black">
+                    <td className="px-6 py-4 whitespace-nowrap">{t.tiendIdTiendaFisica}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{t.tiendNombre}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{t.tiendDireccion}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{t.tiendTelefono}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{t.adminCodAdministrador}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {admins[t.adminCodAdministrador] || '-'}
+                    </td>
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <div className="flex justify-center gap-2">
+                        <button onClick={() => handleEdit(t)} className="text-blue-600 hover:text-blue-800">
+                          <Edit size={18} />
+                        </button>
+                        <button onClick={() => handleDelete(t.tiendIdTiendaFisica)} className="text-red-600 hover:text-red-800">
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {isModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
+                <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+                  {currentTienda.tiendIdTiendaFisica ? 'Editar Tienda' : 'Nueva Tienda'}
+                </h2>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    type="text"
+                    name="tiendNombre"
+                    placeholder="Nombre"
+                    value={currentTienda.tiendNombre}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.tiendNombre && <p className="text-red-500 text-sm">{formErrors.tiendNombre}</p>}
+
+                  <input
+                    type="text"
+                    name="tiendDireccion"
+                    placeholder="Dirección"
+                    value={currentTienda.tiendDireccion}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.tiendDireccion && <p className="text-red-500 text-sm">{formErrors.tiendDireccion}</p>}
+
+                  <input
+                    type="text"
+                    name="tiendTelefono"
+                    placeholder="Teléfono"
+                    value={currentTienda.tiendTelefono}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.tiendTelefono && <p className="text-red-500 text-sm">{formErrors.tiendTelefono}</p>}
+
+                  <input
+                    type="number"
+                    name="adminCodAdministrador"
+                    placeholder="Código Admin"
+                    value={currentTienda.adminCodAdministrador}
+                    onChange={handleChange}
+                    className="w-full mb-3 border px-3 py-2 rounded text-black"
+                  />
+                  {formErrors.adminCodAdministrador && (
+                    <p className="text-red-500 text-sm">{formErrors.adminCodAdministrador}</p>
+                  )}
+
+                  <div className="flex justify-end gap-4 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsModalOpen(false)}
+                      className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                    >
+                      <XCircle size={18} className="inline mr-1" /> Cancelar
+                    </button>
+                    <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
+                      <Save size={18} className="inline mr-1" />
+                      {currentTienda.tiendIdTiendaFisica ? 'Guardar' : 'Crear'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 }
