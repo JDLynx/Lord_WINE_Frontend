@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-import { PlusCircle, Edit, Trash2, Save, XCircle, Package, Tag, DollarSign, Archive } from 'lucide-react'; // Added more relevant icons
+import { PlusCircle, Edit, Trash2, Save, XCircle, Package, Tag, DollarSign, Archive } from 'lucide-react';
 
 export default function GestionProductos() {
   const [products, setProducts] = useState([]);
@@ -12,7 +12,6 @@ export default function GestionProductos() {
   const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
-    // Simulate fetching products and categories
     const simulatedProducts = [
       { id: 'PROD001', name: 'Vino Tinto Reserva', category: 'Vinos', price: 15.99, stock: 120, description: 'Un vino elegante y con cuerpo.' },
       { id: 'PROD002', name: 'Crema de Whisky Clásica', category: 'Cremas Whisky', price: 22.50, stock: 75, description: 'Suave crema irlandesa.' },
@@ -63,13 +62,11 @@ export default function GestionProductos() {
     }
 
     if (currentProduct.id) {
-      // Update existing product
       setProducts(products.map(product =>
         product.id === currentProduct.id ? { ...currentProduct, price: parseFloat(currentProduct.price), stock: parseInt(currentProduct.stock) } : product
       ));
       alert('Producto actualizado (simulado).');
     } else {
-      // Create new product
       const newId = `PROD${String(products.length + 1).padStart(3, '0')}`;
       setProducts([...products, { ...currentProduct, id: newId, price: parseFloat(currentProduct.price), stock: parseInt(currentProduct.stock) }]);
       alert('Nuevo producto creado (simulado).');
@@ -153,10 +150,10 @@ export default function GestionProductos() {
               <p className="text-center text-gray-500 mt-8">No hay productos registrados.</p>
             )}
 
-            {/* Modal para Crear/Editar Producto */}
             {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-                <div className="relative p-8 bg-white w-full max-w-lg mx-auto rounded-lg shadow-xl">
+              <div className="fixed inset-0 flex justify-center items-center z-50">
+                <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+                <div className="relative p-8 bg-white w-full max-w-lg mx-auto rounded-lg shadow-xl z-10">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
                     {currentProduct.id ? 'Editar Producto' : 'Crear Nuevo Producto'}
                   </h2>

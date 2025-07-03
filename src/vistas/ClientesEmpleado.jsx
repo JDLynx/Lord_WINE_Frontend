@@ -95,7 +95,7 @@ export default function ClientesEmpleado() {
                 </thead>
                 <tbody>
                   {clients.map(client => (
-                    <tr key={client.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
+                    <tr key={client.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
                       {editingId === client.id ? (
                         <>
                           <td className="py-3 px-4">{client.id}</td>

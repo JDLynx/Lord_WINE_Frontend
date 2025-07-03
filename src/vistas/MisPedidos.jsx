@@ -100,7 +100,7 @@ export default function MisPedidos() {
                 </thead>
                 <tbody>
                   {orders.map(order => (
-                    <tr key={order.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
+                    <tr key={order.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
                       <td className="py-3 px-4">{order.id}</td>
                       <td className="py-3 px-4 flex items-center space-x-2"><Calendar className="w-4 h-4 text-gray-500" /><span>{order.date}</span></td>
                       <td className="py-3 px-4 flex items-center space-x-2"><DollarSign className="w-4 h-4 text-gray-500" /><span>${order.total.toFixed(2)}</span></td>

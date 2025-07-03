@@ -104,7 +104,7 @@ export default function InventarioTienda() {
                 </thead>
                 <tbody>
                   {storeInventory.map(product => (
-                    <tr key={product.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
+                    <tr key={product.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
                       {editingId === product.id ? (
                         <>
                           <td className="py-3 px-4">{product.id}</td>

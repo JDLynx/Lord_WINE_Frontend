@@ -93,7 +93,7 @@ export default function DetallesPedidosEmpleado() {
               </thead>
               <tbody>
                 {orderDetail.items.map(item => (
-                  <tr key={item.productId} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
+                  <tr key={item.productId} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
                     <td className="py-2 px-4">{item.name}</td>
                     <td className="py-2 px-4">{item.quantity}</td>
                     <td className="py-2 px-4">${item.price.toFixed(2)}</td>

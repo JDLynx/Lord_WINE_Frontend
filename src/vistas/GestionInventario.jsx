@@ -6,13 +6,12 @@ import { User, Warehouse, Link, Unlink, PlusCircle, Edit, Trash2, Save, XCircle 
 
 export default function GestionInventario() {
   const [inventories, setInventories] = useState([]);
-  const [stores, setStores] = useState([]); // For filtering/assigning inventory to stores
-  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null); // For editing stock
+  const [stores, setStores] = useState([]);
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null);
   const [newStockQuantity, setNewStockQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Simulate fetching inventory data and stores
     const simulatedInventories = [
       { id: 'INV001', type: 'General', productName: 'Vino Tinto Reserva', quantity: 120, location: 'Almacén Central', lastUpdated: '2025-06-20' },
       { id: 'INV002', type: 'Tienda', productName: 'Crema de Whisky Clásica', quantity: 30, location: 'Tienda Centro', lastUpdated: '2025-06-21' },
@@ -20,7 +19,7 @@ export default function GestionInventario() {
       { id: 'INV004', type: 'General', productName: 'Zumo de Uva Natural', quantity: 250, location: 'Almacén Central', lastUpdated: '2025-06-19' },
       { id: 'INV005', type: 'Tienda', productName: 'Sacacorchos Premium', quantity: 20, location: 'Tienda Centro', lastUpdated: '2025-06-20' },
     ];
-    const simulatedStores = ['Almacén Central', 'Tienda Centro', 'Tienda Norte', 'Tienda Sur']; // Locations
+    const simulatedStores = ['Almacén Central', 'Tienda Centro', 'Tienda Norte', 'Tienda Sur'];
 
     setInventories(simulatedInventories);
     setStores(simulatedStores);
@@ -100,10 +99,10 @@ export default function GestionInventario() {
               <p className="text-center text-gray-500 mt-8">No hay elementos en inventario registrados.</p>
             )}
 
-            {/* Modal para Editar Stock */}
             {isModalOpen && selectedInventoryItem && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-                <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl">
+              <div className="fixed inset-0 flex justify-center items-center z-50">
+                <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+                <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
                     Editar Stock de "{selectedInventoryItem.productName}"
                   </h2>
