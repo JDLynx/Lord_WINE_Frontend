@@ -29,13 +29,33 @@ export default function GestionAdministradores() {
 
   const validateForm = (data) => {
     const errors = {};
-    if (!data.adminNombre) errors.adminNombre = 'El nombre es obligatorio.';
-    if (!data.adminCorreoElectronico) {
+
+    if (!data.adminNombre?.trim()) {
+      errors.adminNombre = 'El nombre es obligatorio.';
+    }
+
+    if (!data.adminCorreoElectronico?.trim()) {
       errors.adminCorreoElectronico = 'El correo es obligatorio.';
     } else if (!/\S+@\S+\.\S+/.test(data.adminCorreoElectronico)) {
       errors.adminCorreoElectronico = 'Formato de correo inválido.';
     }
-    if (!data.rol) errors.rol = 'El rol es obligatorio.';
+
+    if (!data.rol?.trim()) {
+      errors.rol = 'El rol es obligatorio.';
+    }
+
+    if (!data.adminIdAdministrador?.trim()) {
+      errors.adminIdAdministrador = 'La identificación es obligatoria.';
+    } else if (!/^\d+$/.test(data.adminIdAdministrador)) {
+      errors.adminIdAdministrador = 'La identificación debe ser un número entero.';
+    }
+
+    if (!data.adminCodAdministrador && !data.adminContrasena?.trim()) {
+      errors.adminContrasena = 'La contraseña es obligatoria.';
+    } else if (!data.adminCodAdministrador && data.adminContrasena.length < 6) {
+      errors.adminContrasena = 'La contraseña debe tener al menos 6 caracteres.';
+    }
+
     return errors;
   };
 
@@ -56,6 +76,7 @@ export default function GestionAdministradores() {
   const handleEdit = (admin) => {
     setCurrentAdmin({
       ...admin,
+      adminContrasena: '',
       rol: '',
     });
     setFormErrors({});
@@ -92,12 +113,14 @@ export default function GestionAdministradores() {
         : 'http://localhost:3000/api/administradores';
 
       const body = {
-        adminNombre: currentAdmin.adminNombre,
-        adminCorreoElectronico: currentAdmin.adminCorreoElectronico,
-        adminIdAdministrador: currentAdmin.adminIdAdministrador || '0000000000',
-        adminDireccion: currentAdmin.adminDireccion || '',
-        adminTelefono: currentAdmin.adminTelefono || '',
-        adminContrasena: currentAdmin.adminContrasena || 'cambiame123',
+        adminNombre: currentAdmin.adminNombre.trim(),
+        adminCorreoElectronico: currentAdmin.adminCorreoElectronico.trim(),
+        adminIdAdministrador: parseInt(currentAdmin.adminIdAdministrador),
+        adminDireccion: currentAdmin.adminDireccion?.trim() || '',
+        adminTelefono: currentAdmin.adminTelefono?.trim() || '',
+        ...(method === 'POST' && {
+          adminContrasena: currentAdmin.adminContrasena?.trim(),
+        }),
       };
 
       const response = await fetch(url, {
@@ -106,14 +129,18 @@ export default function GestionAdministradores() {
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) throw new Error('Error en la solicitud');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error en la solicitud');
+      }
 
       alert(currentAdmin.adminCodAdministrador ? 'Administrador actualizado' : 'Administrador creado');
       fetchAdministradores();
       setIsModalOpen(false);
+      setCurrentAdmin(null);
     } catch (error) {
       console.error('Error al guardar administrador:', error);
-      alert('Error al guardar el administrador.');
+      alert(error.message || 'Error al guardar el administrador.');
     }
   };
 
@@ -152,7 +179,6 @@ export default function GestionAdministradores() {
             </button>
           </div>
 
-          {/* Tabla scrolleable */}
           <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg border">
             <table className="min-w-full bg-white">
               <thead className="bg-gray-100 sticky top-0 z-10">
@@ -172,9 +198,7 @@ export default function GestionAdministradores() {
                     <td className="px-4 py-3 text-black text-left">{admin.adminCodAdministrador}</td>
                     <td className="px-4 py-3 text-black text-left">{admin.adminIdAdministrador}</td>
                     <td className="px-4 py-3 text-black text-left whitespace-nowrap">{admin.adminNombre}</td>
-                    <td className="px-4 py-3 text-black text-left whitespace-normal break-words max-w-xs">
-                      {admin.adminDireccion}
-                    </td>
+                    <td className="px-4 py-3 text-black text-left whitespace-normal break-words max-w-xs">{admin.adminDireccion}</td>
                     <td className="px-4 py-3 text-black text-left">{admin.adminTelefono}</td>
                     <td className="px-4 py-3 text-black text-left">{admin.adminCorreoElectronico}</td>
                     <td className="px-4 py-3 text-center">
@@ -193,10 +217,8 @@ export default function GestionAdministradores() {
             </table>
           </div>
 
-          {/* Modal */}
           {isModalOpen && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
-              {/* Overlay con un fondo gris muy sutil y efecto de desenfoque */}
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative z-10">
                 <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
@@ -207,8 +229,9 @@ export default function GestionAdministradores() {
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.adminNombre && <p className="text-red-500 text-sm">{formErrors.adminNombre}</p>}
 
-                  <input type="text" name="adminIdAdministrador" placeholder="Identificación" value={currentAdmin.adminIdAdministrador} onChange={handleChange}
+                  <input type="number" name="adminIdAdministrador" placeholder="Identificación" value={currentAdmin.adminIdAdministrador} onChange={handleChange}
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
+                  {formErrors.adminIdAdministrador && <p className="text-red-500 text-sm">{formErrors.adminIdAdministrador}</p>}
 
                   <input type="text" name="adminDireccion" placeholder="Dirección" value={currentAdmin.adminDireccion} onChange={handleChange}
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
@@ -220,13 +243,18 @@ export default function GestionAdministradores() {
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.adminCorreoElectronico && <p className="text-red-500 text-sm">{formErrors.adminCorreoElectronico}</p>}
 
+                  {!currentAdmin.adminCodAdministrador && (
+                    <>
+                      <input type="password" name="adminContrasena" placeholder="Contraseña" value={currentAdmin.adminContrasena} onChange={handleChange}
+                        className="w-full mb-3 border px-3 py-2 rounded text-black" />
+                      {formErrors.adminContrasena && <p className="text-red-500 text-sm">{formErrors.adminContrasena}</p>}
+                    </>
+                  )}
+
                   <select name="rol" value={currentAdmin.rol} onChange={handleChange}
                     className="w-full mb-4 border px-3 py-2 rounded text-black">
-                    <option value="">Selecciona un rol</option>
-                    <option value="SuperAdmin">Super Administrador</option>
-                    <option value="AdminInventario">Admin Inventario</option>
-                    <option value="AdminPedidos">Admin Pedidos</option>
-                    <option value="AdminGeneral">Admin General</option>
+                    <option value="">Seleccione un rol</option>
+                    <option value="Administrador">Administrador</option>
                   </select>
                   {formErrors.rol && <p className="text-red-500 text-sm">{formErrors.rol}</p>}
 
