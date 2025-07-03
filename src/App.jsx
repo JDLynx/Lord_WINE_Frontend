@@ -55,7 +55,6 @@ import CambiarContraseñaEmpleado from "./vistas/CambiarContraseñaEmpleado";
 
 // Perfil cliente
 import PerfilCliente from "./vistas/PerfilCliente";
-import MiPerfil from "./vistas/MiPerfil";
 import MisPedidos from "./vistas/MisPedidos";
 import CatalogoProductos from "./vistas/CatalogoProductos";
 import MisServiciosEmpresariales from "./vistas/MisServiciosEmpresariales";
@@ -120,7 +119,6 @@ function App() {
 
         {/* Cliente */}
         <Route path="/perfil-cliente" element={<PerfilCliente />} />
-        <Route path="/mi-perfil" element={<MiPerfil />} />
         <Route path="/mis-pedidos" element={<MisPedidos />} />
         <Route path="/catalogo-productos" element={<CatalogoProductos />} />
         <Route path="/mis-servicios-empresariales" element={<MisServiciosEmpresariales />} />

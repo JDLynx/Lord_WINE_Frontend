@@ -40,7 +40,7 @@ export default function GestionEmpleadoInventarioTienda() {
                 </thead>
                 <tbody>
                   {assignments.map(assignment => (
-                    <tr key={assignment.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
+                    <tr key={assignment.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
                       <td className="py-3 px-4">{assignment.id}</td>
                       <td className="py-3 px-4 flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{assignment.employeeName}</span></td>
                       <td className="py-3 px-4 flex items-center space-x-2"><Store className="w-4 h-4 text-gray-500" /><span>{assignment.storeName}</span></td>

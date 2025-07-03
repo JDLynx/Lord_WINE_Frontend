@@ -188,8 +188,9 @@ export default function GestionTiendas() {
           </div>
 
           {isModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative z-10">
                 <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
                   {currentTienda.tiendIdTiendaFisica ? 'Editar Tienda' : 'Nueva Tienda'}
                 </h2>
@@ -240,7 +241,7 @@ export default function GestionTiendas() {
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                      className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-gray-800"
                     >
                       <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>

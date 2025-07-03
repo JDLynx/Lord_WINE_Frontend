@@ -39,7 +39,7 @@ export default function ProductosTienda() {
                 </thead>
                 <tbody>
                   {products.map(product => (
-                    <tr key={product.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
+                    <tr key={product.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
                       <td className="py-3 px-4">{product.id}</td>
                       <td className="py-3 px-4 flex items-center space-x-2"><Package className="w-4 h-4 text-gray-500" /><span>{product.name}</span></td>
                       <td className="py-3 px-4 flex items-center space-x-2"><Tag className="w-4 h-4 text-gray-500" /><span>{product.category}</span></td>

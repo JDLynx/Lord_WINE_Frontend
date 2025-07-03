@@ -9,10 +9,9 @@ export default function GestionAdminInventarioGeneral() {
   const [administrators, setAdministrators] = useState([]);
   const [generalInventories, setGeneralInventories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAssignment, setSelectedAssignment] = useState(null); // For editing/creating
+  const [selectedAssignment, setSelectedAssignment] = useState(null);
 
   useEffect(() => {
-    // Simulate fetching data
     const simulatedAssignments = [
       { id: 'ASG001', adminId: 'ADM001', adminName: 'Juan Pérez', inventoryId: 'INVGEN001', inventoryName: 'Inventario de Vinos y Licores' },
       { id: 'ASG002', adminId: 'ADM002', adminName: 'María García', inventoryId: 'INVGEN002', inventoryName: 'Inventario de Accesorios' },
@@ -63,13 +62,11 @@ export default function GestionAdminInventarioGeneral() {
     const inventory = generalInventories.find(i => i.id === inventoryId);
 
     if (selectedAssignment.id) {
-      // Update existing
       setInventoryAssignments(inventoryAssignments.map(assign =>
         assign.id === selectedAssignment.id ? { ...assign, adminId, inventoryId, adminName: admin.name, inventoryName: inventory.name } : assign
       ));
       alert('Asignación actualizada (simulada).');
     } else {
-      // Create new
       const newId = `ASG${String(inventoryAssignments.length + 1).padStart(3, '0')}`;
       setInventoryAssignments([...inventoryAssignments, { id: newId, adminId, adminName: admin.name, inventoryId, inventoryName: inventory.name }]);
       alert('Nueva asignación creada (simulada).');
@@ -149,11 +146,11 @@ export default function GestionAdminInventarioGeneral() {
               <p className="text-center text-gray-500 mt-8">No hay asignaciones de inventario general registradas.</p>
             )}
 
-            {/* Modal para Asignar/Editar Inventario General */}
             {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-                <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+              <div className="fixed inset-0 flex justify-center items-center z-50">
+                <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+                <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
+                  <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
                     {selectedAssignment.id ? 'Editar Asignación' : 'Nueva Asignación de Inventario'}
                   </h2>
                   <form onSubmit={handleSubmit}>

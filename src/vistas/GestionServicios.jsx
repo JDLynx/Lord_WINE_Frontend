@@ -11,7 +11,6 @@ export default function GestionServicios() {
   const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
-    // Simulate fetching services
     const simulatedServices = [
       { id: 'SERV001', name: 'Asesoría de Vinos', description: 'Asesoramiento personalizado para selección de vinos.', price: 50.00 },
       { id: 'SERV002', name: 'Cata de Productos', description: 'Experiencia de cata guiada en tienda.', price: 75.00 },
@@ -56,13 +55,11 @@ export default function GestionServicios() {
     }
 
     if (currentService.id) {
-      // Update existing service
       setServices(services.map(serv =>
         serv.id === currentService.id ? { ...currentService, price: parseFloat(currentService.price) } : serv
       ));
       alert('Servicio actualizado (simulado).');
     } else {
-      // Create new service
       const newId = `SERV${String(services.length + 1).padStart(3, '0')}`;
       setServices([...services, { ...currentService, id: newId, price: parseFloat(currentService.price) }]);
       alert('Nuevo servicio creado (simulado).');
@@ -144,10 +141,10 @@ export default function GestionServicios() {
               <p className="text-center text-gray-500 mt-8">No hay servicios registrados.</p>
             )}
 
-            {/* Modal para Crear/Editar Servicio */}
             {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
-                <div className="relative p-8 bg-white w-full max-w-lg mx-auto rounded-lg shadow-xl">
+              <div className="fixed inset-0 flex justify-center items-center z-50">
+                <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+                <div className="relative p-8 bg-white w-full max-w-lg mx-auto rounded-lg shadow-xl z-10">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
                     {currentService.id ? 'Editar Servicio' : 'Crear Nuevo Servicio'}
                   </h2>

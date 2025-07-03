@@ -32,7 +32,7 @@ export default function EditarPerfilEmpleado() {
         return;
       }
 
-      // --- SIMULACIÓN DE CARGA DE DATOS (SIN BACKEND) ---
+      // SIMULACIÓN DE CARGA DE DATOS (SIN BACKEND) ---
       console.log('Simulando carga de datos del empleado para edición...');
       setTimeout(() => {
         // Datos de ejemplo para simular la carga
@@ -109,7 +109,6 @@ export default function EditarPerfilEmpleado() {
               <div className="text-center text-green-600 font-bold mb-4">{successMessage}</div>
             ) : (
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                {/* Campo Nombre */}
                 <div className="col-span-1">
                   <label htmlFor="emplNombre" className="block text-sm font-medium text-gray-700 mb-1">
                     <User className="inline-block w-4 h-4 mr-2 text-red-500" />Nombre Completo
@@ -125,7 +124,6 @@ export default function EditarPerfilEmpleado() {
                   />
                 </div>
 
-                {/* Campo Identificación (generalmente no editable) */}
                 <div className="col-span-1">
                   <label htmlFor="emplIdEmpleado" className="block text-sm font-medium text-gray-700 mb-1">
                     <User className="inline-block w-4 h-4 mr-2 text-red-500" />Identificación
@@ -141,7 +139,6 @@ export default function EditarPerfilEmpleado() {
                   />
                 </div>
 
-                {/* Campo Dirección */}
                 <div className="col-span-1">
                   <label htmlFor="emplDireccion" className="block text-sm font-medium text-gray-700 mb-1">
                     <Home className="inline-block w-4 h-4 mr-2 text-red-500" />Dirección
@@ -157,7 +154,6 @@ export default function EditarPerfilEmpleado() {
                   />
                 </div>
 
-                {/* Campo Teléfono */}
                 <div className="col-span-1">
                   <label htmlFor="emplTelefono" className="block text-sm font-medium text-gray-700 mb-1">
                     <Phone className="inline-block w-4 h-4 mr-2 text-red-500" />Teléfono
@@ -173,7 +169,6 @@ export default function EditarPerfilEmpleado() {
                   />
                 </div>
 
-                {/* Campo Correo Electrónico */}
                 <div className="col-span-1">
                   <label htmlFor="emplCorreoElectronico" className="block text-sm font-medium text-gray-700 mb-1">
                     <Mail className="inline-block w-4 h-4 mr-2 text-red-500" />Correo Electrónico
@@ -188,8 +183,6 @@ export default function EditarPerfilEmpleado() {
                     required
                   />
                 </div>
-
-                {/* Campo Código de Tienda (asumo que es editable o informativo) */}
                 <div className="col-span-1">
                   <label htmlFor="emplCodTienda" className="block text-sm font-medium text-gray-700 mb-1">
                     <Store className="inline-block w-4 h-4 mr-2 text-red-500" />Código de Tienda
@@ -201,11 +194,9 @@ export default function EditarPerfilEmpleado() {
                     value={employeeData.emplCodTienda}
                     onChange={handleChange}
                     className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
-                    // Puedes hacerlo readOnly si no es editable por el empleado
                   />
                 </div>
 
-                {/* Botones de acción */}
                 <div className="col-span-full flex justify-center space-x-6 mt-6">
                   <button
                     type="submit"
