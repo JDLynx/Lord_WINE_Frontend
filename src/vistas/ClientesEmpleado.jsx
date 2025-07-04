@@ -10,17 +10,24 @@ export default function ClientesEmpleado() {
     { id: 2, name: 'Ana López', email: 'ana.lopez@example.com', phone: '3207654321', address: 'Carrera 4 #5-6, Ciudad B' },
     { id: 3, name: 'Pedro Gómez', email: 'pedro.gomez@example.com', phone: '3009876543', address: 'Avenida 7 #8-9, Ciudad C' },
   ]);
-  const [isAdding, setIsAdding] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [newClient, setNewClient] = useState({ name: '', email: '', phone: '', address: '' });
   const [editedClient, setEditedClient] = useState({});
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    setNewClient({ name: '', email: '', phone: '', address: '' });
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const handleAddClient = () => {
-    // Simulamos un ID único para el nuevo cliente
     const id = clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1;
     setClients([...clients, { id, ...newClient }]);
-    setNewClient({ name: '', email: '', phone: '', address: '' });
-    setIsAdding(false);
+    handleCloseModal();
   };
 
   const handleEditClick = (client) => {
@@ -58,25 +65,83 @@ export default function ClientesEmpleado() {
           <h2 className="text-3xl font-bold text-red-600 mb-6 text-center">Gestión de Clientes</h2>
 
           <button
-            onClick={() => setIsAdding(!isAdding)}
+            onClick={handleOpenModal}
             className="mb-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
           >
             <PlusCircle className="w-5 h-5" />
-            <span>{isAdding ? 'Cancelar' : 'Añadir Nuevo Cliente'}</span>
+            <span>Añadir Nuevo Cliente</span>
           </button>
 
-          {isAdding && (
-            <div className="bg-red-50 p-6 rounded-md mb-6 shadow-sm"> {/* Fondo de la sección de añadir cambiado a rojo claro */}
-              <h3 className="text-xl font-semibold text-gray-700 mb-4">Añadir Nuevo Cliente</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <input type="text" placeholder="Nombre" value={newClient.name} onChange={(e) => setNewClient({ ...newClient, name: e.target.value })} className="p-2 border rounded-md" />
-                <input type="email" placeholder="Correo Electrónico" value={newClient.email} onChange={(e) => setNewClient({ ...newClient, email: e.target.value })} className="p-2 border rounded-md" />
-                <input type="tel" placeholder="Teléfono" value={newClient.phone} onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })} className="p-2 border rounded-md" />
-                <input type="text" placeholder="Dirección" value={newClient.address} onChange={(e) => setNewClient({ ...newClient, address: e.target.value })} className="p-2 border rounded-md" />
+          {isModalOpen && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+
+              <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md mx-4 relative z-10">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Añadir Nuevo Cliente</h3>
+                <div className="grid grid-cols-1 gap-4 mb-6">
+                  <div className="flex flex-col">
+                    <label htmlFor="name" className="text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                    <input
+                      id="name"
+                      type="text"
+                      placeholder="Nombre"
+                      value={newClient.name}
+                      onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="Correo Electrónico"
+                      value={newClient.email}
+                      onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="phone" className="text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      placeholder="Teléfono"
+                      value={newClient.phone}
+                      onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="address" className="text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                    <input
+                      id="address"
+                      type="text"
+                      placeholder="Dirección"
+                      value={newClient.address}
+                      onChange={(e) => setNewClient({ ...newClient, address: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-gray-800 flex items-center space-x-1"
+                  >
+                    <XCircle size={18} /> <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={handleAddClient}
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors flex items-center space-x-1"
+                  >
+                    <Save size={18} /> <span>Guardar Cliente</span>
+                  </button>
+                </div>
               </div>
-              <button onClick={handleAddClient} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors">
-                Guardar Cliente
-              </button>
             </div>
           )}
 
@@ -96,31 +161,54 @@ export default function ClientesEmpleado() {
                 <tbody>
                   {clients.map(client => (
                     <tr key={client.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
-                      {editingId === client.id ? (
-                        <>
-                          <td className="py-3 px-4">{client.id}</td>
-                          <td className="py-3 px-4"><input type="text" value={editedClient.name} onChange={(e) => setEditedClient({ ...editedClient, name: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4"><input type="email" value={editedClient.email} onChange={(e) => setEditedClient({ ...editedClient, email: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4"><input type="tel" value={editedClient.phone} onChange={(e) => setEditedClient({ ...editedClient, phone: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4"><input type="text" value={editedClient.address} onChange={(e) => setEditedClient({ ...editedClient, address: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4 flex space-x-2">
+
+                      <td className="py-3 px-4">{client.id}</td>
+
+                      <td className="py-3 px-4">
+                        {editingId === client.id ? (
+                          <input type="text" value={editedClient.name} onChange={(e) => setEditedClient({ ...editedClient, name: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span className="flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{client.name}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {editingId === client.id ? (
+                          <input type="email" value={editedClient.email} onChange={(e) => setEditedClient({ ...editedClient, email: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span className="flex items-center space-x-2"><Mail className="w-4 h-4 text-gray-500" /><span>{client.email}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {editingId === client.id ? (
+                          <input type="tel" value={editedClient.phone} onChange={(e) => setEditedClient({ ...editedClient, phone: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span className="flex items-center space-x-2"><Phone className="w-4 h-4 text-gray-500" /><span>{client.phone}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {editingId === client.id ? (
+                          <input type="text" value={editedClient.address} onChange={(e) => setEditedClient({ ...editedClient, address: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span className="flex items-center space-x-2"><Home className="w-4 h-4 text-gray-500" /><span>{client.address}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4 flex space-x-2">
+                        {editingId === client.id ? (
+                          <>
                             <button onClick={() => handleSaveEdit(client.id)} className="text-green-600 hover:text-green-800"><Save className="w-5 h-5" /></button>
                             <button onClick={handleCancelEdit} className="text-red-600 hover:text-red-800"><XCircle className="w-5 h-5" /></button>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="py-3 px-4">{client.id}</td>
-                          <td className="py-3 px-4 flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{client.name}</span></td>
-                          <td className="py-3 px-4 flex items-center space-x-2"><Mail className="w-4 h-4 text-gray-500" /><span>{client.email}</span></td>
-                          <td className="py-3 px-4 flex items-center space-x-2"><Phone className="w-4 h-4 text-gray-500" /><span>{client.phone}</span></td>
-                          <td className="py-3 px-4 flex items-center space-x-2"><Home className="w-4 h-4 text-gray-500" /><span>{client.address}</span></td>
-                          <td className="py-3 px-4 flex space-x-2">
+                          </>
+                        ) : (
+                          <>
                             <button onClick={() => handleEditClick(client)} className="text-red-600 hover:text-red-800"><Edit className="w-5 h-5" /></button>
                             <button onClick={() => handleDeleteClient(client.id)} className="text-red-600 hover:text-red-800"><Trash2 className="w-5 h-5" /></button>
-                          </td>
-                        </>
-                      )}
+                          </>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

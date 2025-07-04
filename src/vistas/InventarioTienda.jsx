@@ -12,16 +12,24 @@ export default function InventarioTienda() {
     { id: 4, product: 'Zumo Uva Premium', sku: 'ZUP004', stock: 150, location: 'Refrigerador' },
     { id: 5, product: 'Licor de Café', sku: 'LC005', stock: 70, location: 'Barra' },
   ]);
-  const [isAdding, setIsAdding] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [newProduct, setNewProduct] = useState({ product: '', sku: '', stock: '', location: '' });
   const [editedProduct, setEditedProduct] = useState({});
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    setNewProduct({ product: '', sku: '', stock: '', location: '' });
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const handleAddProduct = () => {
     const id = storeInventory.length > 0 ? Math.max(...storeInventory.map(p => p.id)) + 1 : 1;
     setStoreInventory([...storeInventory, { id, ...newProduct, stock: parseInt(newProduct.stock) }]);
-    setNewProduct({ product: '', sku: '', stock: '', location: '' });
-    setIsAdding(false);
+    handleCloseModal();
     alert('Producto añadido al inventario (simulado).');
   };
 
@@ -67,25 +75,82 @@ export default function InventarioTienda() {
           </p>
 
           <button
-            onClick={() => setIsAdding(!isAdding)}
+            onClick={handleOpenModal} // Ahora abre el modal
             className="mb-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
           >
             <PlusCircle className="w-5 h-5" />
-            <span>{isAdding ? 'Cancelar' : 'Añadir Nuevo Producto'}</span>
+            <span>Añadir Nuevo Producto</span>
           </button>
 
-          {isAdding && (
-            <div className="bg-red-50 p-6 rounded-md mb-6 shadow-sm">
-              <h3 className="text-xl font-semibold text-gray-700 mb-4">Añadir Producto</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <input type="text" placeholder="Nombre Producto" value={newProduct.product} onChange={(e) => setNewProduct({ ...newProduct, product: e.target.value })} className="p-2 border rounded-md" />
-                <input type="text" placeholder="SKU" value={newProduct.sku} onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })} className="p-2 border rounded-md" />
-                <input type="number" placeholder="Stock" value={newProduct.stock} onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} className="p-2 border rounded-md" />
-                <input type="text" placeholder="Ubicación" value={newProduct.location} onChange={(e) => setNewProduct({ ...newProduct, location: e.target.value })} className="p-2 border rounded-md" />
+          {isModalOpen && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+
+              <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md mx-4 relative z-10">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Añadir Nuevo Producto</h3>
+                <div className="grid grid-cols-1 gap-4 mb-6">
+                  <div className="flex flex-col">
+                    <label htmlFor="product" className="text-sm font-medium text-gray-700 mb-1">Nombre Producto</label>
+                    <input
+                      id="product"
+                      type="text"
+                      placeholder="Nombre Producto"
+                      value={newProduct.product}
+                      onChange={(e) => setNewProduct({ ...newProduct, product: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="sku" className="text-sm font-medium text-gray-700 mb-1">SKU</label>
+                    <input
+                      id="sku"
+                      type="text"
+                      placeholder="SKU"
+                      value={newProduct.sku}
+                      onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="stock" className="text-sm font-medium text-gray-700 mb-1">Stock</label>
+                    <input
+                      id="stock"
+                      type="number"
+                      placeholder="Stock"
+                      value={newProduct.stock}
+                      onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="location" className="text-sm font-medium text-gray-700 mb-1">Ubicación</label>
+                    <input
+                      id="location"
+                      type="text"
+                      placeholder="Ubicación"
+                      value={newProduct.location}
+                      onChange={(e) => setNewProduct({ ...newProduct, location: e.target.value })}
+                      className="p-3 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-gray-800 flex items-center space-x-1"
+                  >
+                    <XCircle size={18} /> <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={handleAddProduct}
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors flex items-center space-x-1"
+                  >
+                    <Save size={18} /> <span>Guardar Producto</span>
+                  </button>
+                </div>
               </div>
-              <button onClick={handleAddProduct} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors">
-                Guardar Producto
-              </button>
             </div>
           )}
 
@@ -105,31 +170,54 @@ export default function InventarioTienda() {
                 <tbody>
                   {storeInventory.map(product => (
                     <tr key={product.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
-                      {editingId === product.id ? (
-                        <>
-                          <td className="py-3 px-4">{product.id}</td>
-                          <td className="py-3 px-4"><input type="text" value={editedProduct.product} onChange={(e) => setEditedProduct({ ...editedProduct, product: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4"><input type="text" value={editedProduct.sku} onChange={(e) => setEditedProduct({ ...editedProduct, sku: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4"><input type="number" value={editedProduct.stock} onChange={(e) => setEditedProduct({ ...editedProduct, stock: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4"><input type="text" value={editedProduct.location} onChange={(e) => setEditedProduct({ ...editedProduct, location: e.target.value })} className="p-1 border rounded-md w-full" /></td>
-                          <td className="py-3 px-4 flex space-x-2">
+
+                      <td className="py-3 px-4">{product.id}</td>
+
+                      <td className="py-3 px-4">
+                        {editingId === product.id ? (
+                          <input type="text" value={editedProduct.product} onChange={(e) => setEditedProduct({ ...editedProduct, product: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span className="flex items-center space-x-2"><Package className="w-4 h-4 text-gray-500" /><span>{product.product}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {editingId === product.id ? (
+                          <input type="text" value={editedProduct.sku} onChange={(e) => setEditedProduct({ ...editedProduct, sku: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span>{product.sku}</span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {editingId === product.id ? (
+                          <input type="number" value={editedProduct.stock} onChange={(e) => setEditedProduct({ ...editedProduct, stock: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span className="flex items-center space-x-2"><Boxes className="w-4 h-4 text-gray-500" /><span>{product.stock}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {editingId === product.id ? (
+                          <input type="text" value={editedProduct.location} onChange={(e) => setEditedProduct({ ...editedProduct, location: e.target.value })} className="p-1 border rounded-md w-full" />
+                        ) : (
+                          <span>{product.location}</span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4 flex space-x-2">
+                        {editingId === product.id ? (
+                          <>
                             <button onClick={() => handleSaveEdit(product.id)} className="text-green-600 hover:text-green-800"><Save className="w-5 h-5" /></button>
                             <button onClick={handleCancelEdit} className="text-red-600 hover:text-red-800"><XCircle className="w-5 h-5" /></button>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="py-3 px-4">{product.id}</td>
-                          <td className="py-3 px-4 flex items-center space-x-2"><Package className="w-4 h-4 text-gray-500" /><span>{product.product}</span></td>
-                          <td className="py-3 px-4">{product.sku}</td>
-                          <td className="py-3 px-4 flex items-center space-x-2"><Boxes className="w-4 h-4 text-gray-500" /><span>{product.stock}</span></td>
-                          <td className="py-3 px-4">{product.location}</td>
-                          <td className="py-3 px-4 flex space-x-2">
+                          </>
+                        ) : (
+                          <>
                             <button onClick={() => handleEditClick(product)} className="text-red-600 hover:text-red-800"><Edit className="w-5 h-5" /></button>
                             <button onClick={() => handleDeleteProduct(product.id)} className="text-red-600 hover:text-red-800"><Trash2 className="w-5 h-5" /></button>
-                          </td>
-                        </>
-                      )}
+                          </>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
