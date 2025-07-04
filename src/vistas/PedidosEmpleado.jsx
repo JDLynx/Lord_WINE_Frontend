@@ -39,7 +39,7 @@ export default function PedidosEmpleado() {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'Pendiente': return <Clock className="w-4 h-4 text-red-500" />;
-      case 'En Proceso': return <Truck className="w-4 h-4 text-red-700" />;
+      case 'En Proceso': return <Truck className="w-4 h-4 text-orange-500" />;
       case 'Completado': return <CheckCircle className="w-4 h-4 text-green-500" />;
       case 'Cancelado': return <XCircle className="w-4 h-4 text-red-500" />;
       default: return null;
@@ -74,38 +74,45 @@ export default function PedidosEmpleado() {
                 <tbody>
                   {orders.map(order => (
                     <tr key={order.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
+
                       <td className="py-3 px-4">{order.id}</td>
+
                       <td className="py-3 px-4 flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{order.customer}</span></td>
+
                       <td className="py-3 px-4 flex items-center space-x-2"><Calendar className="w-4 h-4 text-gray-500" /><span>{order.date}</span></td>
 
-                      {editingId === order.id ? (
-                        <>
-                          <td className="py-3 px-4">
-                            <select value={editedStatus} onChange={(e) => setEditedStatus(e.target.value)} className="p-1 border rounded-md w-full">
-                              {statuses.map(s => <option key={s} value={s}>{s}</option>)}
-                            </select>
-                          </td>
-                          <td className="py-3 px-4">
-                            <select value={editedAssignedTo} onChange={(e) => setEditedAssignedTo(e.target.value)} className="p-1 border rounded-md w-full">
-                              {employees.map(emp => <option key={emp} value={emp}>{emp}</option>)}
-                            </select>
-                          </td>
-                          <td className="py-3 px-4">{order.details}</td>
-                          <td className="py-3 px-4 flex space-x-2">
+                      <td className="py-3 px-4">
+                        {editingId === order.id ? (
+                          <select value={editedStatus} onChange={(e) => setEditedStatus(e.target.value)} className="p-1 border rounded-md w-full">
+                            {statuses.map(s => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                        ) : (
+                          <span className="flex items-center space-x-2">{getStatusIcon(order.status)}<span>{order.status}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {editingId === order.id ? (
+                          <select value={editedAssignedTo} onChange={(e) => setEditedAssignedTo(e.target.value)} className="p-1 border rounded-md w-full">
+                            {employees.map(emp => <option key={emp} value={emp}>{emp}</option>)}
+                          </select>
+                        ) : (
+                          <span className="flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{order.assignedTo}</span></span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4">{order.details}</td>
+
+                      <td className="py-3 px-4 flex space-x-2">
+                        {editingId === order.id ? (
+                          <>
                             <button onClick={() => handleSaveEdit(order.id)} className="text-green-600 hover:text-green-800"><Save className="w-5 h-5" /></button>
                             <button onClick={handleCancelEdit} className="text-red-600 hover:text-red-800"><XCircle className="w-5 h-5" /></button>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="py-3 px-4 flex items-center space-x-2">{getStatusIcon(order.status)}<span>{order.status}</span></td>
-                          <td className="py-3 px-4 flex items-center space-x-2"><User className="w-4 h-4 text-gray-500" /><span>{order.assignedTo}</span></td>
-                          <td className="py-3 px-4">{order.details}</td>
-                          <td className="py-3 px-4 flex space-x-2">
-                            <button onClick={() => handleEditClick(order)} className="text-red-600 hover:text-red-800"><Edit className="w-5 h-5" /></button>
-                          </td>
-                        </>
-                      )}
+                          </>
+                        ) : (
+                          <button onClick={() => handleEditClick(order)} className="text-red-600 hover:text-red-800"><Edit className="w-5 h-5" /></button>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
