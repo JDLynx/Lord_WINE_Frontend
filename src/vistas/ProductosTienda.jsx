@@ -19,10 +19,9 @@ export default function ProductosTienda() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar la visibilidad del modal de añadir
   const [newProduct, setNewProduct] = useState({ name: '', category: '', price: '', stock: '' }); // Estado para el nuevo producto
 
-  // --- Funciones para el Modal de Añadir Producto ---
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    setNewProduct({ name: '', category: '', price: '', stock: '' }); // Limpiar el formulario al abrir
+    setNewProduct({ name: '', category: '', price: '', stock: '' });
   };
 
   const handleCloseModal = () => {
@@ -35,35 +34,34 @@ export default function ProductosTienda() {
       id,
       name: newProduct.name,
       category: newProduct.category,
-      price: parseFloat(newProduct.price), // Convertir a número flotante
-      stock: parseInt(newProduct.stock) // Convertir a entero
+      price: parseFloat(newProduct.price),
+      stock: parseInt(newProduct.stock)
     }]);
-    handleCloseModal(); // Cerrar el modal después de añadir
+    handleCloseModal();
     alert('Producto añadido a la tienda (simulado).');
   };
 
-  // --- Funciones para la Edición en Línea ---
   const handleEditClick = (product) => {
     setEditingId(product.id);
-    setEditedProduct({ ...product }); // Copia los datos actuales para edición
+    setEditedProduct({ ...product });
   };
 
   const handleSaveEdit = (id) => {
     setProducts(products.map(product =>
       product.id === id ? {
         ...editedProduct,
-        price: parseFloat(editedProduct.price), // Asegurar que sea número
-        stock: parseInt(editedProduct.stock) // Asegurar que sea número
+        price: parseFloat(editedProduct.price),
+        stock: parseInt(editedProduct.stock)
       } : product
     ));
-    setEditingId(null); // Sale del modo de edición
-    setEditedProduct({}); // Limpia los datos de edición
+    setEditingId(null);
+    setEditedProduct({});
     alert(`Producto ${id} actualizado (simulado).`);
   };
 
   const handleCancelEdit = () => {
-    setEditingId(null); // Sale del modo de edición
-    setEditedProduct({}); // Limpia los datos de edición
+    setEditingId(null);
+    setEditedProduct({});
   };
 
   const handleDeleteProduct = (id) => {
@@ -96,10 +94,8 @@ export default function ProductosTienda() {
           {/* Modal de Añadir Nuevo Producto */}
           {isModalOpen && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
-              {/* Fondo semi-transparente con blur */}
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
 
-              {/* Contenido del modal */}
               <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md mx-4 relative z-10">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Añadir Nuevo Producto</h3>
                 <div className="grid grid-cols-1 gap-4 mb-6">
@@ -149,7 +145,6 @@ export default function ProductosTienda() {
                     />
                   </div>
                 </div>
-                {/* Contenedor de botones para Guardar y Cancelar */}
                 <div className="flex justify-end gap-4 mt-4">
                   <button
                     type="button"
@@ -179,16 +174,14 @@ export default function ProductosTienda() {
                     <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Categoría</th>
                     <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Precio</th>
                     <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Stock</th>
-                    <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Acciones</th> {/* Nueva columna para acciones */}
+                    <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.map(product => (
                     <tr key={product.id} className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 text-gray-600">
-                      {/* Celda para ID */}
                       <td className="py-3 px-4">{product.id}</td>
 
-                      {/* Celda para Nombre (editable) */}
                       <td className="py-3 px-4">
                         {editingId === product.id ? (
                           <input type="text" value={editedProduct.name} onChange={(e) => setEditedProduct({ ...editedProduct, name: e.target.value })} className="p-1 border rounded-md w-full" />
@@ -197,7 +190,6 @@ export default function ProductosTienda() {
                         )}
                       </td>
 
-                      {/* Celda para Categoría (editable) */}
                       <td className="py-3 px-4">
                         {editingId === product.id ? (
                           <input type="text" value={editedProduct.category} onChange={(e) => setEditedProduct({ ...editedProduct, category: e.target.value })} className="p-1 border rounded-md w-full" />
@@ -215,7 +207,6 @@ export default function ProductosTienda() {
                         )}
                       </td>
 
-                      {/* Celda para Stock (editable) */}
                       <td className="py-3 px-4">
                         {editingId === product.id ? (
                           <input type="number" value={editedProduct.stock} onChange={(e) => setEditedProduct({ ...editedProduct, stock: e.target.value })} className="p-1 border rounded-md w-full" />
@@ -224,7 +215,6 @@ export default function ProductosTienda() {
                         )}
                       </td>
 
-                      {/* Celda para Acciones */}
                       <td className="py-3 px-4 flex space-x-2">
                         {editingId === product.id ? (
                           <>
