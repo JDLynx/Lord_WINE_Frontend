@@ -88,7 +88,7 @@ export default function CambiarContraseñaAdministrador() {
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center border-b pb-4 border-gray-200">
+          <h1 className="text-2xl font-semibold text-black mb-8 text-center border-b pb-4 border-gray-200">
             Cambiar Contraseña de Administrador
           </h1>
 
@@ -97,7 +97,7 @@ export default function CambiarContraseñaAdministrador() {
 
           <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
             <div>
-              <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="currentPassword" className="block text-lg font-medium text-black mb-1">
                 <Key className="inline-block w-4 h-4 mr-2 text-red-500" />Contraseña Actual
               </label>
               <input
@@ -112,7 +112,7 @@ export default function CambiarContraseñaAdministrador() {
             </div>
 
             <div>
-              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="newPassword" className="block text-lg font-medium text-black mb-1">
                 <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Nueva Contraseña
               </label>
               <input
@@ -127,7 +127,7 @@ export default function CambiarContraseñaAdministrador() {
             </div>
 
             <div>
-              <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmNewPassword" className="block text-lg font-medium text-black mb-1">
                 <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Confirmar Nueva Contraseña
               </label>
               <input
@@ -157,7 +157,7 @@ export default function CambiarContraseñaAdministrador() {
               <button
                 type="button"
                 onClick={() => navigate('/perfil')}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                className="bg-gray-200 hover:bg-gray-300 text-black font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
               >
                 Cancelar
               </button>

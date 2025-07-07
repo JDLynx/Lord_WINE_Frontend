@@ -116,7 +116,7 @@ export default function EditarPerfilAdministrador() {
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
         <div className="max-w-4xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center border-b pb-4 border-gray-200">
+          <h1 className="text-2xl font-semibold text-black mb-8 text-center border-b pb-4 border-gray-200">
             Editar Perfil de Administrador
           </h1>
 
@@ -132,7 +132,7 @@ export default function EditarPerfilAdministrador() {
           ) : (
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
               <div className="col-span-1">
-                <label htmlFor="adminNombre" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="adminNombre" className="block text-lg font-medium text-black mb-1">
                   <User className="inline-block w-4 h-4 mr-2 text-red-500" />Nombre Completo
                 </label>
                 <input
@@ -141,13 +141,13 @@ export default function EditarPerfilAdministrador() {
                   name="adminNombre"
                   value={adminData.adminNombre}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
                   required
                 />
               </div>
 
               <div className="col-span-1">
-                <label htmlFor="adminIdAdministrador" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="adminIdAdministrador" className="block text-lg font-medium text-black mb-1">
                   <User className="inline-block w-4 h-4 mr-2 text-red-500" />Identificación
                 </label>
                 <input
@@ -156,13 +156,13 @@ export default function EditarPerfilAdministrador() {
                   name="adminIdAdministrador"
                   value={adminData.adminIdAdministrador}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-base cursor-not-allowed text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-base cursor-not-allowed text-black"
                   readOnly
                 />
               </div>
 
               <div className="col-span-1">
-                <label htmlFor="adminDireccion" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="adminDireccion" className="block text-lg font-medium text-black mb-1">
                   <Home className="inline-block w-4 h-4 mr-2 text-red-500" />Dirección
                 </label>
                 <input
@@ -171,13 +171,13 @@ export default function EditarPerfilAdministrador() {
                   name="adminDireccion"
                   value={adminData.adminDireccion}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
                   required
                 />
               </div>
 
               <div className="col-span-1">
-                <label htmlFor="adminTelefono" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="adminTelefono" className="block text-lg font-medium text-black mb-1">
                   <Phone className="inline-block w-4 h-4 mr-2 text-red-500" />Teléfono
                 </label>
                 <input
@@ -186,13 +186,13 @@ export default function EditarPerfilAdministrador() {
                   name="adminTelefono"
                   value={adminData.adminTelefono}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
                   required
                 />
               </div>
 
               <div className="col-span-full">
-                <label htmlFor="adminCorreoElectronico" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="adminCorreoElectronico" className="block text-lg font-medium text-black mb-1">
                   <Mail className="inline-block w-4 h-4 mr-2 text-red-500" />Correo Electrónico
                 </label>
                 <input
@@ -201,7 +201,7 @@ export default function EditarPerfilAdministrador() {
                   name="adminCorreoElectronico"
                   value={adminData.adminCorreoElectronico}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
                   required
                 />
               </div>
@@ -222,7 +222,7 @@ export default function EditarPerfilAdministrador() {
                 <button
                   type="button"
                   onClick={() => navigate('/perfil')}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  className="bg-gray-200 hover:bg-gray-300 text-black font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                 >
                   Cancelar
                 </button>
