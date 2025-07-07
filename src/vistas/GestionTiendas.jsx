@@ -126,9 +126,12 @@ export default function GestionTiendas() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-2xl font-semibold text-black mb-6 text-left">
+          <h1 className="text-2xl font-semibold text-black mb-2 text-center">
             Gestión de Tiendas Físicas
           </h1>
+          <p className="text-justify text-black mb-8 text-xl">
+            Aquí puedes gestionar las tiendas físicas del sistema: crear nuevas, editar su información y eliminar registros existentes.
+          </p>
 
           <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-lg">
             <input
@@ -162,7 +165,7 @@ export default function GestionTiendas() {
               </thead>
               <tbody>
                 {filteredTiendas.map((t) => (
-                  <tr key={t.tiendIdTiendaFisica} className="border-b hover:bg-gray-50 text-black">
+                  <tr key={t.tiendIdTiendaFisica} className="hover:bg-gray-50 text-black">
                     <td className="px-6 py-4 whitespace-nowrap text-base">{t.tiendIdTiendaFisica}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-base">{t.tiendNombre}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-base">{t.tiendDireccion}</td>

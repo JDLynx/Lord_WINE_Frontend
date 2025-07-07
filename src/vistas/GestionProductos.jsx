@@ -1,203 +1,153 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import BarraProductos from "../components/BarraProductos";
+import BarraProductos from '../components/BarraProductos';
 import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 
-export default function GestionInventario() {
-  const [storeInventory, setStoreInventory] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [newQuantity, setNewQuantity] = useState(0);
+export default function GestionProductos() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [admins, setAdmins] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filtroNombre, setFiltroNombre] = useState('');
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [categoryError, setCategoryError] = useState('');
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Nuevos estados para la funcionalidad de añadir
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newInventoryItem, setNewInventoryItem] = useState({
-    prodIdProducto: '',
-    tiendIdTiendaFisica: '',
-    invTienProdCantidad: 0,
-  });
-  const [productos, setProductos] = useState([]);
-  const [tiendas, setTiendas] = useState([]);
+  const API_URL = 'http://localhost:3000/api';
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Carga de datos de inventario consolidado
-        const inventoryResponse = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto');
-        if (!inventoryResponse.ok) {
-          throw new Error('Error al obtener datos de inventario por tienda');
-        }
-        const inventoryData = await inventoryResponse.json();
+    fetch(`${API_URL}/productos`)
+      .then(res => res.json())
+      .then(setProducts)
+      .catch(err => console.error('Error al cargar productos:', err));
 
-        const mappedInventoryData = inventoryData.map(item => ({
-          invTienIdInventarioTienda: item.invTienIdInventarioTienda,
-          prodIdProducto: item.prodIdProducto,
-          producto: item.producto?.prodNombre || 'N/A',
-          tienda: item.inventarioTienda?.tiendNombre || 'N/A',
-          cantidadDisponible: item.invTienProdCantidad,
-          updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString().slice(0, 10) : 'N/A',
-        }));
-        setStoreInventory(mappedInventoryData);
+    fetch(`${API_URL}/categorias`)
+      .then(res => res.json())
+      .then(setCategories)
+      .catch(err => console.error('Error al cargar categorías:', err));
 
-        // Carga de productos para el modal de añadir
-        const productsResponse = await fetch('http://localhost:3000/api/productos');
-        if (!productsResponse.ok) {
-          throw new Error('Error al obtener productos');
-        }
-        const productsData = await productsResponse.json();
-        setProductos(productsData);
-
-        // Carga de tiendas para el modal de añadir
-        const storesResponse = await fetch('http://localhost:3000/api/tiendas-fisicas');
-        if (!storesResponse.ok) {
-          throw new Error('Error al obtener tiendas');
-        }
-        const storesData = await storesResponse.json();
-        setTiendas(storesData);
-
-      } catch (err) {
-        console.error('Error al obtener datos iniciales:', err);
-      }
-    };
-
-    fetchData();
+    fetch(`${API_URL}/administradores`)
+      .then(res => res.json())
+      .then(setAdmins)
+      .catch(err => console.error('Error al cargar administradores:', err));
   }, []);
 
-  const handleEdit = (item) => {
-    setSelectedItem(item);
-    setNewQuantity(item.cantidadDisponible);
+  const validateForm = (data) => {
+    const errors = {};
+    if (!data.prodNombre?.trim()) errors.prodNombre = 'El nombre es obligatorio.';
+    if (!data.categIdCategoria) errors.categIdCategoria = 'Debe seleccionar una categoría.';
+    if (!data.prodPrecio || parseFloat(data.prodPrecio) <= 0) errors.prodPrecio = 'El precio debe ser mayor a 0.';
+    if (!data.prodDescripcion?.trim()) errors.prodDescripcion = 'La descripción es obligatoria.';
+    if (!data.adminCodAdministrador) errors.adminCodAdministrador = 'Administrador no asignado.';
+    return errors;
+  };
+
+  const handleCreateNew = () => {
+    setCurrentProduct({
+      prodNombre: '',
+      categIdCategoria: '',
+      prodPrecio: '',
+      prodDescripcion: '',
+      adminCodAdministrador: ''
+    });
     setIsModalOpen(true);
+    setFormErrors({});
   };
 
-  const handleSave = async () => {
-    if (isNaN(newQuantity) || newQuantity < 0) {
-      alert('Ingresa una cantidad válida.');
-      return;
-    }
-
-    try {
-      const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${selectedItem.invTienIdInventarioTienda}/${selectedItem.prodIdProducto}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ invTienProdCantidad: parseInt(newQuantity) }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Error al actualizar la cantidad del producto en inventario');
-      }
-      
-      const { relacion } = await res.json(); 
-
-      setStoreInventory(prev =>
-        prev.map(i =>
-          i.invTienIdInventarioTienda === selectedItem.invTienIdInventarioTienda && i.prodIdProducto === selectedItem.prodIdProducto
-            ? {
-                ...i,
-                cantidadDisponible: relacion.invTienProdCantidad, 
-                updatedAt: relacion.updatedAt ? new Date(relacion.updatedAt).toISOString().slice(0, 10) : 'N/A',
-              }
-            : i
-        )
-      );
-
-      alert('Cantidad actualizada correctamente.');
-    } catch (err) {
-      console.error(err);
-      alert('Ocurrió un error al actualizar la cantidad: ' + err.message);
-    }
-
-    setIsModalOpen(false);
-    setSelectedItem(null);
+  const handleEdit = (product) => {
+    setCurrentProduct({ ...product });
+    setIsModalOpen(true);
+    setFormErrors({});
   };
 
-  const handleDelete = async (invTienIdInventarioTienda, prodIdProducto) => {
-    if (window.confirm('¿Estás seguro de eliminar este producto del inventario de esta tienda?')) {
+  const handleDelete = async (id) => {
+    if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
-        const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${invTienIdInventarioTienda}/${prodIdProducto}`, {
-          method: 'DELETE',
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || 'Error al eliminar el producto del inventario');
-        }
-
-        setStoreInventory(prev =>
-          prev.filter(item =>
-            !(item.invTienIdInventarioTienda === invTienIdInventarioTienda && item.prodIdProducto === prodIdProducto)
-          )
-        );
-        alert('Producto eliminado del inventario correctamente.');
+        await fetch(`${API_URL}/productos/${id}`, { method: 'DELETE' });
+        setProducts(products.filter(p => p.prodIdProducto !== id));
+        alert('Producto eliminado correctamente.');
       } catch (err) {
         console.error(err);
-        alert('Ocurrió un error al eliminar el producto del inventario: ' + err.message);
+        alert('Error al eliminar el producto.');
       }
     }
   };
 
-  const handleNewItemChange = (e) => {
-    const { name, value } = e.target;
-    setNewInventoryItem(prev => ({
-      ...prev,
-      [name]: name === 'invTienProdCantidad' ? parseInt(value) || 0 : value,
-    }));
-  };
-
-  const handleCreateSubmit = async () => {
-    const { prodIdProducto, tiendIdTiendaFisica, invTienProdCantidad } = newInventoryItem;
-
-    if (!prodIdProducto || !tiendIdTiendaFisica || isNaN(invTienProdCantidad) || invTienProdCantidad < 0) {
-      alert('Por favor, completa todos los campos y asegúrate de que la cantidad sea válida.');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errors = validateForm(currentProduct);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prodIdProducto: parseInt(prodIdProducto),
-          invTienIdInventarioTienda: parseInt(tiendIdTiendaFisica),
-          invTienProdCantidad: invTienProdCantidad,
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Error al añadir el producto al inventario');
+      if (currentProduct.prodIdProducto) {
+        const res = await fetch(`${API_URL}/productos/${currentProduct.prodIdProducto}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentProduct),
+        });
+        const data = await res.json();
+        setProducts(products.map(p => (p.prodIdProducto === data.producto.prodIdProducto ? data.producto : p)));
+        alert('Producto actualizado correctamente.');
+      } else {
+        const res = await fetch(`${API_URL}/productos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentProduct),
+        });
+        const data = await res.json();
+        setProducts([...products, data.producto]);
+        alert('Producto creado correctamente.');
       }
-
-      const { relacion } = await res.json();
-      
-      // Para mostrar el nombre del producto y la tienda en la tabla, necesitamos buscarlos
-      const productoNombre = productos.find(p => p.prodIdProducto === parseInt(relacion.prodIdProducto))?.prodNombre || 'N/A';
-      const tiendaNombre = tiendas.find(t => t.tiendIdTiendaFisica === parseInt(relacion.invTienIdInventarioTienda))?.tiendNombre || 'N/A';
-
-      setStoreInventory(prev => [
-        ...prev,
-        {
-          invTienIdInventarioTienda: relacion.invTienIdInventarioTienda,
-          prodIdProducto: relacion.prodIdProducto,
-          producto: productoNombre,
-          tienda: tiendaNombre,
-          cantidadDisponible: relacion.invTienProdCantidad,
-          empleado: 'N/A', // O el valor que corresponda si lo obtienes de otra API
-          updatedAt: relacion.updatedAt ? new Date(relacion.updatedAt).toISOString().slice(0, 10) : 'N/A',
-        },
-      ]);
-
-      alert('Producto añadido al inventario correctamente.');
-      setShowAddModal(false);
-      setNewInventoryItem({ prodIdProducto: '', tiendIdTiendaFisica: '', invTienProdCantidad: 0 });
+      setIsModalOpen(false);
     } catch (err) {
       console.error(err);
-      alert('Ocurrió un error al añadir el producto al inventario: ' + err.message);
+      alert('Error al guardar el producto.');
     }
   };
 
+  const handleCategorySubmit = async (e) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) {
+      setCategoryError('El nombre de la categoría es obligatorio.');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/categorias`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ catNombre: newCategoryName }),
+      });
+      const data = await res.json();
+      setCategories([...categories, data.categoria]);
+      setNewCategoryName('');
+      setShowCategoryModal(false);
+      alert('Categoría creada correctamente.');
+    } catch (err) {
+      console.error(err);
+      alert('Error al crear la categoría.');
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentProduct(prev => ({ ...prev, [name]: value }));
+    setFormErrors(prev => ({ ...prev, [name]: undefined }));
+  };
+
+  const filteredProducts = products.filter(p =>
+    p.prodNombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const getCategoryName = (id) => {
+    const cat = categories.find(c => c.categIdCategoria === id);
+    return cat ? cat.catNombre : 'Desconocida';
+  };
 
   return (
     <div className="page-container">
@@ -205,184 +155,162 @@ export default function GestionInventario() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-3xl font-semibold text-black mb-8 text-center">Gestión de Inventarios</h1>
+          <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Categorías y Productos</h1>
+          <p className="text-justify text-black mb-8 text-xl">
+            Aquí puedes gestionar los productos y sus categorías: crear nuevos productos y categorías, editar su información y eliminar registros existentes.
+          </p>
 
-          <div className="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <input
               type="text"
-              placeholder="Buscar por nombre de producto"
-              value={filtroNombre}
-              onChange={(e) => setFiltroNombre(e.target.value)}
-              className="w-full sm:max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-700 text-black text-lg"
+              placeholder="Buscar por nombre"
+              className="w-full sm:max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-xl"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 shadow-md"
-            >
-              <PlusCircle size={20} />
-              <span>Añadir Producto a Tienda</span>
-            </button>
+            <div className="flex space-x-4 mt-4 sm:mt-0">
+              <button
+                onClick={handleCreateNew}
+                className="bg-[#921913] hover:bg-[#801010] text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-xl"
+              >
+                <PlusCircle size={20} />
+                <span>Nuevo Producto</span>
+              </button>
+              <button
+                onClick={() => setShowCategoryModal(true)}
+                className="bg-[#921913] hover:bg-[#801010] text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-xl"
+              >
+                <PlusCircle size={20} />
+                <span>Nueva Categoría</span>
+              </button>
+            </div>
           </div>
 
-          <section>
-            <h2 className="text-xl font-bold text-black mb-4">Inventario por Tienda</h2>
-            <div className="overflow-auto max-h-[400px] rounded-lg shadow-md">
-              <table className="min-w-full bg-white">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">ID Producto</th> 
-                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">Producto</th>
-                    <th className="px-4 py-2 text-center text-lg font-semibold text-black">Cantidad Disponible</th>
-                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">Tienda</th>
-                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">Última Actualización</th>
-                    <th className="px-4 py-2 text-center text-lg font-semibold text-black">Acciones</th>
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg border border-gray-200">
+            <table className="min-w-full bg-white">
+              <thead className="bg-gray-100 sticky top-0 z-10">
+                <tr>
+                  <th className="px-6 py-3 text-left text-lg font-medium text-black">ID</th>
+                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Nombre</th>
+                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Categoría</th>
+                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Precio</th>
+                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Descripción</th>
+                  <th className="px-6 py-3 text-center text-lg font-medium text-black">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredProducts.map(product => (
+                  <tr key={product.prodIdProducto} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-base text-left text-black">{product.prodIdProducto}</td>
+                    <td className="px-6 py-4 text-base text-left text-black">{product.prodNombre}</td>
+                    <td className="px-6 py-4 text-base text-left text-black">{getCategoryName(product.categIdCategoria)}</td>
+                    <td className="px-6 py-4 text-base text-left text-black">${parseFloat(product.prodPrecio).toFixed(2)}</td>
+                    <td className="px-6 py-4 text-base text-left text-black">{product.prodDescripcion}</td>
+                    <td className="px-6 py-4 text-base text-center">
+                      <div className="flex justify-center space-x-3">
+                        <button onClick={() => handleEdit(product)} className="text-blue-600 hover:text-blue-900">
+                          <Edit size={18} />
+                        </button>
+                        <button onClick={() => handleDelete(product.prodIdProducto)} className="text-red-600 hover:text-red-900">
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {storeInventory
-                    .filter(item => item.producto.toLowerCase().includes(filtroNombre.toLowerCase()))
-                    .map(item => (
-                      <tr key={`${item.invTienIdInventarioTienda}-${item.prodIdProducto}`} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-black text-left text-base">{item.prodIdProducto}</td>
-                        <td className="px-4 py-2 text-black text-left text-base">{item.producto}</td>
-                        <td className="px-4 py-2 text-black text-center text-base">{item.cantidadDisponible}</td>
-                        <td className="px-4 py-2 text-black text-left text-base">{item.tienda}</td>
-                        <td className="px-4 py-2 text-black text-left text-base">{item.updatedAt}</td>
-                        <td className="px-4 py-2 text-center text-base">
-                          <div className="flex justify-center space-x-3">
-                            <button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800">
-                              <Edit size={18} />
-                            </button>
-                            <button onClick={() => handleDelete(item.invTienIdInventarioTienda, item.prodIdProducto)} className="text-red-600 hover:text-red-800">
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-          {/* Modal para Editar Cantidad */}
-          {isModalOpen && selectedItem && (
+          {isModalOpen && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
-              <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
-                <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
-                  Editar cantidad de "{selectedItem.producto}" en "{selectedItem.tienda}"
+              <div className="relative p-8 bg-white w-full max-w-lg mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-black mb-6 text-center">
+                  {currentProduct.prodIdProducto ? 'Editar Producto' : 'Crear Nuevo Producto'}
                 </h2>
-                <div className="mb-6">
-                  <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
-                    Nueva Cantidad:
-                  </label>
-                  <input
-                    type="number"
-                    id="quantity"
-                    value={newQuantity}
-                    onChange={(e) => setNewQuantity(parseInt(e.target.value) || 0)}
-                    className="w-full border px-3 py-2 rounded text-black"
-                  />
-                </div>
-                <div className="flex justify-end space-x-3">
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
-                  >
-                    <XCircle size={20} />
-                    <span>Cancelar</span>
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
-                  >
-                    <Save size={20} />
-                    <span>Guardar</span>
-                  </button>
-                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <input type="text" name="prodNombre" placeholder="Nombre" value={currentProduct.prodNombre}
+                    onChange={handleChange} className="w-full border px-3 py-2 rounded text-black" />
+                  {formErrors.prodNombre && <p className="text-red-500 text-sm">{formErrors.prodNombre}</p>}
+
+                  <select name="categIdCategoria" value={currentProduct.categIdCategoria}
+                    onChange={handleChange} className="w-full border px-3 py-2 rounded text-black bg-white">
+                    <option value="">Seleccione una categoría</option>
+                    {categories.map(cat => (
+                      <option key={cat.categIdCategoria} value={cat.categIdCategoria}>{cat.catNombre}</option>
+                    ))}
+                  </select>
+                  {formErrors.categIdCategoria && <p className="text-red-500 text-sm">{formErrors.categIdCategoria}</p>}
+
+                  <input type="number" name="prodPrecio" placeholder="Precio" value={currentProduct.prodPrecio}
+                    onChange={handleChange} className="w-full border px-3 py-2 rounded text-black" />
+                  {formErrors.prodPrecio && <p className="text-red-500 text-sm">{formErrors.prodPrecio}</p>}
+
+                  <textarea name="prodDescripcion" placeholder="Descripción" value={currentProduct.prodDescripcion}
+                    onChange={handleChange} className="w-full border px-3 py-2 rounded text-black" />
+                  {formErrors.prodDescripcion && <p className="text-red-500 text-sm">{formErrors.prodDescripcion}</p>}
+
+                  <select name="adminCodAdministrador" value={currentProduct.adminCodAdministrador}
+                    onChange={handleChange} className="w-full border px-3 py-2 rounded text-black bg-white">
+                    <option value="">Seleccione un administrador</option>
+                    {admins.map(admin => (
+                      <option key={admin.adminCodAdministrador} value={admin.adminCodAdministrador}>
+                        {admin.adminNombre}
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.adminCodAdministrador && <p className="text-red-500 text-sm">{formErrors.adminCodAdministrador}</p>}
+
+                  <div className="flex justify-end space-x-3">
+                    <button type="button" onClick={() => setIsModalOpen(false)}
+                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2">
+                      <XCircle size={20} />
+                      <span>Cancelar</span>
+                    </button>
+                    <button type="submit" className="bg-[#921913] hover:bg-[#801010] text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2">
+                      <Save size={20} />
+                      <span>{currentProduct.prodIdProducto ? 'Guardar' : 'Crear'}</span>
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}
 
-          {/* Modal para Añadir Nuevo Producto a Tienda */}
-          {showAddModal && (
+          {showCategoryModal && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
-                <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
-                  Añadir Producto a Inventario de Tienda
-                </h2>
-                <div className="mb-4">
-                  <label htmlFor="select-product" className="block text-sm font-medium text-gray-700 mb-1">
-                    Producto:
-                  </label>
-                  <select
-                    id="select-product"
-                    name="prodIdProducto"
-                    value={newInventoryItem.prodIdProducto}
-                    onChange={handleNewItemChange}
-                    className="w-full border px-3 py-2 rounded text-black bg-white"
-                  >
-                    <option value="">Selecciona un producto</option>
-                    {productos.map(p => (
-                      <option key={p.prodIdProducto} value={p.prodIdProducto}>
-                        {p.prodNombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="select-store" className="block text-sm font-medium text-gray-700 mb-1">
-                    Tienda:
-                  </label>
-                  <select
-                    id="select-store"
-                    name="tiendIdTiendaFisica"
-                    value={newInventoryItem.tiendIdTiendaFisica}
-                    onChange={handleNewItemChange}
-                    className="w-full border px-3 py-2 rounded text-black bg-white"
-                  >
-                    <option value="">Selecciona una tienda</option>
-                    {tiendas.map(t => (
-                      <option key={t.tiendIdTiendaFisica} value={t.tiendIdTiendaFisica}>
-                        {t.tiendNombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-6">
-                  <label htmlFor="add-quantity" className="block text-sm font-medium text-gray-700 mb-1">
-                    Cantidad:
-                  </label>
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Crear Nueva Categoría</h2>
+                <form onSubmit={handleCategorySubmit} className="space-y-4">
                   <input
-                    type="number"
-                    id="add-quantity"
-                    name="invTienProdCantidad"
-                    value={newInventoryItem.invTienProdCantidad}
-                    onChange={handleNewItemChange}
+                    type="text"
+                    placeholder="Nombre de la categoría"
+                    value={newCategoryName}
+                    onChange={(e) => { setNewCategoryName(e.target.value); setCategoryError(''); }}
                     className="w-full border px-3 py-2 rounded text-black"
                   />
-                </div>
-                <div className="flex justify-end space-x-3">
-                  <button
-                    onClick={() => {
-                      setShowAddModal(false);
-                      setNewInventoryItem({ prodIdProducto: '', tiendIdTiendaFisica: '', invTienProdCantidad: 0 });
-                    }}
-                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
-                  >
-                    <XCircle size={20} />
-                    <span>Cancelar</span>
-                  </button>
-                  <button
-                    onClick={handleCreateSubmit}
-                    className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
-                  >
-                    <Save size={20} />
-                    <span>Añadir</span>
-                  </button>
-                </div>
+                  {categoryError && <p className="text-red-500 text-sm">{categoryError}</p>}
+
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => { setShowCategoryModal(false); setNewCategoryName(''); setCategoryError(''); }}
+                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                    >
+                      <XCircle size={20} />
+                      <span>Cancelar</span>
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#921913] hover:bg-[#801010] text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                    >
+                      <Save size={20} />
+                      <span>Crear</span>
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}
