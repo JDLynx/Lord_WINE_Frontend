@@ -58,7 +58,6 @@ import PerfilCliente from "./vistas/PerfilCliente";
 import MisPedidos from "./vistas/MisPedidos";
 import CatalogoProductos from "./vistas/CatalogoProductos";
 import MisServiciosEmpresariales from "./vistas/MisServiciosEmpresariales";
-import MisTiendasFisicas from "./vistas/MisTiendasFisicas";
 import EditarPerfilCliente from "./vistas/EditarPerfilCliente";
 import CambiarContraseñaCliente from "./vistas/CambiarContraseñaCliente";
 
@@ -122,7 +121,6 @@ function App() {
         <Route path="/mis-pedidos" element={<MisPedidos />} />
         <Route path="/catalogo-productos" element={<CatalogoProductos />} />
         <Route path="/mis-servicios-empresariales" element={<MisServiciosEmpresariales />} />
-        <Route path="/mis-tiendas-fisicas" element={<MisTiendasFisicas />} />
         <Route path="/editar-perfil-cliente" element={<EditarPerfilCliente />} />
         <Route path="/cambiar-contrasena-cliente" element={<CambiarContraseñaCliente />} />
       </Routes>
