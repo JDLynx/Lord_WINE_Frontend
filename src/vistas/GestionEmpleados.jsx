@@ -133,21 +133,21 @@ export default function GestionEmpleados() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">
+          <h1 className="text-2xl font-semibold text-black mb-8 text-center">
             Gestión de Empleados
           </h1>
 
           <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6 gap-4">
             <input
               type="text"
-              placeholder="Buscar por nombre..."
-              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left"
+              placeholder="Buscar por nombre"
+              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left text-lg"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
             <button
               onClick={handleCreateNew}
-              className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2"
+              className="bg-[#921913] hover:bg-[#801010] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-lg"
             >
               <PlusCircle size={20} />
               <span>Nuevo Empleado</span>
@@ -158,30 +158,30 @@ export default function GestionEmpleados() {
             <table className="min-w-full bg-white text-black">
               <thead className="bg-gray-100 sticky top-0">
                 <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">ID</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Identificación</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Nombre</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Dirección</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Correo electrónico</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Teléfono</th>
-                  <th className="px-4 py-2 text-center text-xs font-medium text-gray-600">Acciones</th>
+                  <th className="px-4 py-2 text-left text-lg font-medium text-black">ID</th>
+                  <th className="px-4 py-2 text-left text-lg font-medium text-black">Identificación</th>
+                  <th className="px-4 py-2 text-left text-lg font-medium text-black">Nombre</th>
+                  <th className="px-4 py-2 text-left text-lg font-medium text-black">Dirección</th>
+                  <th className="px-4 py-2 text-left text-lg font-medium text-black">Correo electrónico</th>
+                  <th className="px-4 py-2 text-left text-lg font-medium text-black">Teléfono</th>
+                  <th className="px-4 py-2 text-center text-lg font-medium text-black">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(emp => (
                   <tr key={emp.emplCodEmpleado} className="border-b">
-                    <td className="px-4 py-2 text-left">{emp.emplCodEmpleado}</td>
-                    <td className="px-4 py-2 text-left">{emp.emplIdEmpleado}</td>
-                    <td className="px-4 py-2 text-left whitespace-nowrap">{emp.emplNombre}</td>
-                    <td className="px-4 py-2 text-left break-words max-w-[250px] whitespace-normal">{emp.emplDireccion}</td>
-                    <td className="px-4 py-2 text-left">{emp.emplCorreoElectronico}</td>
-                    <td className="px-4 py-2 text-left">{emp.emplTelefono}</td>
+                    <td className="px-4 py-2 text-left text-base">{emp.emplCodEmpleado}</td>
+                    <td className="px-4 py-2 text-left text-base">{emp.emplIdEmpleado}</td>
+                    <td className="px-4 py-2 text-left whitespace-nowrap text-base">{emp.emplNombre}</td>
+                    <td className="px-4 py-2 text-left break-words max-w-[250px] whitespace-normal text-base">{emp.emplDireccion}</td>
+                    <td className="px-4 py-2 text-left text-base">{emp.emplCorreoElectronico}</td>
+                    <td className="px-4 py-2 text-left text-base">{emp.emplTelefono}</td>
                     <td className="px-4 py-2 text-center">
                       <div className="flex justify-center gap-4">
-                        <button onClick={() => handleEdit(emp)} className="text-blue-600 hover:text-blue-800">
+                        <button onClick={() => handleEdit(emp)} className="text-[#1D4ED8] hover:text-blue-700">
                           <Edit size={18} />
                         </button>
-                        <button onClick={() => handleDelete(emp.emplCodEmpleado)} className="text-red-600 hover:text-red-800">
+                        <button onClick={() => handleDelete(emp.emplCodEmpleado)} className="text-[#921913] hover:text-[#801010]">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -197,11 +197,11 @@ export default function GestionEmpleados() {
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative z-10">
-                <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+                <h2 className="text-xl font-bold text-center mb-4 text-black">
                   {currentEmployee.emplCodEmpleado ? 'Editar Empleado' : 'Nuevo Empleado'}
                 </h2>
                 <form onSubmit={handleSubmit}>
-                  <input type="text" name="emplIdEmpleado" placeholder="ID / Documento" value={currentEmployee.emplIdEmpleado}
+                  <input type="text" name="emplIdEmpleado" placeholder="Documento" value={currentEmployee.emplIdEmpleado}
                     onChange={handleChange} className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.emplIdEmpleado && <p className="text-red-500 text-sm">{formErrors.emplIdEmpleado}</p>}
 
@@ -232,10 +232,10 @@ export default function GestionEmpleados() {
                   )}
 
                   <div className="flex justify-end gap-4 mt-4">
-                    <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-gray-800">
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black">
                       <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>
-                    <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
+                    <button type="submit" className="bg-[#921913] text-white px-4 py-2 rounded hover:bg-[#801010]">
                       <Save size={18} className="inline mr-1" /> {currentEmployee.emplCodEmpleado ? 'Guardar' : 'Crear'}
                     </button>
                   </div>

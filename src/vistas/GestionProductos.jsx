@@ -2,253 +2,393 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-import { PlusCircle, Edit, Trash2, Save, XCircle, Package, Tag, DollarSign, Archive } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 
-export default function GestionProductos() {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+export default function GestionInventario() {
+  const [storeInventory, setStoreInventory] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [newQuantity, setNewQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  const [formErrors, setFormErrors] = useState({});
+  const [filtroNombre, setFiltroNombre] = useState('');
+
+  // Nuevos estados para la funcionalidad de añadir
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newInventoryItem, setNewInventoryItem] = useState({
+    prodIdProducto: '',
+    tiendIdTiendaFisica: '',
+    invTienProdCantidad: 0,
+  });
+  const [productos, setProductos] = useState([]);
+  const [tiendas, setTiendas] = useState([]);
 
   useEffect(() => {
-    const simulatedProducts = [
-      { id: 'PROD001', name: 'Vino Tinto Reserva', category: 'Vinos', price: 15.99, stock: 120, description: 'Un vino elegante y con cuerpo.' },
-      { id: 'PROD002', name: 'Crema de Whisky Clásica', category: 'Cremas Whisky', price: 22.50, stock: 75, description: 'Suave crema irlandesa.' },
-      { id: 'PROD003', name: 'Mistela Artesanal Dulce', category: 'Mistelas', price: 9.90, stock: 200, description: 'Licor tradicional de uva.' },
-      { id: 'PROD004', name: 'Zumo de Uva Natural', category: 'Zumo', price: 4.00, stock: 300, description: 'Zumo 100% natural.' },
-      { id: 'PROD005', name: 'Sacacorchos Premium', category: 'Accesorios', price: 7.25, stock: 150, description: 'Sacacorchos de alta calidad.' },
-    ];
-    const simulatedCategories = ['Vinos', 'Cremas Whisky', 'Mistelas', 'Zumo', 'Accesorios', 'Licores'];
+    const fetchData = async () => {
+      try {
+        // Carga de datos de inventario consolidado
+        const inventoryResponse = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto');
+        if (!inventoryResponse.ok) {
+          throw new Error('Error al obtener datos de inventario por tienda');
+        }
+        const inventoryData = await inventoryResponse.json();
 
-    setProducts(simulatedProducts);
-    setCategories(simulatedCategories);
+        const mappedInventoryData = inventoryData.map(item => ({
+          invTienIdInventarioTienda: item.invTienIdInventarioTienda,
+          prodIdProducto: item.prodIdProducto,
+          producto: item.producto?.prodNombre || 'N/A',
+          tienda: item.inventarioTienda?.tiendNombre || 'N/A',
+          cantidadDisponible: item.invTienProdCantidad,
+          updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString().slice(0, 10) : 'N/A',
+        }));
+        setStoreInventory(mappedInventoryData);
+
+        // Carga de productos para el modal de añadir
+        const productsResponse = await fetch('http://localhost:3000/api/productos');
+        if (!productsResponse.ok) {
+          throw new Error('Error al obtener productos');
+        }
+        const productsData = await productsResponse.json();
+        setProductos(productsData);
+
+        // Carga de tiendas para el modal de añadir
+        const storesResponse = await fetch('http://localhost:3000/api/tiendas-fisicas');
+        if (!storesResponse.ok) {
+          throw new Error('Error al obtener tiendas');
+        }
+        const storesData = await storesResponse.json();
+        setTiendas(storesData);
+
+      } catch (err) {
+        console.error('Error al obtener datos iniciales:', err);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const validateForm = (data) => {
-    const errors = {};
-    if (!data.name || data.name.trim() === '') errors.name = 'El nombre es obligatorio.';
-    if (!data.category || data.category.trim() === '') errors.category = 'La categoría es obligatoria.';
-    if (isNaN(parseFloat(data.price)) || parseFloat(data.price) <= 0) errors.price = 'El precio debe ser un número positivo.';
-    if (isNaN(parseInt(data.stock)) || parseInt(data.stock) < 0) errors.stock = 'El stock debe ser un número no negativo.';
-    return errors;
-  };
-
-  const handleCreateNew = () => {
-    setCurrentProduct({ id: '', name: '', category: '', price: '', stock: '', description: '' });
+  const handleEdit = (item) => {
+    setSelectedItem(item);
+    setNewQuantity(item.cantidadDisponible);
     setIsModalOpen(true);
-    setFormErrors({});
   };
 
-  const handleEdit = (product) => {
-    setCurrentProduct({ ...product });
-    setIsModalOpen(true);
-    setFormErrors({});
-  };
-
-  const handleDelete = (productId) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar el producto con ID: ${productId}?`)) {
-      setProducts(products.filter(product => product.id !== productId));
-      alert('Producto eliminado (simulado).');
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errors = validateForm(currentProduct);
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
+  const handleSave = async () => {
+    if (isNaN(newQuantity) || newQuantity < 0) {
+      alert('Ingresa una cantidad válida.');
       return;
     }
 
-    if (currentProduct.id) {
-      setProducts(products.map(product =>
-        product.id === currentProduct.id ? { ...currentProduct, price: parseFloat(currentProduct.price), stock: parseInt(currentProduct.stock) } : product
-      ));
-      alert('Producto actualizado (simulado).');
-    } else {
-      const newId = `PROD${String(products.length + 1).padStart(3, '0')}`;
-      setProducts([...products, { ...currentProduct, id: newId, price: parseFloat(currentProduct.price), stock: parseInt(currentProduct.stock) }]);
-      alert('Nuevo producto creado (simulado).');
+    try {
+      const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${selectedItem.invTienIdInventarioTienda}/${selectedItem.prodIdProducto}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ invTienProdCantidad: parseInt(newQuantity) }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al actualizar la cantidad del producto en inventario');
+      }
+      
+      const { relacion } = await res.json(); 
+
+      setStoreInventory(prev =>
+        prev.map(i =>
+          i.invTienIdInventarioTienda === selectedItem.invTienIdInventarioTienda && i.prodIdProducto === selectedItem.prodIdProducto
+            ? {
+                ...i,
+                cantidadDisponible: relacion.invTienProdCantidad, 
+                updatedAt: relacion.updatedAt ? new Date(relacion.updatedAt).toISOString().slice(0, 10) : 'N/A',
+              }
+            : i
+        )
+      );
+
+      alert('Cantidad actualizada correctamente.');
+    } catch (err) {
+      console.error(err);
+      alert('Ocurrió un error al actualizar la cantidad: ' + err.message);
     }
+
     setIsModalOpen(false);
+    setSelectedItem(null);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentProduct(prev => ({ ...prev, [name]: value }));
-    setFormErrors(prev => ({ ...prev, [name]: undefined }));
+  const handleDelete = async (invTienIdInventarioTienda, prodIdProducto) => {
+    if (window.confirm('¿Estás seguro de eliminar este producto del inventario de esta tienda?')) {
+      try {
+        const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${invTienIdInventarioTienda}/${prodIdProducto}`, {
+          method: 'DELETE',
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Error al eliminar el producto del inventario');
+        }
+
+        setStoreInventory(prev =>
+          prev.filter(item =>
+            !(item.invTienIdInventarioTienda === invTienIdInventarioTienda && item.prodIdProducto === prodIdProducto)
+          )
+        );
+        alert('Producto eliminado del inventario correctamente.');
+      } catch (err) {
+        console.error(err);
+        alert('Ocurrió un error al eliminar el producto del inventario: ' + err.message);
+      }
+    }
   };
+
+  const handleNewItemChange = (e) => {
+    const { name, value } = e.target;
+    setNewInventoryItem(prev => ({
+      ...prev,
+      [name]: name === 'invTienProdCantidad' ? parseInt(value) || 0 : value,
+    }));
+  };
+
+  const handleCreateSubmit = async () => {
+    const { prodIdProducto, tiendIdTiendaFisica, invTienProdCantidad } = newInventoryItem;
+
+    if (!prodIdProducto || !tiendIdTiendaFisica || isNaN(invTienProdCantidad) || invTienProdCantidad < 0) {
+      alert('Por favor, completa todos los campos y asegúrate de que la cantidad sea válida.');
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prodIdProducto: parseInt(prodIdProducto),
+          invTienIdInventarioTienda: parseInt(tiendIdTiendaFisica),
+          invTienProdCantidad: invTienProdCantidad,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al añadir el producto al inventario');
+      }
+
+      const { relacion } = await res.json();
+      
+      // Para mostrar el nombre del producto y la tienda en la tabla, necesitamos buscarlos
+      const productoNombre = productos.find(p => p.prodIdProducto === parseInt(relacion.prodIdProducto))?.prodNombre || 'N/A';
+      const tiendaNombre = tiendas.find(t => t.tiendIdTiendaFisica === parseInt(relacion.invTienIdInventarioTienda))?.tiendNombre || 'N/A';
+
+      setStoreInventory(prev => [
+        ...prev,
+        {
+          invTienIdInventarioTienda: relacion.invTienIdInventarioTienda,
+          prodIdProducto: relacion.prodIdProducto,
+          producto: productoNombre,
+          tienda: tiendaNombre,
+          cantidadDisponible: relacion.invTienProdCantidad,
+          empleado: 'N/A', // O el valor que corresponda si lo obtienes de otra API
+          updatedAt: relacion.updatedAt ? new Date(relacion.updatedAt).toISOString().slice(0, 10) : 'N/A',
+        },
+      ]);
+
+      alert('Producto añadido al inventario correctamente.');
+      setShowAddModal(false);
+      setNewInventoryItem({ prodIdProducto: '', tiendIdTiendaFisica: '', invTienProdCantidad: 0 });
+    } catch (err) {
+      console.error(err);
+      alert('Ocurrió un error al añadir el producto al inventario: ' + err.message);
+    }
+  };
+
 
   return (
-    <>
-      <div className="page-container">
-        <Header />
-        <BarraProductos />
-        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Gestión de Categorías y Productos</h1>
-            <p className="text-center text-gray-600 text-lg mb-8">
-              Crea, actualiza y organiza tus productos y sus categorías.
-            </p>
+    <div className="page-container">
+      <Header />
+      <BarraProductos />
+      <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
+        <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+          <h1 className="text-3xl font-semibold text-black mb-8 text-center">Gestión de Inventarios</h1>
 
-            <div className="flex justify-end mb-6">
-              <button
-                onClick={handleCreateNew}
-                className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md transition-colors duration-200 flex items-center space-x-2"
-              >
-                <PlusCircle size={20} />
-                <span>Nuevo Producto</span>
-              </button>
-            </div>
+          <div className="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <input
+              type="text"
+              placeholder="Buscar por nombre de producto"
+              value={filtroNombre}
+              onChange={(e) => setFiltroNombre(e.target.value)}
+              className="w-full sm:max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-700 text-black text-lg"
+            />
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 shadow-md"
+            >
+              <PlusCircle size={20} />
+              <span>Añadir Producto a Tienda</span>
+            </button>
+          </div>
 
-            {products.length > 0 ? (
-              <div className="overflow-x-auto rounded-lg shadow-md">
-                <table className="min-w-full bg-white">
-                  <thead className="bg-gray-100 border-b border-gray-200">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Nombre</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Categoría</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Precio</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Stock</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {products.map((product) => (
-                      <tr key={product.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.name}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.category}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${product.price.toFixed(2)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{product.stock}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+          <section>
+            <h2 className="text-xl font-bold text-black mb-4">Inventario por Tienda</h2>
+            <div className="overflow-auto max-h-[400px] rounded-lg shadow-md">
+              <table className="min-w-full bg-white">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">ID Producto</th> 
+                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">Producto</th>
+                    <th className="px-4 py-2 text-center text-lg font-semibold text-black">Cantidad Disponible</th>
+                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">Tienda</th>
+                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">Última Actualización</th>
+                    <th className="px-4 py-2 text-center text-lg font-semibold text-black">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {storeInventory
+                    .filter(item => item.producto.toLowerCase().includes(filtroNombre.toLowerCase()))
+                    .map(item => (
+                      <tr key={`${item.invTienIdInventarioTienda}-${item.prodIdProducto}`} className="hover:bg-gray-50">
+                        <td className="px-4 py-2 text-black text-left text-base">{item.prodIdProducto}</td>
+                        <td className="px-4 py-2 text-black text-left text-base">{item.producto}</td>
+                        <td className="px-4 py-2 text-black text-center text-base">{item.cantidadDisponible}</td>
+                        <td className="px-4 py-2 text-black text-left text-base">{item.tienda}</td>
+                        <td className="px-4 py-2 text-black text-left text-base">{item.updatedAt}</td>
+                        <td className="px-4 py-2 text-center text-base">
                           <div className="flex justify-center space-x-3">
-                            <button
-                              onClick={() => handleEdit(product)}
-                              className="text-blue-600 hover:text-blue-900 transition-colors duration-200"
-                              title="Editar"
-                            >
+                            <button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800">
                               <Edit size={18} />
                             </button>
-                            <button
-                              onClick={() => handleDelete(product.id)}
-                              className="text-red-600 hover:text-red-900 transition-colors duration-200"
-                              title="Eliminar"
-                            >
+                            <button onClick={() => handleDelete(item.invTienIdInventarioTienda, item.prodIdProducto)} className="text-red-600 hover:text-red-800">
                               <Trash2 size={18} />
                             </button>
                           </div>
                         </td>
                       </tr>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-center text-gray-500 mt-8">No hay productos registrados.</p>
-            )}
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-            {isModalOpen && (
-              <div className="fixed inset-0 flex justify-center items-center z-50">
-                <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
-                <div className="relative p-8 bg-white w-full max-w-lg mx-auto rounded-lg shadow-xl z-10">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                    {currentProduct.id ? 'Editar Producto' : 'Crear Nuevo Producto'}
-                  </h2>
-                  <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={currentProduct?.name || ''}
-                          onChange={handleChange}
-                          className={`shadow appearance-none border ${formErrors.name ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                        />
-                        {formErrors.name && <p className="text-red-500 text-xs italic mt-1">{formErrors.name}</p>}
-                      </div>
-                      <div>
-                        <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">Categoría:</label>
-                        <select
-                          id="category"
-                          name="category"
-                          value={currentProduct?.category || ''}
-                          onChange={handleChange}
-                          className={`shadow appearance-none border ${formErrors.category ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                        >
-                          <option value="">Selecciona una categoría</option>
-                          {categories.map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                          ))}
-                        </select>
-                        {formErrors.category && <p className="text-red-500 text-xs italic mt-1">{formErrors.category}</p>}
-                      </div>
-                      <div>
-                        <label htmlFor="price" className="block text-gray-700 text-sm font-bold mb-2">Precio:</label>
-                        <input
-                          type="number"
-                          id="price"
-                          name="price"
-                          value={currentProduct?.price || ''}
-                          onChange={handleChange}
-                          step="0.01"
-                          className={`shadow appearance-none border ${formErrors.price ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                        />
-                        {formErrors.price && <p className="text-red-500 text-xs italic mt-1">{formErrors.price}</p>}
-                      </div>
-                      <div>
-                        <label htmlFor="stock" className="block text-gray-700 text-sm font-bold mb-2">Stock:</label>
-                        <input
-                          type="number"
-                          id="stock"
-                          name="stock"
-                          value={currentProduct?.stock || ''}
-                          onChange={handleChange}
-                          className={`shadow appearance-none border ${formErrors.stock ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
-                        />
-                        {formErrors.stock && <p className="text-red-500 text-xs italic mt-1">{formErrors.stock}</p>}
-                      </div>
-                    </div>
-                    <div className="mb-6">
-                      <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        value={currentProduct?.description || ''}
-                        onChange={handleChange}
-                        rows="3"
-                        className="shadow appearance-none border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                      ></textarea>
-                    </div>
-                    <div className="flex justify-end space-x-4">
-                      <button
-                        type="button"
-                        onClick={() => setIsModalOpen(false)}
-                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
-                      >
-                        <XCircle size={20} />
-                        <span>Cancelar</span>
-                      </button>
-                      <button
-                        type="submit"
-                        className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
-                      >
-                        <Save size={20} />
-                        <span>{currentProduct.id ? 'Guardar Cambios' : 'Crear'}</span>
-                      </button>
-                    </div>
-                  </form>
+          {/* Modal para Editar Cantidad */}
+          {isModalOpen && selectedItem && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+                  Editar cantidad de "{selectedItem.producto}" en "{selectedItem.tienda}"
+                </h2>
+                <div className="mb-6">
+                  <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
+                    Nueva Cantidad:
+                  </label>
+                  <input
+                    type="number"
+                    id="quantity"
+                    value={newQuantity}
+                    onChange={(e) => setNewQuantity(parseInt(e.target.value) || 0)}
+                    className="w-full border px-3 py-2 rounded text-black"
+                  />
+                </div>
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <XCircle size={20} />
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <Save size={20} />
+                    <span>Guardar</span>
+                  </button>
                 </div>
               </div>
-            )}
-          </div>
-        </main>
-        <Footer />
-      </div>
-    </>
+            </div>
+          )}
+
+          {/* Modal para Añadir Nuevo Producto a Tienda */}
+          {showAddModal && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+                  Añadir Producto a Inventario de Tienda
+                </h2>
+                <div className="mb-4">
+                  <label htmlFor="select-product" className="block text-sm font-medium text-gray-700 mb-1">
+                    Producto:
+                  </label>
+                  <select
+                    id="select-product"
+                    name="prodIdProducto"
+                    value={newInventoryItem.prodIdProducto}
+                    onChange={handleNewItemChange}
+                    className="w-full border px-3 py-2 rounded text-black bg-white"
+                  >
+                    <option value="">Selecciona un producto</option>
+                    {productos.map(p => (
+                      <option key={p.prodIdProducto} value={p.prodIdProducto}>
+                        {p.prodNombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="select-store" className="block text-sm font-medium text-gray-700 mb-1">
+                    Tienda:
+                  </label>
+                  <select
+                    id="select-store"
+                    name="tiendIdTiendaFisica"
+                    value={newInventoryItem.tiendIdTiendaFisica}
+                    onChange={handleNewItemChange}
+                    className="w-full border px-3 py-2 rounded text-black bg-white"
+                  >
+                    <option value="">Selecciona una tienda</option>
+                    {tiendas.map(t => (
+                      <option key={t.tiendIdTiendaFisica} value={t.tiendIdTiendaFisica}>
+                        {t.tiendNombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-6">
+                  <label htmlFor="add-quantity" className="block text-sm font-medium text-gray-700 mb-1">
+                    Cantidad:
+                  </label>
+                  <input
+                    type="number"
+                    id="add-quantity"
+                    name="invTienProdCantidad"
+                    value={newInventoryItem.invTienProdCantidad}
+                    onChange={handleNewItemChange}
+                    className="w-full border px-3 py-2 rounded text-black"
+                  />
+                </div>
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowAddModal(false);
+                      setNewInventoryItem({ prodIdProducto: '', tiendIdTiendaFisica: '', invTienProdCantidad: 0 });
+                    }}
+                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <XCircle size={20} />
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={handleCreateSubmit}
+                    className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <Save size={20} />
+                    <span>Añadir</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 }

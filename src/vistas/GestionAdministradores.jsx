@@ -160,22 +160,22 @@ export default function GestionAdministradores() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Gestión de Administradores</h1>
+          <h1 className="text-2xl font-semibold text-black mb-8 text-center">Gestión de Administradores</h1>
 
           <div className="flex justify-between items-center mb-6">
             <input
               type="text"
-              placeholder="Buscar por nombre..."
-              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black"
+              placeholder="Buscar por nombre"
+              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-lg"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
               onClick={handleCreateNew}
-              className="ml-4 bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2"
+              className="ml-4 bg-[#921913] hover:bg-[#7c1010] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2"
             >
               <PlusCircle size={20} />
-              <span>Nuevo Administrador</span>
+              <span className="text-lg">Nuevo Administrador</span>
             </button>
           </div>
 
@@ -183,30 +183,30 @@ export default function GestionAdministradores() {
             <table className="min-w-full bg-white">
               <thead className="bg-gray-100 sticky top-0 z-10">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">ID</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Identificación</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Nombres</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Dirección</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Teléfono</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">Correo electrónico</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-600">Acciones</th>
+                  <th className="px-4 py-3 text-left text-lg font-medium text-black">ID</th>
+                  <th className="px-4 py-3 text-left text-lg font-medium text-black">Identificación</th>
+                  <th className="px-4 py-3 text-left text-lg font-medium text-black">Nombres</th>
+                  <th className="px-4 py-3 text-left text-lg font-medium text-black">Dirección</th>
+                  <th className="px-4 py-3 text-left text-lg font-medium text-black">Teléfono</th>
+                  <th className="px-4 py-3 text-left text-lg font-medium text-black">Correo electrónico</th>
+                  <th className="px-4 py-3 text-center text-lg font-medium text-black">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredAdmins.map((admin) => (
                   <tr key={admin.adminCodAdministrador} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 text-black text-left">{admin.adminCodAdministrador}</td>
-                    <td className="px-4 py-3 text-black text-left">{admin.adminIdAdministrador}</td>
-                    <td className="px-4 py-3 text-black text-left whitespace-nowrap">{admin.adminNombre}</td>
-                    <td className="px-4 py-3 text-black text-left whitespace-normal break-words max-w-xs">{admin.adminDireccion}</td>
-                    <td className="px-4 py-3 text-black text-left">{admin.adminTelefono}</td>
-                    <td className="px-4 py-3 text-black text-left">{admin.adminCorreoElectronico}</td>
+                    <td className="px-4 py-3 text-black text-left text-base">{admin.adminCodAdministrador}</td>
+                    <td className="px-4 py-3 text-black text-left text-base">{admin.adminIdAdministrador}</td>
+                    <td className="px-4 py-3 text-black text-left whitespace-nowrap text-base">{admin.adminNombre}</td>
+                    <td className="px-4 py-3 text-black text-left whitespace-normal break-words max-w-xs text-base">{admin.adminDireccion}</td>
+                    <td className="px-4 py-3 text-black text-left text-base">{admin.adminTelefono}</td>
+                    <td className="px-4 py-3 text-black text-left text-base">{admin.adminCorreoElectronico}</td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex justify-center gap-4">
-                        <button onClick={() => handleEdit(admin)} className="text-blue-600 hover:text-blue-800">
+                        <button onClick={() => handleEdit(admin)} className="text-[#1D4ED8] hover:text-blue-700">
                           <Edit size={18} />
                         </button>
-                        <button onClick={() => handleDelete(admin.adminCodAdministrador)} className="text-red-600 hover:text-red-800">
+                        <button onClick={() => handleDelete(admin.adminCodAdministrador)} className="text-[#921913] hover:text-[#801010]">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -221,7 +221,7 @@ export default function GestionAdministradores() {
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative z-10">
-                <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+                <h2 className="text-lg font-bold text-center mb-4 text-black">
                   {currentAdmin.adminCodAdministrador ? 'Editar' : 'Nuevo'} Administrador
                 </h2>
                 <form onSubmit={handleSubmit}>
@@ -259,10 +259,10 @@ export default function GestionAdministradores() {
                   {formErrors.rol && <p className="text-red-500 text-sm">{formErrors.rol}</p>}
 
                   <div className="flex justify-end gap-4">
-                    <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-gray-800">
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black">
                       <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>
-                    <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">
+                    <button type="submit" className="bg-[#921913] text-white px-4 py-2 rounded hover:bg-[#801010]">
                       <Save size={18} className="inline mr-1" /> {currentAdmin.adminCodAdministrador ? 'Guardar' : 'Crear'}
                     </button>
                   </div>
