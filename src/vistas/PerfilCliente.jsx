@@ -46,7 +46,6 @@ export default function PerfilCliente() {
     { name: 'Pedidos', description: 'Ver historial de pedidos, estado y detalles', icon: ClipboardList, path: '/mis-pedidos' },
     { name: 'Productos y Categorías', description: 'Ver catálogo general de productos', icon: Package, path: '/catalogo-productos' },
     { name: 'Servicios Empresariales', description: 'Ver servicios disponibles', icon: Briefcase, path: '/mis-servicios-empresariales' },
-    { name: 'Tiendas Físicas', description: 'Consultar ubicaciones para retiro en tienda', icon: Store, path: '/mis-tiendas-fisicas' },
   ];
 
   return (
