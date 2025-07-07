@@ -133,9 +133,12 @@ export default function GestionEmpleados() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-2xl font-semibold text-black mb-8 text-center">
+          <h1 className="text-2xl font-semibold text-black mb-2 text-center">
             Gestión de Empleados
           </h1>
+          <p className="text-justify text-black mb-8 text-xl">
+            Aquí puedes gestionar los empleados del sistema: crear nuevos, editar su información y eliminar registros existentes.
+          </p>
 
           <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6 gap-4">
             <input
@@ -169,7 +172,7 @@ export default function GestionEmpleados() {
               </thead>
               <tbody>
                 {filtered.map(emp => (
-                  <tr key={emp.emplCodEmpleado} className="border-b">
+                  <tr key={emp.emplCodEmpleado} className="">
                     <td className="px-4 py-2 text-left text-base">{emp.emplCodEmpleado}</td>
                     <td className="px-4 py-2 text-left text-base">{emp.emplIdEmpleado}</td>
                     <td className="px-4 py-2 text-left whitespace-nowrap text-base">{emp.emplNombre}</td>
@@ -192,7 +195,6 @@ export default function GestionEmpleados() {
             </table>
           </div>
 
-          {/* Modal */}
           {isModalOpen && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>

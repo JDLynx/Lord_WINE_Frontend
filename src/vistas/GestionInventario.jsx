@@ -19,6 +19,7 @@ export default function GestionInventario() {
   });
   const [productos, setProductos] = useState([]);
   const [tiendas, setTiendas] = useState([]);
+  const [tieneTiendaFisicaInventarioTiendaRelations, setTieneTiendaFisicaInventarioTiendaRelations] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +55,13 @@ export default function GestionInventario() {
         }
         const storesData = await storesResponse.json();
         setTiendas(storesData);
+
+        const tieneTiendaFisicaInvTienResponse = await fetch('http://localhost:3000/api/tiene-tienda-fisica-inventario-tienda');
+        if (!tieneTiendaFisicaInvTienResponse.ok) {
+          throw new Error('Error al obtener relaciones tienda-inventario');
+        }
+        const tieneTiendaFisicaInvTienData = await tieneTiendaFisicaInvTienResponse.json();
+        setTieneTiendaFisicaInventarioTiendaRelations(tieneTiendaFisicaInvTienData);
 
       } catch (err) {
         console.error('Error al obtener datos iniciales:', err);
@@ -152,13 +160,25 @@ export default function GestionInventario() {
       return;
     }
 
+    const selectedTiendaFisicaId = parseInt(tiendIdTiendaFisica);
+    const foundRelation = tieneTiendaFisicaInventarioTiendaRelations.find(
+      rel => rel.tiendIdTiendaFisica === selectedTiendaFisicaId
+    );
+
+    if (!foundRelation) {
+      alert('No se encontró un inventario de tienda asociado a la tienda seleccionada. Asegúrate de que la tienda tenga un inventario asignado.');
+      return;
+    }
+
+    const invTienIdInventarioToUse = foundRelation.invTienIdInventarioTienda;
+
     try {
       const res = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prodIdProducto: parseInt(prodIdProducto),
-          invTienIdInventarioTienda: parseInt(tiendIdTiendaFisica),
+          invTienIdInventarioTienda: invTienIdInventarioToUse,
           invTienProdCantidad: invTienProdCantidad,
         }),
       });
@@ -171,7 +191,7 @@ export default function GestionInventario() {
       const { relacion } = await res.json();
       
       const productoNombre = productos.find(p => p.prodIdProducto === parseInt(relacion.prodIdProducto))?.prodNombre || 'N/A';
-      const tiendaNombre = tiendas.find(t => t.tiendIdTiendaFisica === parseInt(relacion.invTienIdInventarioTienda))?.tiendNombre || 'N/A';
+      const tiendaNombre = tiendas.find(t => t.tiendIdTiendaFisica === parseInt(tiendIdTiendaFisica))?.tiendNombre || 'N/A';
 
       setStoreInventory(prev => [
         ...prev,
@@ -181,7 +201,6 @@ export default function GestionInventario() {
           producto: productoNombre,
           tienda: tiendaNombre,
           cantidadDisponible: relacion.invTienProdCantidad,
-          empleado: 'N/A', 
           updatedAt: relacion.updatedAt ? new Date(relacion.updatedAt).toISOString().slice(0, 10) : 'N/A',
         },
       ]);
@@ -214,7 +233,7 @@ export default function GestionInventario() {
             />
             <button
               onClick={() => setShowAddModal(true)}
-              className="bg-[#921913] hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-md flex items-center space-x-2 shadow-md text-lg"
+              className="bg-[#921913] hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 shadow-md text-lg"
             >
               <PlusCircle size={20} />
               <span>Añadir Producto a Tienda</span>
@@ -307,7 +326,7 @@ export default function GestionInventario() {
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
-                <h2 className="text-xl font-semibold text-black mb-6 text-center">
+                <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
                   Añadir Producto a Inventario de Tienda
                 </h2>
                 <div className="mb-4">

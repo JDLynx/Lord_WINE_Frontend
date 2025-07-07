@@ -160,7 +160,10 @@ export default function GestionAdministradores() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-2xl font-semibold text-black mb-8 text-center">Gestión de Administradores</h1>
+          <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Administradores</h1>
+          <p className="text-justify text-black mb-8 text-xl">
+            Aquí puedes gestionar los administradores del sistema: crear nuevos, editar su información y eliminar registros existentes.
+          </p>
 
           <div className="flex justify-between items-center mb-6">
             <input
