@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
@@ -12,20 +12,37 @@ export default function GestionAdministradores() {
   const [currentAdmin, setCurrentAdmin] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [adminIdToDelete, setAdminIdToDelete] = useState(null);
 
-  useEffect(() => {
-    fetchAdministradores();
-  }, []);
+  const showNotification = (msg, type) => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  };
 
-  const fetchAdministradores = async () => {
+  const fetchAdministradores = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:3000/api/administradores');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setAdministrators(data);
     } catch (error) {
       console.error('Error al cargar administradores:', error);
+      showNotification('Error al cargar los administradores.', 'error');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAdministradores();
+  }, [fetchAdministradores]);
 
   const validateForm = (data) => {
     const errors = {};
@@ -38,10 +55,6 @@ export default function GestionAdministradores() {
       errors.adminCorreoElectronico = 'El correo es obligatorio.';
     } else if (!/\S+@\S+\.\S+/.test(data.adminCorreoElectronico)) {
       errors.adminCorreoElectronico = 'Formato de correo inválido.';
-    }
-
-    if (!data.rol?.trim()) {
-      errors.rol = 'El rol es obligatorio.';
     }
 
     if (!data.adminIdAdministrador?.trim()) {
@@ -83,18 +96,28 @@ export default function GestionAdministradores() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('¿Seguro que deseas eliminar este administrador?')) {
-      try {
-        await fetch(`http://localhost:3000/api/administradores/${id}`, {
-          method: 'DELETE',
-        });
-        fetchAdministradores();
-        alert('Administrador eliminado correctamente.');
-      } catch (error) {
-        console.error('Error al eliminar administrador:', error);
-        alert('Error al eliminar el administrador.');
+  const handleDelete = (id) => {
+    setAdminIdToDelete(id);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/administradores/${adminIdToDelete}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
+      await fetchAdministradores();
+      showNotification('Administrador eliminado correctamente.', 'success');
+    } catch (error) {
+      console.error('Error al eliminar administrador:', error);
+      showNotification(`Error al eliminar el administrador: ${error.message}`, 'error');
+    } finally {
+      setShowConfirmModal(false);
+      setAdminIdToDelete(null);
     }
   };
 
@@ -115,7 +138,7 @@ export default function GestionAdministradores() {
       const body = {
         adminNombre: currentAdmin.adminNombre.trim(),
         adminCorreoElectronico: currentAdmin.adminCorreoElectronico.trim(),
-        adminIdAdministrador: parseInt(currentAdmin.adminIdAdministrador),
+        adminIdAdministrador: currentAdmin.adminIdAdministrador.trim(),
         adminDireccion: currentAdmin.adminDireccion?.trim() || '',
         adminTelefono: currentAdmin.adminTelefono?.trim() || '',
         ...(method === 'POST' && {
@@ -131,16 +154,16 @@ export default function GestionAdministradores() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error en la solicitud');
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
-      alert(currentAdmin.adminCodAdministrador ? 'Administrador actualizado' : 'Administrador creado');
-      fetchAdministradores();
+      await fetchAdministradores();
       setIsModalOpen(false);
       setCurrentAdmin(null);
+      showNotification(currentAdmin.adminCodAdministrador ? 'Administrador actualizado correctamente.' : 'Nuevo administrador creado correctamente.', 'success');
     } catch (error) {
       console.error('Error al guardar administrador:', error);
-      alert(error.message || 'Error al guardar el administrador.');
+      showNotification(`Error al guardar el administrador: ${error.message}`, 'error');
     }
   };
 
@@ -151,7 +174,9 @@ export default function GestionAdministradores() {
   };
 
   const filteredAdmins = administrators.filter(admin =>
-    admin.adminNombre.toLowerCase().includes(searchTerm.toLowerCase())
+    Object.values(admin).some(value =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   return (
@@ -165,17 +190,25 @@ export default function GestionAdministradores() {
             Aquí puedes gestionar los administradores del sistema: crear nuevos, editar su información y eliminar registros existentes.
           </p>
 
+          {message && (
+            <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
+              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`}>
+              {message}
+            </div>
+          )}
+
           <div className="flex justify-between items-center mb-6">
             <input
               type="text"
-              placeholder="Buscar por nombre"
-              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-lg"
+              placeholder="Buscar"
+              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left text-lg focus:border-black focus:outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
               onClick={handleCreateNew}
-              className="ml-4 bg-[#921913] hover:bg-[#7c1010] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2"
+              className="ml-4 bg-[#7c1010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2"
             >
               <PlusCircle size={20} />
               <span className="text-lg">Nuevo Administrador</span>
@@ -209,7 +242,7 @@ export default function GestionAdministradores() {
                         <button onClick={() => handleEdit(admin)} className="text-[#1D4ED8] hover:text-blue-700">
                           <Edit size={18} />
                         </button>
-                        <button onClick={() => handleDelete(admin.adminCodAdministrador)} className="text-[#921913] hover:text-[#801010]">
+                        <button onClick={() => handleDelete(admin.adminCodAdministrador)} className="text-[#801010] hover:text-[#921913]">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -232,7 +265,7 @@ export default function GestionAdministradores() {
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.adminNombre && <p className="text-red-500 text-sm">{formErrors.adminNombre}</p>}
 
-                  <input type="number" name="adminIdAdministrador" placeholder="Identificación" value={currentAdmin.adminIdAdministrador} onChange={handleChange}
+                  <input type="text" name="adminIdAdministrador" placeholder="Identificación" value={currentAdmin.adminIdAdministrador} onChange={handleChange}
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.adminIdAdministrador && <p className="text-red-500 text-sm">{formErrors.adminIdAdministrador}</p>}
 
@@ -242,7 +275,7 @@ export default function GestionAdministradores() {
                   <input type="text" name="adminTelefono" placeholder="Teléfono" value={currentAdmin.adminTelefono} onChange={handleChange}
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
 
-                  <input type="email" name="adminCorreoElectronico" placeholder="Correo" value={currentAdmin.adminCorreoElectronico} onChange={handleChange}
+                  <input type="email" name="adminCorreoElectronico" placeholder="Correo electrónico" value={currentAdmin.adminCorreoElectronico} onChange={handleChange}
                     className="w-full mb-3 border px-3 py-2 rounded text-black" />
                   {formErrors.adminCorreoElectronico && <p className="text-red-500 text-sm">{formErrors.adminCorreoElectronico}</p>}
 
@@ -254,22 +287,41 @@ export default function GestionAdministradores() {
                     </>
                   )}
 
-                  <select name="rol" value={currentAdmin.rol} onChange={handleChange}
-                    className="w-full mb-4 border px-3 py-2 rounded text-black">
-                    <option value="">Seleccione un rol</option>
-                    <option value="Administrador">Administrador</option>
-                  </select>
-                  {formErrors.rol && <p className="text-red-500 text-sm">{formErrors.rol}</p>}
-
                   <div className="flex justify-end gap-4">
                     <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black">
                       <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>
-                    <button type="submit" className="bg-[#921913] text-white px-4 py-2 rounded hover:bg-[#801010]">
+                    <button type="submit" className="bg-[#801010] text-white px-4 py-2 rounded hover:bg-[#921913]">
                       <Save size={18} className="inline mr-1" /> {currentAdmin.adminCodAdministrador ? 'Guardar' : 'Crear'}
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {showConfirmModal && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación</h2>
+                <p className="text-black text-center mb-6">¿Estás seguro de que quieres eliminar este administrador?</p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={() => { setShowConfirmModal(false); setAdminIdToDelete(null); }}
+                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <XCircle size={20} />
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-[#921913] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <Trash2 size={20} />
+                    <span>Eliminar</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

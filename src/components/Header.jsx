@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import './Header.css';
 import BotonMenu from './BotonMenu';
-import UserMenu from './UserMenu'; // Importa el nuevo componente UserMenu
+import UserMenu from './UserMenu';
 import { ShoppingCartIcon, MapPinIcon } from "@heroicons/react/24/solid";
 
 function Header() {

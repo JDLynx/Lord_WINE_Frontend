@@ -9,7 +9,7 @@ export default function GestionInventario() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [newQuantity, setNewQuantity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filtroNombre, setFiltroNombre] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newInventoryItem, setNewInventoryItem] = useState({
@@ -21,15 +21,30 @@ export default function GestionInventario() {
   const [tiendas, setTiendas] = useState([]);
   const [tieneTiendaFisicaInventarioTiendaRelations, setTieneTiendaFisicaInventarioTiendaRelations] = useState([]);
 
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
+  const showNotification = (msg, type = 'success') => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const inventoryResponse = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto');
-        
+
         if (!inventoryResponse.ok) {
           throw new Error('Error al obtener datos de inventario por tienda');
         }
-        
+
         const inventoryData = await inventoryResponse.json();
 
         const mappedInventoryData = inventoryData.map(item => ({
@@ -65,6 +80,7 @@ export default function GestionInventario() {
 
       } catch (err) {
         console.error('Error al obtener datos iniciales:', err);
+        showNotification('Error al cargar los datos iniciales.', 'error');
       }
     };
 
@@ -79,7 +95,7 @@ export default function GestionInventario() {
 
   const handleSave = async () => {
     if (isNaN(newQuantity) || newQuantity < 0) {
-      alert('Ingresa una cantidad válida.');
+      showNotification('Ingresa una cantidad válida.', 'error');
       return;
     }
 
@@ -94,53 +110,61 @@ export default function GestionInventario() {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Error al actualizar la cantidad del producto en inventario');
       }
-      
-      const { relacion } = await res.json(); 
+
+      const { relacion } = await res.json();
 
       setStoreInventory(prev =>
         prev.map(i =>
           i.invTienIdInventarioTienda === selectedItem.invTienIdInventarioTienda && i.prodIdProducto === selectedItem.prodIdProducto
             ? {
                 ...i,
-                cantidadDisponible: relacion.invTienProdCantidad, 
+                cantidadDisponible: relacion.invTienProdCantidad,
                 updatedAt: relacion.updatedAt ? new Date(relacion.updatedAt).toISOString().slice(0, 10) : 'N/A',
               }
             : i
         )
       );
 
-      alert('Cantidad actualizada correctamente.');
+      showNotification('Cantidad actualizada correctamente.', 'success');
     } catch (err) {
       console.error(err);
-      alert('Ocurrió un error al actualizar la cantidad: ' + err.message);
+      showNotification('Ocurrió un error al actualizar la cantidad: ' + err.message, 'error');
     }
 
     setIsModalOpen(false);
     setSelectedItem(null);
   };
 
-  const handleDelete = async (invTienIdInventarioTienda, prodIdProducto) => {
-    if (window.confirm('¿Estás seguro de eliminar este producto del inventario de esta tienda?')) {
-      try {
-        const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${invTienIdInventarioTienda}/${prodIdProducto}`, {
-          method: 'DELETE',
-        });
+  const handleDelete = (invTienIdInventarioTienda, prodIdProducto) => {
+    setItemToDelete({ invTienIdInventarioTienda, prodIdProducto });
+    setShowConfirmModal(true);
+  };
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || 'Error al eliminar el producto del inventario');
-        }
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
 
-        setStoreInventory(prev =>
-          prev.filter(item =>
-            !(item.invTienIdInventarioTienda === invTienIdInventarioTienda && item.prodIdProducto === prodIdProducto)
-          )
-        );
-        alert('Producto eliminado del inventario correctamente.');
-      } catch (err) {
-        console.error(err);
-        alert('Ocurrió un error al eliminar el producto del inventario: ' + err.message);
+    try {
+      const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${itemToDelete.invTienIdInventarioTienda}/${itemToDelete.prodIdProducto}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al eliminar el producto del inventario');
       }
+
+      setStoreInventory(prev =>
+        prev.filter(item =>
+          !(item.invTienIdInventarioTienda === itemToDelete.invTienIdInventarioTienda && item.prodIdProducto === itemToDelete.prodIdProducto)
+        )
+      );
+      showNotification('Producto eliminado del inventario correctamente.', 'success');
+    } catch (err) {
+      console.error(err);
+      showNotification('Ocurrió un error al eliminar el producto del inventario: ' + err.message, 'error');
+    } finally {
+      setShowConfirmModal(false);
+      setItemToDelete(null);
     }
   };
 
@@ -156,7 +180,7 @@ export default function GestionInventario() {
     const { prodIdProducto, tiendIdTiendaFisica, invTienProdCantidad } = newInventoryItem;
 
     if (!prodIdProducto || !tiendIdTiendaFisica || isNaN(invTienProdCantidad) || invTienProdCantidad < 0) {
-      alert('Por favor, completa todos los campos y asegúrate de que la cantidad sea válida.');
+      showNotification('Por favor, completa todos los campos y asegúrate de que la cantidad sea válida.', 'error');
       return;
     }
 
@@ -166,7 +190,7 @@ export default function GestionInventario() {
     );
 
     if (!foundRelation) {
-      alert('No se encontró un inventario de tienda asociado a la tienda seleccionada. Asegúrate de que la tienda tenga un inventario asignado.');
+      showNotification('No se encontró un inventario de tienda asociado a la tienda seleccionada. Asegúrate de que la tienda tenga un inventario asignado.', 'error');
       return;
     }
 
@@ -189,7 +213,7 @@ export default function GestionInventario() {
       }
 
       const { relacion } = await res.json();
-      
+
       const productoNombre = productos.find(p => p.prodIdProducto === parseInt(relacion.prodIdProducto))?.prodNombre || 'N/A';
       const tiendaNombre = tiendas.find(t => t.tiendIdTiendaFisica === parseInt(tiendIdTiendaFisica))?.tiendNombre || 'N/A';
 
@@ -205,15 +229,22 @@ export default function GestionInventario() {
         },
       ]);
 
-      alert('Producto añadido al inventario correctamente.');
+      showNotification('Producto añadido al inventario correctamente.', 'success');
       setShowAddModal(false);
       setNewInventoryItem({ prodIdProducto: '', tiendIdTiendaFisica: '', invTienProdCantidad: 0 });
     } catch (err) {
       console.error(err);
-      alert('Ocurrió un error al añadir el producto al inventario: ' + err.message);
+      showNotification('Ocurrió un error al añadir el producto al inventario: ' + err.message, 'error');
     }
   };
 
+  const filteredInventory = storeInventory.filter(item =>
+    Object.values(item).some(val =>
+      typeof val === 'string' && val.toLowerCase().includes(searchQuery.toLowerCase())
+    ) ||
+    (typeof item.prodIdProducto === 'number' && item.prodIdProducto.toString().includes(searchQuery)) ||
+    (typeof item.cantidadDisponible === 'number' && item.cantidadDisponible.toString().includes(searchQuery))
+  );
 
   return (
     <div className="page-container">
@@ -221,15 +252,26 @@ export default function GestionInventario() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-3xl font-semibold text-black mb-8 text-center">Gestión de Inventarios</h1>
+          <h1 className="text-3xl font-semibold text-black mb-2 text-center">Gestión de Inventarios</h1>
+          <p className="text-justify text-black mb-8 text-xl">
+            Gestión del inventario de productos en cada una de tus tiendas. Puedes añadir nuevos productos a una tienda, actualizar la cantidad de un producto existente o eliminarlo del inventario de una tienda específica.
+          </p>
+
+          {message && (
+            <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
+              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`}>
+              {message}
+            </div>
+          )}
 
           <div className="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
             <input
               type="text"
-              placeholder="Buscar por nombre de producto"
-              value={filtroNombre}
-              onChange={(e) => setFiltroNombre(e.target.value)}
-              className="w-full sm:max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-700 text-black text-lg"
+              placeholder="Buscar"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left text-lg focus:border-black focus:outline-none"
             />
             <button
               onClick={() => setShowAddModal(true)}
@@ -246,7 +288,7 @@ export default function GestionInventario() {
               <table className="min-w-full bg-white">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">ID Producto</th> 
+                    <th className="px-4 py-2 text-left text-lg font-semibold text-black">ID Producto</th>
                     <th className="px-4 py-2 text-left text-lg font-semibold text-black">Producto</th>
                     <th className="px-4 py-2 text-center text-lg font-semibold text-black">Cantidad Disponible</th>
                     <th className="px-4 py-2 text-left text-lg font-semibold text-black">Tienda</th>
@@ -255,33 +297,30 @@ export default function GestionInventario() {
                   </tr>
                 </thead>
                 <tbody>
-                  {storeInventory
-                    .filter(item => item.producto.toLowerCase().includes(filtroNombre.toLowerCase()))
-                    .map(item => (
-                      <tr key={`${item.invTienIdInventarioTienda}-${item.prodIdProducto}`} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-black text-left text-base">{item.prodIdProducto}</td>
-                        <td className="px-4 py-2 text-black text-left text-base">{item.producto}</td>
-                        <td className="px-4 py-2 text-black text-center text-base">{item.cantidadDisponible}</td>
-                        <td className="px-4 py-2 text-black text-left text-base">{item.tienda}</td>
-                        <td className="px-4 py-2 text-black text-left text-base">{item.updatedAt}</td>
-                        <td className="px-4 py-2 text-center text-base">
-                          <div className="flex justify-center space-x-3">
-                            <button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800">
-                              <Edit size={18} />
-                            </button>
-                            <button onClick={() => handleDelete(item.invTienIdInventarioTienda, item.prodIdProducto)} className="text-[#921913] hover:text-[#801010]">
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                  {filteredInventory.map(item => (
+                    <tr key={`${item.invTienIdInventarioTienda}-${item.prodIdProducto}`} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 text-black text-left text-base">{item.prodIdProducto}</td>
+                      <td className="px-4 py-2 text-black text-left text-base">{item.producto}</td>
+                      <td className="px-4 py-2 text-black text-center text-base">{item.cantidadDisponible}</td>
+                      <td className="px-4 py-2 text-black text-left text-base">{item.tienda}</td>
+                      <td className="px-4 py-2 text-black text-left text-base">{item.updatedAt}</td>
+                      <td className="px-4 py-2 text-center text-base">
+                        <div className="flex justify-center space-x-3">
+                          <button onClick={() => handleEdit(item)} className="text-blue-800 hover:text-blue-600">
+                            <Edit size={18} />
+                          </button>
+                          <button onClick={() => handleDelete(item.invTienIdInventarioTienda, item.prodIdProducto)} className="text-[#801010] hover:text-[#921913]">
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </section>
 
-          {/* Modal para Editar Cantidad */}
           {isModalOpen && selectedItem && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -311,7 +350,7 @@ export default function GestionInventario() {
                   </button>
                   <button
                     onClick={handleSave}
-                    className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                    className="bg-[#921913] hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
                   >
                     <Save size={20} />
                     <span>Guardar</span>
@@ -321,7 +360,6 @@ export default function GestionInventario() {
             </div>
           )}
 
-          {/* Modal para Añadir Nuevo Producto a Tienda */}
           {showAddModal && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -397,6 +435,34 @@ export default function GestionInventario() {
                   >
                     <Save size={20} />
                     <span>Añadir</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showConfirmModal && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación</h2>
+                <p className="text-black text-center mb-6">
+                  ¿Estás seguro de que quieres eliminar este producto del inventario de la tienda?
+                </p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={() => { setShowConfirmModal(false); setItemToDelete(null); }}
+                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <XCircle size={20} />
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-[#921913] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <Trash2 size={20} />
+                    <span>Eliminar</span>
                   </button>
                 </div>
               </div>

@@ -13,7 +13,7 @@ export default function CambiarContraseñaCliente() {
     newPassword: '',
     confirmNewPassword: '',
   });
-  const [loading, setLoading] = useState(false); // No necesitamos 'loading' para una simulación sin backend
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -27,7 +27,7 @@ export default function CambiarContraseñaCliente() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Simula un estado de carga temporal para el UX
+    setLoading(true);
     setError('');
     setSuccessMessage('');
 
@@ -36,30 +36,24 @@ export default function CambiarContraseñaCliente() {
       setLoading(false);
       return;
     }
-    if (passwords.newPassword.length < 6) { // Ejemplo de validación mínima
+    if (passwords.newPassword.length < 6) {
       setError('La nueva contraseña debe tener al menos 6 caracteres.');
       setLoading(false);
       return;
     }
 
-    // --- SIMULACIÓN DE ÉXITO (SIN BACKEND) ---
     console.log('Simulando cambio de contraseña (solo frontend):', passwords);
-    
-    // Simula un retraso de red para mejor UX
+
     setTimeout(() => {
       setSuccessMessage('¡Contraseña cambiada exitosamente (simulado)!');
-      setPasswords({ // Limpiar campos después de "éxito"
+      setPasswords({
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       });
-      setLoading(false); // Finaliza la simulación de carga
-
-      // Redirige al perfil después de un éxito simulado
-      setTimeout(() => navigate('/perfil-cliente'), 1500); // Pequeño retraso para ver el mensaje
-      
-    }, 1000); // Simula 1 segundo de "carga"
-    // --- FIN SIMULACIÓN ---
+      setLoading(false);
+      setTimeout(() => navigate('/perfil-cliente'), 1500);
+    }, 1000);
   };
 
   return (
@@ -81,10 +75,9 @@ export default function CambiarContraseñaCliente() {
             {successMessage && <div className="text-center text-green-600 font-bold mb-4">{successMessage}</div>}
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
-              {/* Contraseña Actual */}
               <div>
                 <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  <Key className="inline-block w-4 h-4 mr-2 text-red-500" />Contraseña Actual
+                  <Key className="inline-block w-4 h-4 mr-2 text-[#921913]" />Contraseña Actual
                 </label>
                 <input
                   type="password"
@@ -97,10 +90,9 @@ export default function CambiarContraseñaCliente() {
                 />
               </div>
 
-              {/* Nueva Contraseña */}
               <div>
                 <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Nueva Contraseña
+                  <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Nueva Contraseña
                 </label>
                 <input
                   type="password"
@@ -113,10 +105,9 @@ export default function CambiarContraseñaCliente() {
                 />
               </div>
 
-              {/* Confirmar Nueva Contraseña */}
               <div>
                 <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Confirmar Nueva Contraseña
+                  <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Confirmar Nueva Contraseña
                 </label>
                 <input
                   type="password"
@@ -129,11 +120,10 @@ export default function CambiarContraseñaCliente() {
                 />
               </div>
 
-              {/* Botones de acción */}
               <div className="flex justify-center space-x-6 mt-6">
                 <button
                   type="submit"
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  className="!bg-blue-600 !hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                   disabled={loading}
                 >
                   {loading ? (

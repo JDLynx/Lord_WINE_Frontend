@@ -46,7 +46,7 @@ const TarjetaProducto = ({ producto, sufijoClaseCategoria }) => {
           )}
           <button
             onClick={handleAgregarAlCarrito}
-            className="bg-[#921913] hover:bg-[#7a1010] text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out text-lg"
+            className="bg-[#7a1010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out text-lg"
           >
             Agregar al Carrito
           </button>
