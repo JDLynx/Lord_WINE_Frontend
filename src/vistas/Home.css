@@ -1,9 +1,11 @@
+/* Contenedor principal de la página */
 .page-container-home {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
+/* Estilos para el fondo del main y centrado de contenido */
 .bg-vistas-home {
     flex: 1;
     display: flex;
@@ -14,79 +16,125 @@
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    min-height: 80vh;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
+/* Contenedor de todas las tarjetas de productos */
 .productos-container-home {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: stretch;
-    gap: 20px;
+    gap: 24px;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    box-sizing: border-box;
 }
 
+/* Estilos para cada tarjeta de producto individual */
 .product-card-modern-home {
-    background: rgb(255, 255, 255);
-    border-radius: 8px;
-    padding: 15px;
+    background: rgba(255, 255, 255, 0.7); /* Aumentado la transparencia (antes 0.95) */
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    width: 100%;
-    max-width: 280px;
-    /* ELIMINADA ESTA LÍNEA: height: 350px; */
+    flex-basis: calc(33.333% - 16px);
+    max-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    opacity: 0.8;
+    align-items: center; /* ¡AÑADIDO! Centra los elementos horizontalmente dentro de la tarjeta */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    min-width: 250px;
 }
 
 .product-card-modern-home:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-12px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
 
-.product-card-modern-home h5 {
-    font-weight: bold;
-    color: #222;
-    font-size: 18px;
+/* Estilos de la imagen del producto */
+.product-image-home {
+    width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
 }
 
+/* Estilos del nombre del producto */
+.nombre-producto-home {
+    font-size: 22px;
+    font-weight: 700;
+    color: #4A0E0E;
+    margin-bottom: 10px;
+    line-height: 1.3;
+    min-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilos de la descripción/presentación del producto */
 .detalle-home {
-    color: #222;
-    font-size: 16px;
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    min-height: 3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+/* Estilos del precio del producto */
 .price-home {
-    font-size: 18px;
+    font-size: 19px;
     font-weight: bold;
-    color: #00C853;
+    color: #28A745;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
+/* Estilos para el botón (ya definidos en TarjetaProducto.js con Tailwind) */
+.product-card-modern-home button {
+    margin-top: auto;
+    /* AÑADIDO: Más transparencia para el botón */
+    background-color: rgba(146, 25, 19, 0.8); /* Ajustado de #921913 a rgba con 0.8 de opacidad */
+    /* Asegúrate de que el hover también sea transparente si lo deseas */
+    /* hover:bg-[#7a1010] en Tailwind, si necesitas ajustar el hover aquí: */
+    /* &:hover { background-color: rgba(122, 16, 16, 0.9); } */ 
+}
+
+/* Media Queries para Responsividad */
 @media (max-width: 1024px) {
     .product-card-modern-home {
-        width: calc(50% - 10px); /* Ajuste basado en tu gap de 20px */
+        flex-basis: calc(50% - 12px);
+        max-width: none;
     }
 }
 
 @media (max-width: 768px) {
     .product-card-modern-home {
-        width: 100%;
+        flex-basis: 100%;
+        max-width: 350px;
     }
 }
 
-.nombre-producto-home {
-    font-size: 24px;
-    color: #12b873;
-}
-
-.product-image-home {
-    max-height: 120px;
-    object-fit: contain;
-    margin-bottom: 10px;
+/* Clases de utilidad (mantener si se usan) */
+.prox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
 }

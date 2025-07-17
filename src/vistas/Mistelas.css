@@ -1,90 +1,152 @@
-.bg-vistas-mistelas{
-    flex: 1;
+/* Contenedor principal de la página (asumo que usa .page-container o similar) */
+/* Si tienes una clase .page-container separada para todas las vistas, asegúrate de que tenga:
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+*/
+
+/* Estilos para el fondo del main y centrado de contenido */
+.bg-vistas-mistelas {
+    flex: 1; /* Permite que el main ocupe el espacio restante y CREZCA con el contenido */
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: url('/img/Viñedo.jpg');
+    background-image: url('/img/Viñedo.jpg'); /* Asumo que esta ruta es correcta */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    min-height: 80vh;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    /* ELIMINADA ESTA LÍNEA! --> min-height: 80vh; */
+    padding: 40px 20px; /* Padding horizontal para evitar desbordamiento lateral */
+    box-sizing: border-box; /* Incluye padding y border en el cálculo del width */
 }
-.productos-container-mistelas{
+
+/* Contenedor de todas las tarjetas de productos */
+.productos-container-mistelas {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: stretch;
-    gap: 20px;
+    align-items: stretch; /* Asegura que todas las tarjetas tengan la misma altura */
+    gap: 24px; /* Espacio entre las tarjetas */
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    /* ELIMINADA ESTA LÍNEA! --> padding: 20px; */ /* El padding horizontal ya lo maneja .bg-vistas-mistelas */
+    box-sizing: border-box; /* CRUCIAL */
 }
-.product-card-modern-mistelas{
-    background: rgb(255, 255, 255);
-    border-radius: 8px;
-    padding: 15px;
+
+/* Estilos para cada tarjeta de producto individual */
+.product-card-modern-mistelas {
+    background: rgba(255, 255, 255, 0.7); /* AJUSTADO: Más transparencia (antes 0.95) */
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    width: 100%;
-    max-width: 280px;
-    height: 350px;
+    /* ELIMINADA ESTA LÍNEA: height: 350px; (si existía en tu versión local) */
+    flex-basis: calc(33.333% - 16px); /* Para 3 columnas: (100% / 3) - (2/3 * gap) */
+    max-width: 300px; /* Limita el ancho máximo de una tarjeta individual */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    opacity: 0.8;
+    justify-content: space-between; /* Empuja el botón al final */
+    align-items: center; /* ¡AÑADIDO! Centra los elementos horizontalmente dentro de la tarjeta */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; /* CRUCIAL: Esencial para que el padding no afecte el width */
+    position: relative;
+    overflow: hidden;
+    min-width: 250px; /* Asegura que la tarjeta no se haga demasiado pequeña en pantallas intermedias */
 }
-.product-card-modern-mistelas:hover{
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+.product-card-modern-mistelas:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
-.product-card-modern-mistelas h5{
-    font-weight: bold;
-    color: #222;
-    font-size: 18px;
-}
-.detalle-mistelas{
-    color: #222;
-    font-size: 16px;
-}
-.price-mistelas{
-    font-size: 18px;
-    font-weight: bold;
-    color: #00C853;
-}
-@media (max-width: 1024px){
-    .product-card-modern-mistelas{
-        width: 45%;
-    }
-}
-@media (max-width: 768px){
-    .product-card-modern-mistelas{
-        width: 100%;
-    }
-}
-.nombre-producto-mistelas{
-    font-size: 24px;
-    color: #12b873;
-}
-.product-image-mistelas{
-    max-height: 120px;
+
+/* Estilos de la imagen del producto */
+.product-image-mistelas {
+    width: 100%;
+    max-height: 180px;
     object-fit: contain;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
 }
-.prox{
+
+/* Estilos del nombre del producto */
+.nombre-producto-mistelas {
+    font-size: 22px;
+    font-weight: 700;
+    color: #4A0E0E;
+    margin-bottom: 10px;
+    line-height: 1.3;
+    min-height: 2.6em; /* Asegura espacio para 2 líneas de texto */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limita a 2 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilos de la descripción/presentación del producto */
+.detalle-mistelas {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    min-height: 3em; /* Asegura espacio para 2-3 líneas de texto */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limita a 3 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilos del precio del producto */
+.price-mistelas {
+    font-size: 19px;
+    font-weight: bold;
+    color: #28A745;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* Estilos para el botón (ya definidos en TarjetaProducto.js con Tailwind) */
+.product-card-modern-mistelas button {
+    margin-top: auto;
+    /* AJUSTADO: Más transparencia para el botón (si no lo sobrescribe Tailwind) */
+    background-color: rgba(146, 25, 19, 0.8); /* Ajustado a 0.8 de opacidad */
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 1024px) {
+    .product-card-modern-mistelas {
+        flex-basis: calc(50% - 12px); /* Para 2 columnas en tablet */
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-card-modern-mistelas {
+        flex-basis: 100%;
+        max-width: 350px;
+    }
+    /* ELIMINADA ESTA LÍNEA! --> .productos-container-mistelas padding en móviles */
+}
+
+/* Clases de utilidad (mantener si se usan) */
+.prox {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
 }
-.titulo-mistelas{
+
+.titulo-mistelas {
     font-size: 32px;
     color: #000000;
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
+    padding-top: 20px;
 }
