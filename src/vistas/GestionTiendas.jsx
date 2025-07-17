@@ -6,25 +6,29 @@ import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 
 export default function GestionTiendas() {
   const [tiendas, setTiendas] = useState([]);
-  const [filteredTiendas, setFilteredTiendas] = useState([]);
-  const [admins, setAdmins] = useState({});
   const [search, setSearch] = useState('');
+  const [admins, setAdmins] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTienda, setCurrentTienda] = useState(null);
   const [formErrors, setFormErrors] = useState({});
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [tiendaIdToDelete, setTiendaIdToDelete] = useState(null);
+
+  const showNotification = (msg, type = 'success') => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  };
 
   useEffect(() => {
     fetchTiendas();
     fetchAdministradores();
   }, []);
-
-  useEffect(() => {
-    setFilteredTiendas(
-      tiendas.filter(t =>
-        t.tiendNombre.toLowerCase().includes(search.toLowerCase())
-      )
-    );
-  }, [search, tiendas]);
 
   const fetchTiendas = async () => {
     try {
@@ -33,6 +37,7 @@ export default function GestionTiendas() {
       setTiendas(data);
     } catch (error) {
       console.error('Error al cargar tiendas:', error);
+      showNotification('Error al cargar las tiendas.', 'error');
     }
   };
 
@@ -45,6 +50,7 @@ export default function GestionTiendas() {
       setAdmins(map);
     } catch (e) {
       console.error('Error al cargar administradores:', e);
+      showNotification('Error al cargar administradores.', 'error');
     }
   };
 
@@ -75,14 +81,25 @@ export default function GestionTiendas() {
     setFormErrors({});
   };
 
-  const handleDelete = async (id) => {
-    if (confirm('¿Eliminar esta tienda?')) {
-      try {
-        await fetch(`http://localhost:3000/api/tiendas-fisicas/${id}`, { method: 'DELETE' });
-        fetchTiendas();
-      } catch (error) {
-        console.error('Error al eliminar:', error);
+  const handleDelete = (id) => {
+    setTiendaIdToDelete(id);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/tiendas-fisicas/${tiendaIdToDelete}`, { method: 'DELETE' });
+      if (!res.ok) {
+        throw new Error('Error al eliminar la tienda.');
       }
+      fetchTiendas();
+      showNotification('Tienda eliminada correctamente.', 'success');
+    } catch (error) {
+      console.error('Error al eliminar:', error);
+      showNotification('Error al eliminar la tienda.', 'error');
+    } finally {
+      setShowConfirmModal(false);
+      setTiendaIdToDelete(null);
     }
   };
 
@@ -109,8 +126,10 @@ export default function GestionTiendas() {
       if (!res.ok) throw new Error('Error en la petición');
       fetchTiendas();
       setIsModalOpen(false);
+      showNotification(currentTienda.tiendIdTiendaFisica ? 'Tienda actualizada correctamente.' : 'Tienda creada correctamente.', 'success');
     } catch (error) {
       console.error('Error al guardar:', error);
+      showNotification('Error al guardar la tienda.', 'error');
     }
   };
 
@@ -119,6 +138,15 @@ export default function GestionTiendas() {
     setCurrentTienda(prev => ({ ...prev, [name]: value }));
     setFormErrors(prev => ({ ...prev, [name]: undefined }));
   };
+
+  const filteredTiendas = tiendas.filter((t) =>
+    Object.values({
+      ...t,
+      adminNombre: admins[t.adminCodAdministrador]
+    }).some(val =>
+      typeof val === 'string' && val.toLowerCase().includes(search.toLowerCase())
+    )
+  );
 
   return (
     <div className="page-container">
@@ -130,20 +158,28 @@ export default function GestionTiendas() {
             Gestión de Tiendas Físicas
           </h1>
           <p className="text-justify text-black mb-8 text-xl">
-            Aquí puedes gestionar las tiendas físicas del sistema: crear nuevas, editar su información y eliminar registros existentes.
+            Gestión de las tiendas físicas del sistema: crear nuevas, editar su información y eliminar registros existentes.
           </p>
+
+          {message && (
+            <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
+              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`}>
+              {message}
+            </div>
+          )}
 
           <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-lg">
             <input
               type="text"
-              placeholder="Buscar por nombre"
+              placeholder="Buscar"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full sm:w-1/2 border border-gray-300 px-4 py-2 rounded text-black"
             />
             <button
               onClick={handleCreateNew}
-              className="bg-[#921913] hover:bg-[#801010] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-lg"
+              className="bg-[#801010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-lg"
             >
               <PlusCircle size={20} />
               <span>Nueva Tienda</span>
@@ -152,7 +188,7 @@ export default function GestionTiendas() {
 
           <div className="overflow-auto max-h-[60vh]">
             <table className="min-w-full text-left border-collapse">
-              <thead className="bg-gray-100 text-black">
+              <thead className="bg-gray-100 text-black sticky top-0">
                 <tr>
                   <th className="px-6 py-3 text-lg font-medium">ID</th>
                   <th className="px-6 py-3 text-lg font-medium">Nombre</th>
@@ -176,10 +212,10 @@ export default function GestionTiendas() {
                     </td>
                     <td className="px-6 py-4 text-center whitespace-nowrap">
                       <div className="flex justify-center gap-2">
-                        <button onClick={() => handleEdit(t)} className="text-[#1D4ED8] hover:text-blue-700">
+                        <button onClick={() => handleEdit(t)} className="text-blue-700 hover:text-[#1D4ED8]">
                           <Edit size={18} />
                         </button>
-                        <button onClick={() => handleDelete(t.tiendIdTiendaFisica)} className="text-[#921913] hover:text-[#801010]">
+                        <button onClick={() => handleDelete(t.tiendIdTiendaFisica)} className="text-[#801010] hover:text-[#921913]">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -190,7 +226,6 @@ export default function GestionTiendas() {
             </table>
           </div>
 
-          {/* Modal para crear o editar tienda */}
           {isModalOpen && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -260,12 +295,38 @@ export default function GestionTiendas() {
                     >
                       <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>
-                    <button type="submit" className="bg-[#921913] text-white px-4 py-2 rounded hover:bg-[#801010]">
+                    <button type="submit" className="bg-[#801010] text-white px-4 py-2 rounded hover:bg-[#921913]">
                       <Save size={18} className="inline mr-1" />
                       {currentTienda.tiendIdTiendaFisica ? 'Guardar' : 'Crear'}
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {showConfirmModal && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación</h2>
+                <p className="text-black text-center mb-6">¿Estás seguro de que quieres eliminar esta tienda?</p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={() => { setShowConfirmModal(false); setTiendaIdToDelete(null); }}
+                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <XCircle size={20} />
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-[#921913] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <Trash2 size={20} />
+                    <span>Eliminar</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

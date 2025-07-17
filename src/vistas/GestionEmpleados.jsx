@@ -10,6 +10,19 @@ export default function GestionEmpleados() {
   const [currentEmployee, setCurrentEmployee] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [employeeIdToDelete, setEmployeeIdToDelete] = useState(null);
+
+  const showNotification = (msg, type = 'success') => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  };
 
   useEffect(() => {
     fetchEmpleados();
@@ -22,6 +35,7 @@ export default function GestionEmpleados() {
       setEmployees(data);
     } catch (error) {
       console.error('Error al cargar empleados:', error);
+      showNotification('Error al cargar los empleados.', 'error');
     }
   };
 
@@ -66,18 +80,28 @@ export default function GestionEmpleados() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('¿Seguro que deseas eliminar este empleado?')) {
-      try {
-        await fetch(`http://localhost:3000/api/empleados/${id}`, {
-          method: 'DELETE',
-        });
-        fetchEmpleados();
-        alert('Empleado eliminado correctamente.');
-      } catch (error) {
-        console.error('Error al eliminar:', error);
-        alert('Hubo un error al eliminar el empleado.');
+  const handleDelete = (id) => {
+    setEmployeeIdToDelete(id);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/empleados/${employeeIdToDelete}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Error al eliminar el empleado.');
       }
+      await fetchEmpleados();
+      showNotification('Empleado eliminado correctamente.', 'success');
+    } catch (error) {
+      console.error('Error al eliminar:', error);
+      showNotification(`Error al eliminar: ${error.message}`, 'error');
+    } finally {
+      setShowConfirmModal(false);
+      setEmployeeIdToDelete(null);
     }
   };
 
@@ -96,10 +120,20 @@ export default function GestionEmpleados() {
         : 'http://localhost:3000/api/empleados';
 
       const body = {
-        ...currentEmployee,
-        ...(method === 'POST' && { emplContrasena: currentEmployee.emplContrasena?.trim() }),
+        emplIdEmpleado: currentEmployee.emplIdEmpleado,
+        emplNombre: currentEmployee.emplNombre,
+        emplDireccion: currentEmployee.emplDireccion,
+        emplTelefono: currentEmployee.emplTelefono,
+        emplCorreoElectronico: currentEmployee.emplCorreoElectronico,
         adminCodAdministrador: currentEmployee.adminCodAdministrador || 1,
       };
+
+      if (
+        method === 'POST' ||
+        (currentEmployee.emplContrasena && currentEmployee.emplContrasena.trim() !== '')
+      ) {
+        body.emplContrasena = currentEmployee.emplContrasena.trim();
+      }
 
       const res = await fetch(url, {
         method,
@@ -107,13 +141,17 @@ export default function GestionEmpleados() {
         body: JSON.stringify(body),
       });
 
-      if (!res.ok) throw new Error('Error en la solicitud');
-      alert(currentEmployee.emplCodEmpleado ? 'Empleado actualizado' : 'Empleado creado');
-      fetchEmpleados();
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Error al guardar el empleado.');
+      }
+
+      await fetchEmpleados();
       setIsModalOpen(false);
+      showNotification(currentEmployee.emplCodEmpleado ? 'Empleado actualizado correctamente.' : 'Empleado creado correctamente.', 'success');
     } catch (error) {
       console.error('Error al guardar empleado:', error);
-      alert('Error al guardar el empleado.');
+      showNotification(`Error al guardar: ${error.message}`, 'error');
     }
   };
 
@@ -124,7 +162,9 @@ export default function GestionEmpleados() {
   };
 
   const filtered = employees.filter(emp =>
-    emp.emplNombre.toLowerCase().includes(searchTerm.toLowerCase())
+    Object.values(emp).some(value =>
+      typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   return (
@@ -133,24 +173,30 @@ export default function GestionEmpleados() {
       <BarraProductos />
       <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-          <h1 className="text-2xl font-semibold text-black mb-2 text-center">
-            Gestión de Empleados
-          </h1>
+          <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Empleados</h1>
           <p className="text-justify text-black mb-8 text-xl">
-            Aquí puedes gestionar los empleados del sistema: crear nuevos, editar su información y eliminar registros existentes.
+            Gestión de los empleados del sistema: crear nuevos, editar su información y eliminar registros existentes.
           </p>
+
+          {message && (
+            <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
+              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`}>
+              {message}
+            </div>
+          )}
 
           <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6 gap-4">
             <input
               type="text"
-              placeholder="Buscar por nombre"
-              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left text-lg"
+              placeholder="Buscar"
+              className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left text-lg focus:border-black focus:outline-none"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
             <button
               onClick={handleCreateNew}
-              className="bg-[#921913] hover:bg-[#801010] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-lg"
+              className="bg-[#801010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-lg"
             >
               <PlusCircle size={20} />
               <span>Nuevo Empleado</span>
@@ -172,7 +218,7 @@ export default function GestionEmpleados() {
               </thead>
               <tbody>
                 {filtered.map(emp => (
-                  <tr key={emp.emplCodEmpleado} className="">
+                  <tr key={emp.emplCodEmpleado}>
                     <td className="px-4 py-2 text-left text-base">{emp.emplCodEmpleado}</td>
                     <td className="px-4 py-2 text-left text-base">{emp.emplIdEmpleado}</td>
                     <td className="px-4 py-2 text-left whitespace-nowrap text-base">{emp.emplNombre}</td>
@@ -181,10 +227,10 @@ export default function GestionEmpleados() {
                     <td className="px-4 py-2 text-left text-base">{emp.emplTelefono}</td>
                     <td className="px-4 py-2 text-center">
                       <div className="flex justify-center gap-4">
-                        <button onClick={() => handleEdit(emp)} className="text-[#1D4ED8] hover:text-blue-700">
+                        <button onClick={() => handleEdit(emp)} className="text-blue-700 hover:text-[#1D4ED8]">
                           <Edit size={18} />
                         </button>
-                        <button onClick={() => handleDelete(emp.emplCodEmpleado)} className="text-[#921913] hover:text-[#801010]">
+                        <button onClick={() => handleDelete(emp.emplCodEmpleado)} className="text-[#801010] hover:text-[#921913]">
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -237,11 +283,37 @@ export default function GestionEmpleados() {
                     <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black">
                       <XCircle size={18} className="inline mr-1" /> Cancelar
                     </button>
-                    <button type="submit" className="bg-[#921913] text-white px-4 py-2 rounded hover:bg-[#801010]">
+                    <button type="submit" className="bg-[#801010] text-white px-4 py-2 rounded hover:bg-[#921913]">
                       <Save size={18} className="inline mr-1" /> {currentEmployee.emplCodEmpleado ? 'Guardar' : 'Crear'}
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {showConfirmModal && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación</h2>
+                <p className="text-black text-center mb-6">¿Estás seguro de que quieres eliminar este empleado?</p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={() => { setShowConfirmModal(false); setEmployeeIdToDelete(null); }}
+                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <XCircle size={20} />
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-[#921913] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <Trash2 size={20} />
+                    <span>Eliminar</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

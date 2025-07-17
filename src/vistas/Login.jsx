@@ -12,8 +12,20 @@ export default function Login() {
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+
+  const showNotification = (msg, type) => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  };
 
   const limpiarValoresAntiguos = () => {
     localStorage.removeItem("adminCodAdministrador");
@@ -25,6 +37,8 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setMessage('');
+    setMessageType('');
 
     try {
       limpiarValoresAntiguos();
@@ -41,7 +55,7 @@ export default function Login() {
       console.log("[Login] Respuesta del backend:", data);
 
       if (response.ok) {
-        alert(`Bienvenido, ${data.rol}`);
+        showNotification(`Bienvenido, ${data.rol}`, 'success');
         login(data.token);
 
         if (data.rol === "Administrador") {
@@ -60,6 +74,7 @@ export default function Login() {
     } catch (error) {
       console.error("Error en login:", error);
       setError("Error al conectar con el servidor.");
+      showNotification("Error al conectar con el servidor.", 'error');
     } finally {
       setLoading(false);
     }
@@ -72,6 +87,14 @@ export default function Login() {
       <main className="bg-vistas">
         <div className="login-card">
           <h2 className="login-title">Iniciar Sesión</h2>
+
+          {message && (
+            <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
+              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`}>
+              {message}
+            </div>
+          )}
 
           {loading && (
             <div className="text-center my-4 flex justify-center">

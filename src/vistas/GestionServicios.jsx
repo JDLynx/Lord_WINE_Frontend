@@ -2,33 +2,63 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-import { PlusCircle, Edit, Trash2, Save, XCircle, Briefcase, DollarSign } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 
 export default function GestionServicios() {
   const [services, setServices] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentService, setCurrentService] = useState(null);
   const [formErrors, setFormErrors] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [serviceToDeleteId, setServiceToDeleteId] = useState(null);
+
+  const API_URL = 'http://localhost:3000/api/servicios-empresariales';
+
+  const showNotification = (msg, type = 'success') => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage('');
+      setMessageType('');
+    }, 3000);
+  };
 
   useEffect(() => {
-    const simulatedServices = [
-      { id: 'SERV001', name: 'Asesoría de Vinos', description: 'Asesoramiento personalizado para selección de vinos.', price: 50.00 },
-      { id: 'SERV002', name: 'Cata de Productos', description: 'Experiencia de cata guiada en tienda.', price: 75.00 },
-      { id: 'SERV003', name: 'Servicio de Logística', description: 'Gestión y envío de pedidos a gran escala.', price: 200.00 },
-    ];
-    setServices(simulatedServices);
+    fetchServices();
   }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setServices(data);
+    } catch (error) {
+      console.error('Error al cargar servicios empresariales:', error);
+      showNotification('Error al cargar servicios empresariales.', 'error');
+    }
+  };
 
   const validateForm = (data) => {
     const errors = {};
-    if (!data.name || data.name.trim() === '') errors.name = 'El nombre es obligatorio.';
-    if (!data.description || data.description.trim() === '') errors.description = 'La descripción es obligatoria.';
-    if (isNaN(parseFloat(data.price)) || parseFloat(data.price) <= 0) errors.price = 'El precio debe ser un número positivo.';
+    if (!data.serNombre || data.serNombre.trim() === '') errors.serNombre = 'El nombre es obligatorio.';
+    if (!data.serDescripcion || data.serDescripcion.trim() === '') errors.serDescripcion = 'La descripción es obligatoria.';
+
+    if (isNaN(parseFloat(data.serPrecio)) || parseFloat(data.serPrecio) <= 0) {
+      errors.serPrecio = 'El precio debe ser un número positivo.';
+    }
     return errors;
   };
 
   const handleCreateNew = () => {
-    setCurrentService({ id: '', name: '', description: '', price: '' });
+    setCurrentService({ serNombre: '', serDescripcion: '', serPrecio: '' });
     setIsModalOpen(true);
     setFormErrors({});
   };
@@ -40,13 +70,31 @@ export default function GestionServicios() {
   };
 
   const handleDelete = (serviceId) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar el servicio con ID: ${serviceId}?`)) {
-      setServices(services.filter(serv => serv.id !== serviceId));
-      alert('Servicio eliminado (simulado).');
+    setServiceToDeleteId(serviceId);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`${API_URL}/${serviceToDeleteId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      await fetchServices();
+      showNotification('Servicio eliminado correctamente.', 'success');
+    } catch (error) {
+      console.error('Error al eliminar servicio:', error);
+      showNotification(`Error al eliminar el servicio: ${error.message}`, 'error');
+    } finally {
+      setShowConfirmModal(false);
+      setServiceToDeleteId(null);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validateForm(currentService);
     if (Object.keys(errors).length > 0) {
@@ -54,17 +102,37 @@ export default function GestionServicios() {
       return;
     }
 
-    if (currentService.id) {
-      setServices(services.map(serv =>
-        serv.id === currentService.id ? { ...currentService, price: parseFloat(currentService.price) } : serv
-      ));
-      alert('Servicio actualizado (simulado).');
-    } else {
-      const newId = `SERV${String(services.length + 1).padStart(3, '0')}`;
-      setServices([...services, { ...currentService, id: newId, price: parseFloat(currentService.price) }]);
-      alert('Nuevo servicio creado (simulado).');
+    try {
+      const method = currentService.serIdServicioEmpresarial ? 'PUT' : 'POST';
+      const url = currentService.serIdServicioEmpresarial
+        ? `${API_URL}/${currentService.serIdServicioEmpresarial}`
+        : API_URL;
+
+      const body = {
+        serNombre: currentService.serNombre.trim(),
+        serDescripcion: currentService.serDescripcion.trim(),
+        serPrecio: parseFloat(currentService.serPrecio),
+      };
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      await fetchServices();
+      showNotification(currentService.serIdServicioEmpresarial ? 'Servicio actualizado correctamente.' : 'Nuevo servicio creado correctamente.', 'success');
+      setIsModalOpen(false);
+      setCurrentService(null);
+    } catch (error) {
+      console.error('Error al guardar servicio:', error);
+      showNotification(`Error al guardar el servicio: ${error.message}`, 'error');
     }
-    setIsModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -73,6 +141,14 @@ export default function GestionServicios() {
     setFormErrors(prev => ({ ...prev, [name]: undefined }));
   };
 
+  const filteredServices = services.filter(service =>
+    Object.values(service).some(val =>
+      typeof val === 'string' && val.toLowerCase().includes(searchTerm.toLowerCase())
+    ) ||
+    (typeof service.serIdServicioEmpresarial === 'number' && service.serIdServicioEmpresarial.toString().includes(searchTerm)) ||
+    (typeof service.serPrecio === 'number' && service.serPrecio.toString().includes(searchTerm))
+  );
+
   return (
     <>
       <div className="page-container">
@@ -80,52 +156,67 @@ export default function GestionServicios() {
         <BarraProductos />
         <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
           <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Gestión de Servicios Empresariales</h1>
-            <p className="text-center text-gray-600 text-lg mb-8">
-              Crea, actualiza y establece los precios de los servicios empresariales.
+            <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Servicios Empresariales</h1>
+            <p className="text-justify text-black mb-8 text-xl">
+              Gestión de los servicios empresariales que ofrece tu negocio: crear nuevos servicios, editar sus detalles y precios, y eliminar los que ya no sean relevantes.
             </p>
 
-            <div className="flex justify-end mb-6">
+            {message && (
+              <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
+                messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+              }`}>
+                {message}
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+              <input
+                type="text"
+                placeholder="Buscar"
+                className="w-full max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-left text-lg focus:border-black focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               <button
                 onClick={handleCreateNew}
-                className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md shadow-md transition-colors duration-200 flex items-center space-x-2"
+                className="bg-[#801010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-md shadow-md transition-colors duration-200 flex items-center space-x-2 text-lg"
               >
                 <PlusCircle size={20} />
                 <span>Nuevo Servicio</span>
               </button>
             </div>
 
-            {services.length > 0 ? (
+            {filteredServices.length > 0 ? (
               <div className="overflow-x-auto rounded-lg shadow-md">
                 <table className="min-w-full bg-white">
                   <thead className="bg-gray-100 border-b border-gray-200">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Nombre</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Descripción</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Precio</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">Acciones</th>
+                      <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">ID</th>
+                      <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Nombre</th>
+                      <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Descripción</th>
+                      <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Precio</th>
+                      <th className="px-6 py-3 text-center text-lg font-medium text-black tracking-wider">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {services.map((service) => (
-                      <tr key={service.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{service.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{service.name}</td>
-                        <td className="px-6 py-4 text-sm text-gray-700 max-w-xs truncate">{service.description}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${service.price.toFixed(2)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    {filteredServices.map((service) => (
+                      <tr key={service.serIdServicioEmpresarial} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">{service.serIdServicioEmpresarial}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">{service.serNombre}</td>
+                        <td className="px-6 py-4 text-base text-black max-w-xs truncate text-left">{service.serDescripcion}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">${parseFloat(service.serPrecio).toFixed(2)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-base font-medium">
                           <div className="flex justify-center space-x-3">
                             <button
                               onClick={() => handleEdit(service)}
-                              className="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+                              className="text-blue-900 hover:text-[#1D4ED8] transition-colors duration-200"
                               title="Editar"
                             >
                               <Edit size={18} />
                             </button>
                             <button
-                              onClick={() => handleDelete(service.id)}
-                              className="text-red-600 hover:text-red-900 transition-colors duration-200"
+                              onClick={() => handleDelete(service.serIdServicioEmpresarial)}
+                              className="text-red-900 hover:text-[#921913] transition-colors duration-200"
                               title="Eliminar"
                             >
                               <Trash2 size={18} />
@@ -138,72 +229,100 @@ export default function GestionServicios() {
                 </table>
               </div>
             ) : (
-              <p className="text-center text-gray-500 mt-8">No hay servicios registrados.</p>
+              <p className="text-center text-gray-500 mt-8">No hay servicios registrados que coincidan con la búsqueda.</p>
             )}
 
             {isModalOpen && (
               <div className="fixed inset-0 flex justify-center items-center z-50">
                 <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
                 <div className="relative p-8 bg-white w-full max-w-lg mx-auto rounded-lg shadow-xl z-10">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                    {currentService.id ? 'Editar Servicio' : 'Crear Nuevo Servicio'}
+                  <h2 className="text-2xl font-bold text-black mb-6 text-center">
+                    {currentService.serIdServicioEmpresarial ? 'Editar Servicio' : 'Crear Nuevo Servicio'}
                   </h2>
                   <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                      <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
+                      <label htmlFor="serNombre" className="block text-black text-lg font-semibold mb-2">Nombre:</label>
                       <input
                         type="text"
-                        id="name"
-                        name="name"
-                        value={currentService?.name || ''}
+                        id="serNombre"
+                        name="serNombre"
+                        value={currentService?.serNombre || ''}
                         onChange={handleChange}
-                        className={`shadow appearance-none border ${formErrors.name ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
+                        className={`shadow appearance-none border ${formErrors.serNombre ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
                       />
-                      {formErrors.name && <p className="text-red-500 text-xs italic mt-1">{formErrors.name}</p>}
+                      {formErrors.serNombre && <p className="text-red-500 text-xs italic mt-1">{formErrors.serNombre}</p>}
                     </div>
                     <div className="mb-4">
-                      <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
+                      <label htmlFor="serDescripcion" className="block text-black text-lg font-semibold mb-2">Descripción:</label>
                       <textarea
-                        id="description"
-                        name="description"
-                        value={currentService?.description || ''}
+                        id="serDescripcion"
+                        name="serDescripcion"
+                        value={currentService?.serDescripcion || ''}
                         onChange={handleChange}
                         rows="3"
-                        className={`shadow appearance-none border ${formErrors.description ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
+                        className={`shadow appearance-none border ${formErrors.serDescripcion ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
                       ></textarea>
-                      {formErrors.description && <p className="text-red-500 text-xs italic mt-1">{formErrors.description}</p>}
+                      {formErrors.serDescripcion && <p className="text-red-500 text-xs italic mt-1">{formErrors.serDescripcion}</p>}
                     </div>
                     <div className="mb-6">
-                      <label htmlFor="price" className="block text-gray-700 text-sm font-bold mb-2">Precio:</label>
+                      <label htmlFor="serPrecio" className="block text-black text-lg font-semibold mb-2">Precio:</label>
                       <input
                         type="number"
-                        id="price"
-                        name="price"
-                        value={currentService?.price || ''}
+                        id="serPrecio"
+                        name="serPrecio"
+                        value={currentService?.serPrecio || ''}
                         onChange={handleChange}
                         step="0.01"
-                        className={`shadow appearance-none border ${formErrors.price ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
+                        className={`shadow appearance-none border ${formErrors.serPrecio ? 'border-red-500' : 'border-gray-300'} rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent`}
                       />
-                      {formErrors.price && <p className="text-red-500 text-xs italic mt-1">{formErrors.price}</p>}
+                      {formErrors.serPrecio && <p className="text-red-500 text-xs italic mt-1">{formErrors.serPrecio}</p>}
                     </div>
                     <div className="flex justify-end space-x-4">
                       <button
                         type="button"
                         onClick={() => setIsModalOpen(false)}
-                        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
+                        className="bg-gray-300 hover:bg-gray-400 text-black font-semibold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
                       >
                         <XCircle size={20} />
                         <span>Cancelar</span>
                       </button>
                       <button
                         type="submit"
-                        className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
+                        className="bg-[#921913] hover:bg-[#801010] text-white font-semibold py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-200"
                       >
                         <Save size={20} />
-                        <span>{currentService.id ? 'Guardar Cambios' : 'Crear'}</span>
+                        <span>{currentService.serIdServicioEmpresarial ? 'Guardar Cambios' : 'Crear'}</span>
                       </button>
                     </div>
                   </form>
+                </div>
+              </div>
+            )}
+
+            {showConfirmModal && (
+              <div className="fixed inset-0 flex justify-center items-center z-50">
+                <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+                <div className="relative p-8 bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl z-10">
+                  <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación</h2>
+                  <p className="text-black text-center mb-6">
+                    ¿Estás seguro de que quieres eliminar este servicio? Esta acción no se puede deshacer.
+                  </p>
+                  <div className="flex justify-center space-x-4">
+                    <button
+                      onClick={() => { setShowConfirmModal(false); setServiceToDeleteId(null); }}
+                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                    >
+                      <XCircle size={20} />
+                      <span>Cancelar</span>
+                    </button>
+                    <button
+                      onClick={confirmDelete}
+                      className="bg-[#921913] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                    >
+                      <Trash2 size={20} />
+                      <span>Eliminar</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

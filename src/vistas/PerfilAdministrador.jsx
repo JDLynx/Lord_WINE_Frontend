@@ -63,9 +63,6 @@ export default function PerfilAdministrador() {
     { name: 'Inventario General', description: 'Gestión del inventario general', icon: Boxes, path: '/inventario' },
     { name: 'Servicios Empresariales', description: 'Crear, actualizar y establecer precios', icon: Settings, path: '/servicios' },
     { name: 'Pedidos', description: 'Ver todos, cambiar estados, asignar empleados', icon: ClipboardList, path: '/pedidos' },
-    { name: 'Gestión Admin. Inventario General', description: 'Ver qué administrador gestiona cada inventario', icon: LayoutGrid, path: '/gestion-admin-inventario' },
-    { name: 'Gestión Empleado Inventario Tienda', description: 'Asignar o cambiar responsables de inventario en tiendas', icon: ShoppingBag, path: '/gestion-empleado-inventario-tienda' },
-    { name: 'Ventas y Reportes', description: 'Ver detalles de ventas, productos vendidos, stock', icon: TrendingUp, path: '/reportes' },
   ];
 
   return (
@@ -117,7 +114,7 @@ export default function PerfilAdministrador() {
               <div className="flex justify-center space-x-6 mt-12 mb-12">
                 <button
                   onClick={handleEditClick}
-                  className="bg-[#921913] hover:bg-[#7a1010] text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  className="bg-[#7a1010] hover:bg-[#921913] text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                 >
                   <Edit className="w-5 h-5" />
                   <span>Editar Perfil</span>

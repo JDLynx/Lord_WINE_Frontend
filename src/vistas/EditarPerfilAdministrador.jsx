@@ -133,7 +133,7 @@ export default function EditarPerfilAdministrador() {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
               <div className="col-span-1">
                 <label htmlFor="adminNombre" className="block text-lg font-medium text-black mb-1">
-                  <User className="inline-block w-4 h-4 mr-2 text-red-500" />Nombre Completo
+                  <User className="inline-block w-4 h-4 mr-2 text-[#921913]" />Nombre Completo
                 </label>
                 <input
                   type="text"
@@ -148,7 +148,7 @@ export default function EditarPerfilAdministrador() {
 
               <div className="col-span-1">
                 <label htmlFor="adminIdAdministrador" className="block text-lg font-medium text-black mb-1">
-                  <User className="inline-block w-4 h-4 mr-2 text-red-500" />Identificación
+                  <User className="inline-block w-4 h-4 mr-2 text-[#921913]" />Identificación
                 </label>
                 <input
                   type="text"
@@ -163,7 +163,7 @@ export default function EditarPerfilAdministrador() {
 
               <div className="col-span-1">
                 <label htmlFor="adminDireccion" className="block text-lg font-medium text-black mb-1">
-                  <Home className="inline-block w-4 h-4 mr-2 text-red-500" />Dirección
+                  <Home className="inline-block w-4 h-4 mr-2 text-[#921913]" />Dirección
                 </label>
                 <input
                   type="text"
@@ -178,7 +178,7 @@ export default function EditarPerfilAdministrador() {
 
               <div className="col-span-1">
                 <label htmlFor="adminTelefono" className="block text-lg font-medium text-black mb-1">
-                  <Phone className="inline-block w-4 h-4 mr-2 text-red-500" />Teléfono
+                  <Phone className="inline-block w-4 h-4 mr-2 text-[#921913]" />Teléfono
                 </label>
                 <input
                   type="tel"
@@ -193,7 +193,7 @@ export default function EditarPerfilAdministrador() {
 
               <div className="col-span-full">
                 <label htmlFor="adminCorreoElectronico" className="block text-lg font-medium text-black mb-1">
-                  <Mail className="inline-block w-4 h-4 mr-2 text-red-500" />Correo Electrónico
+                  <Mail className="inline-block w-4 h-4 mr-2 text-[#921913]" />Correo Electrónico
                 </label>
                 <input
                   type="email"
@@ -201,15 +201,15 @@ export default function EditarPerfilAdministrador() {
                   name="adminCorreoElectronico"
                   value={adminData.adminCorreoElectronico}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
-                  required
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-base cursor-not-allowed text-black"
+                  readOnly
                 />
               </div>
 
               <div className="col-span-full flex justify-center space-x-6 mt-6">
                 <button
                   type="submit"
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  className="bg-[#921913] hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                   disabled={loading}
                 >
                   {loading ? (
