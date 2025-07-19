@@ -87,7 +87,7 @@ export default function PerfilAdministrador() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
                 <div className="lg:col-span-1">
                   <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center justify-center h-full">
-                    <div className="w-32 h-32 bg-gradient-to-br from-[#921913] to-[#7a1010] rounded-full mx-auto mb-6 flex items-center justify-center shadow-md">
+                    <div className="w-32 h-32 bg-gradient-to-br from-[#921913] to-[#921913] rounded-full mx-auto mb-6 flex items-center justify-center shadow-md">
                       <User className="w-16 h-16 text-white" />
                     </div>
                     <h2 className="text-2xl font-semibold text-black mb-2">{profileData.adminNombre}</h2>
