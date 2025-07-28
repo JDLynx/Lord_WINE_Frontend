@@ -60,6 +60,7 @@ import CatalogoProductos from "./vistas/CatalogoProductos";
 import MisServiciosEmpresariales from "./vistas/MisServiciosEmpresariales";
 import EditarPerfilCliente from "./vistas/EditarPerfilCliente";
 import CambiarContraseñaCliente from "./vistas/CambiarContraseñaCliente";
+import Chatbot from "./components/ChatBot";
 
 function App() {
   return (
@@ -124,6 +125,8 @@ function App() {
         <Route path="/editar-perfil-cliente" element={<EditarPerfilCliente />} />
         <Route path="/cambiar-contrasena-cliente" element={<CambiarContraseñaCliente />} />
       </Routes>
+
+      <Chatbot />
     </ProveedorCarrito>
   );
 }
