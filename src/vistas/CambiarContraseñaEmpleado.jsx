@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
 import { Key, Lock } from 'lucide-react';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { AuthContext } from '../context/AuthContext';
 
 export default function CambiarContraseñaEmpleado() {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [passwords, setPasswords] = useState({
     currentPassword: '',
     newPassword: '',
@@ -27,7 +29,7 @@ export default function CambiarContraseñaEmpleado() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Simula un estado de carga temporal para el UX
+    setLoading(true);
     setError('');
     setSuccessMessage('');
 
@@ -36,127 +38,135 @@ export default function CambiarContraseñaEmpleado() {
       setLoading(false);
       return;
     }
-    if (passwords.newPassword.length < 6) { // Ejemplo de validación mínima
+
+    if (passwords.newPassword.length < 6) {
       setError('La nueva contraseña debe tener al menos 6 caracteres.');
       setLoading(false);
       return;
     }
 
-    // --- SIMULACIÓN DE ÉXITO (SIN BACKEND) ---
-    console.log('Simulando cambio de contraseña de empleado (solo frontend):', passwords);
-    
-    // Simula un retraso de red para mejor UX
-    setTimeout(() => {
-      setSuccessMessage('¡Contraseña de empleado cambiada exitosamente (simulado)!');
-      setPasswords({ // Limpiar campos después de "éxito"
+    try {
+      const response = await fetch(`http://localhost:3000/api/empleados/${user.id}/cambiar-contrasena`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword: passwords.currentPassword,
+          newPassword: passwords.newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al cambiar la contraseña');
+      }
+
+      setSuccessMessage('¡Contraseña cambiada exitosamente!');
+      setPasswords({
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       });
-      setLoading(false); // Finaliza la simulación de carga
 
-      // Redirige al perfil del empleado después de un éxito simulado
-      setTimeout(() => navigate('/perfil-empleado'), 1500); // Pequeño retraso para ver el mensaje
-      
-    }, 1000); // Simula 1 segundo de "carga"
-    // --- FIN SIMULACIÓN ---
+      setTimeout(() => navigate('/perfil'), 1500);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <>
-      <div className="flex flex-col min-h-screen overflow-x-hidden">
-        <Header />
-        <BarraProductos />
+    <div className="flex flex-col min-h-screen overflow-x-hidden">
+      <Header />
+      <BarraProductos />
 
-        <main
-          className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
-        >
-          <div className="max-w-xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center border-b pb-4 border-gray-200">
-              Cambiar Contraseña de Empleado
-            </h1>
+      <main
+        className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
+      >
+        <div className="max-w-xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
+          <h1 className="text-2xl font-semibold text-black mb-8 text-center border-b pb-4 border-gray-200">
+            Cambiar Contraseña de Empleado
+          </h1>
 
-            {error && <div className="text-center text-red-600 font-bold mb-4">{error}</div>}
-            {successMessage && <div className="text-center text-green-600 font-bold mb-4">{successMessage}</div>}
+          {error && <div className="text-center text-red-600 font-bold mb-4">{error}</div>}
+          {successMessage && <div className="text-center text-green-600 font-bold mb-4">{successMessage}</div>}
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
-              {/* Contraseña Actual */}
-              <div>
-                <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  <Key className="inline-block w-4 h-4 mr-2 text-red-500" />Contraseña Actual
-                </label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  name="currentPassword"
-                  value={passwords.currentPassword}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
-                  required
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
+            <div>
+              <label htmlFor="currentPassword" className="block text-lg font-medium text-black mb-1">
+                <Key className="inline-block w-4 h-4 mr-2 text-red-500" />Contraseña Actual
+              </label>
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                value={passwords.currentPassword}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                required
+              />
+            </div>
 
-              {/* Nueva Contraseña */}
-              <div>
-                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Nueva Contraseña
-                </label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  name="newPassword"
-                  value={passwords.newPassword}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
-                  required
-                />
-              </div>
+            <div>
+              <label htmlFor="newPassword" className="block text-lg font-medium text-black mb-1">
+                <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Nueva Contraseña
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                value={passwords.newPassword}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                required
+              />
+            </div>
 
-              {/* Confirmar Nueva Contraseña */}
-              <div>
-                <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Confirmar Nueva Contraseña
-                </label>
-                <input
-                  type="password"
-                  id="confirmNewPassword"
-                  name="confirmNewPassword"
-                  value={passwords.confirmNewPassword}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
-                  required
-                />
-              </div>
+            <div>
+              <label htmlFor="confirmNewPassword" className="block text-lg font-medium text-black mb-1">
+                <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Confirmar Nueva Contraseña
+              </label>
+              <input
+                type="password"
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                value={passwords.confirmNewPassword}
+                onChange={handleChange}
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                required
+              />
+            </div>
 
-              {/* Botones de acción */}
-              <div className="flex justify-center space-x-6 mt-6">
-                <button
-                  type="submit"
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Key className="w-5 h-5" />
-                  )}
-                  <span>{loading ? 'Cambiando...' : 'Cambiar Contraseña'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('/perfil-empleado')}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          </div>
-        </main>
+            <div className="flex justify-center space-x-6 mt-6">
+              <button
+                type="submit"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                disabled={loading}
+              >
+                {loading ? (
+                  <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Key className="w-5 h-5" />
+                )}
+                <span>{loading ? 'Cambiando...' : 'Cambiar Contraseña'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/perfil')}
+                className="bg-gray-200 hover:bg-gray-300 text-black font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
 
-        <Footer />
-      </div>
-    </>
+      <Footer />
+    </div>
   );
 }

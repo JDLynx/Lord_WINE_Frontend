@@ -84,7 +84,6 @@ export default function GestionServicios() {
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
       await fetchServices();
-      showNotification('Servicio eliminado correctamente.', 'success');
     } catch (error) {
       console.error('Error al eliminar servicio:', error);
       showNotification(`Error al eliminar el servicio: ${error.message}`, 'error');
@@ -126,7 +125,7 @@ export default function GestionServicios() {
       }
 
       await fetchServices();
-      showNotification(currentService.serIdServicioEmpresarial ? 'Servicio actualizado correctamente.' : 'Nuevo servicio creado correctamente.', 'success');
+      // showNotification(currentService.serIdServicioEmpresarial ? 'Servicio actualizado correctamente.' : 'Nuevo servicio creado correctamente.', 'success'); // Eliminada notificación de éxito
       setIsModalOpen(false);
       setCurrentService(null);
     } catch (error) {
@@ -151,13 +150,13 @@ export default function GestionServicios() {
 
   return (
     <>
-      <div className="page-container">
+      <div className="page-container min-h-screen flex flex-col">
         <Header />
         <BarraProductos />
-        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+        <main className="bg-vistas-home py-8 px-4 sm:px-8 flex-grow overflow-y-auto">
+          <div className="w-full mx-auto bg-white rounded-2xl shadow-lg p-10 mt-8">
             <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Servicios Empresariales</h1>
-            <p className="text-justify text-black mb-8 text-xl">
+            <p className="text-center text-black mb-8 text-xl">
               Gestión de los servicios empresariales que ofrece tu negocio: crear nuevos servicios, editar sus detalles y precios, y eliminar los que ya no sean relevantes.
             </p>
 
@@ -187,9 +186,9 @@ export default function GestionServicios() {
             </div>
 
             {filteredServices.length > 0 ? (
-              <div className="overflow-x-auto rounded-lg shadow-md">
+              <div className="overflow-x-auto rounded-lg shadow-md max-h-[500px] overflow-y-auto">
                 <table className="min-w-full bg-white">
-                  <thead className="bg-gray-100 border-b border-gray-200">
+                  <thead className="bg-gray-100 border-b border-gray-200 sticky top-0 z-10">
                     <tr>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">ID</th>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Nombre</th>
@@ -203,7 +202,7 @@ export default function GestionServicios() {
                       <tr key={service.serIdServicioEmpresarial} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">{service.serIdServicioEmpresarial}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">{service.serNombre}</td>
-                        <td className="px-6 py-4 text-base text-black max-w-xs truncate text-left">{service.serDescripcion}</td>
+                        <td className="px-6 py-4 text-base text-black text-left">{service.serDescripcion}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">${parseFloat(service.serPrecio).toFixed(2)}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-base font-medium">
                           <div className="flex justify-center space-x-3">

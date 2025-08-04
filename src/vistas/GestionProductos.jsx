@@ -14,11 +14,19 @@ export default function GestionProductos() {
   const [categoryError, setCategoryError] = useState('');
   const [currentProduct, setCurrentProduct] = useState(null);
   const [formErrors, setFormErrors] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
+  const [productSearchTerm, setProductSearchTerm] = useState('');
+  const [categorySearchTerm, setCategorySearchTerm] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [productIdToDelete, setProductIdToDelete] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isCategoryEditModalOpen, setIsCategoryEditModalOpen] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(null);
+  const [showConfirmCategoryModal, setShowConfirmCategoryModal] = useState(false);
+  const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
+  const [categoryEditError, setCategoryEditError] = useState('');
+  const [activeTab, setActiveTab] = useState('products');
 
   const API_URL = 'http://localhost:3000/api';
 
@@ -32,29 +40,31 @@ export default function GestionProductos() {
   };
 
   useEffect(() => {
-    fetch(`${API_URL}/productos`)
-      .then(res => res.json())
-      .then(setProducts)
-      .catch(err => {
-        console.error('Error al cargar productos:', err);
-        showNotification('Error al cargar productos.', 'error');
-      });
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [productsRes, categoriesRes, adminsRes] = await Promise.all([
+          fetch(`${API_URL}/productos`),
+          fetch(`${API_URL}/categorias`),
+          fetch(`${API_URL}/administradores`)
+        ]);
 
-    fetch(`${API_URL}/categorias`)
-      .then(res => res.json())
-      .then(setCategories)
-      .catch(err => {
-        console.error('Error al cargar categorías:', err);
-        showNotification('Error al cargar categorías.', 'error');
-      });
+        const productsData = await productsRes.json();
+        const categoriesData = await categoriesRes.json();
+        const adminsData = await adminsRes.json();
 
-    fetch(`${API_URL}/administradores`)
-      .then(res => res.json())
-      .then(setAdmins)
-      .catch(err => {
-        console.error('Error al cargar administradores:', err);
-        showNotification('Error al cargar administradores.', 'error');
-      });
+        setProducts(productsData);
+        setCategories(categoriesData);
+        setAdmins(adminsData);
+      } catch (err) {
+        console.error('Error al cargar datos:', err);
+        showNotification('Error al cargar los datos.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const validateForm = (data) => {
@@ -94,7 +104,6 @@ export default function GestionProductos() {
     try {
       await fetch(`${API_URL}/productos/${productIdToDelete}`, { method: 'DELETE' });
       setProducts(products.filter(p => p.prodIdProducto !== productIdToDelete));
-      showNotification('Producto eliminado correctamente.', 'success');
     } catch (err) {
       console.error(err);
       showNotification('Error al eliminar el producto.', 'error');
@@ -121,7 +130,6 @@ export default function GestionProductos() {
         });
         const data = await res.json();
         setProducts(products.map(p => (p.prodIdProducto === data.producto.prodIdProducto ? data.producto : p)));
-        showNotification('Producto actualizado correctamente.', 'success');
       } else {
         const res = await fetch(`${API_URL}/productos`, {
           method: 'POST',
@@ -130,7 +138,6 @@ export default function GestionProductos() {
         });
         const data = await res.json();
         setProducts([...products, data.producto]);
-        showNotification('Producto creado correctamente.', 'success');
       }
       setIsModalOpen(false);
     } catch (err) {
@@ -155,7 +162,6 @@ export default function GestionProductos() {
       setCategories([...categories, data.categoria]);
       setNewCategoryName('');
       setShowCategoryModal(false);
-      showNotification('Categoría creada correctamente.', 'success');
     } catch (err) {
       console.error(err);
       showNotification('Error al crear la categoría.', 'error');
@@ -168,6 +174,51 @@ export default function GestionProductos() {
     setFormErrors(prev => ({ ...prev, [name]: undefined }));
   };
 
+  const handleCategoryEdit = (category) => {
+    setCurrentCategory({ ...category });
+    setIsCategoryEditModalOpen(true);
+    setCategoryEditError('');
+  };
+
+  const handleCategoryUpdate = async (e) => {
+    e.preventDefault();
+    if (!currentCategory.catNombre.trim()) {
+      setCategoryEditError('El nombre de la categoría es obligatorio.');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/categorias/${currentCategory.categIdCategoria}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ catNombre: currentCategory.catNombre }),
+      });
+      const data = await res.json();
+      setCategories(categories.map(cat => (cat.categIdCategoria === data.categoria.categIdCategoria ? data.categoria : cat)));
+      setIsCategoryEditModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      showNotification('Error al actualizar la categoría.', 'error');
+    }
+  };
+
+  const handleCategoryDelete = (id) => {
+    setCategoryIdToDelete(id);
+    setShowConfirmCategoryModal(true);
+  };
+
+  const confirmCategoryDelete = async () => {
+    try {
+      await fetch(`${API_URL}/categorias/${categoryIdToDelete}`, { method: 'DELETE' });
+      setCategories(categories.filter(c => c.categIdCategoria !== categoryIdToDelete));
+    } catch (err) {
+      console.error(err);
+      showNotification('Error al eliminar la categoría.', 'error');
+    } finally {
+      setShowConfirmCategoryModal(false);
+      setCategoryIdToDelete(null);
+    }
+  };
+
   const getCategoryName = (id) => {
     const cat = categories.find(c => c.categIdCategoria === id);
     return cat ? cat.catNombre : 'Desconocida';
@@ -175,90 +226,172 @@ export default function GestionProductos() {
 
   const filteredProducts = products.filter(p =>
     Object.entries(p).some(([key, value]) =>
-      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+      String(value).toLowerCase().includes(productSearchTerm.toLowerCase())
     ) ||
-    getCategoryName(p.categIdCategoria).toLowerCase().includes(searchTerm.toLowerCase())
+    getCategoryName(p.categIdCategoria).toLowerCase().includes(productSearchTerm.toLowerCase())
+  );
+
+  const filteredCategories = categories.filter(cat =>
+    String(cat.categIdCategoria).toLowerCase().includes(categorySearchTerm.toLowerCase()) ||
+    cat.catNombre.toLowerCase().includes(categorySearchTerm.toLowerCase())
   );
 
   return (
-    <div className="page-container">
+    <div className="page-container min-h-screen flex flex-col">
       <Header />
       <BarraProductos />
 
-      {message && (
+      {message && messageType === 'error' && (
         <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
-          messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+          messageType === 'error' ? 'bg-red-500 text-white' : ''
         }`}>
           {message}
         </div>
       )}
 
-      <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-        <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+      <main className="bg-vistas-home py-8 px-4 sm:px-8 flex-grow overflow-y-auto">
+        <div className="w-full mx-auto bg-white rounded-2xl shadow-lg p-10 mt-8">
           <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Categorías y Productos</h1>
-          <p className="text-justify text-black mb-8 text-xl">
+          <p className="text-center text-black mb-8 text-xl">
             Gestión de los productos y sus categorías: crear nuevos productos y categorías, editar su información y eliminar registros existentes.
-          </p><div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <input
-              type="text"
-              placeholder="Buscar"
-              className="w-full sm:max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-xl"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <div className="flex space-x-4 mt-4 sm:mt-0">
-              <button
-                onClick={handleCreateNew}
-                className="bg-[#801010] hover:bg-[#921913] text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-xl"
-              >
-                <PlusCircle size={20} />
-                <span>Nuevo Producto</span>
-              </button>
-              <button
-                onClick={() => setShowCategoryModal(true)}
-                className="bg-[#801010] hover:bg-[#921913] text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-xl"
-              >
-                <PlusCircle size={20} />
-                <span>Nueva Categoría</span>
-              </button>
-            </div>
+          </p>
+
+          <div className="flex justify-center mb-8 space-x-4">
+            <button
+              onClick={() => setActiveTab('products')}
+              className={`py-2 px-6 rounded-md shadow-md text-xl font-semibold ${
+                activeTab === 'products' ? 'bg-[#801010] text-white' : 'bg-gray-200 text-black hover:bg-gray-300'
+              }`}
+            >
+              Gestión de Productos
+            </button>
+            <button
+              onClick={() => setActiveTab('categories')}
+              className={`py-2 px-6 rounded-md shadow-md text-xl font-semibold ${
+                activeTab === 'categories' ? 'bg-[#801010] text-white' : 'bg-gray-200 text-black hover:bg-gray-300'
+              }`}
+            >
+              Gestión de Categorías
+            </button>
           </div>
 
-          <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg border border-gray-200">
-            <table className="min-w-full bg-white">
-              <thead className="bg-gray-100 sticky top-0 z-10">
-                <tr>
-                  <th className="px-6 py-3 text-left text-lg font-medium text-black">ID</th>
-                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Nombre</th>
-                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Categoría</th>
-                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Precio</th>
-                  <th className="px-6 py-3 text-left text-lg font-medium text-black">Descripción</th>
-                  <th className="px-6 py-3 text-center text-lg font-medium text-black">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredProducts.map(product => (
-                  <tr key={product.prodIdProducto} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-base text-left text-black">{product.prodIdProducto}</td>
-                    <td className="px-6 py-4 text-base text-left text-black">{product.prodNombre}</td>
-                    <td className="px-6 py-4 text-base text-left text-black">{getCategoryName(product.categIdCategoria)}</td>
-                    <td className="px-6 py-4 text-base text-left text-black">${parseFloat(product.prodPrecio).toFixed(2)}</td>
-                    <td className="px-6 py-4 text-base text-left text-black">{product.prodDescripcion}</td>
-                    <td className="px-6 py-4 text-base text-center">
-                      <div className="flex justify-center space-x-3">
-                        <button onClick={() => handleEdit(product)} className="text-blue-900 hover:text-blue-600">
-                          <Edit size={18} />
-                        </button>
-                        <button onClick={() => handleDelete(product.prodIdProducto)} className="text-red-900 hover:text-red-600">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {activeTab === 'products' && (
+            <>
+              <h2 className="text-xl font-semibold text-black mb-4 mt-8 text-center">Productos</h2>
+              <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <input
+                  type="text"
+                  placeholder="Buscar producto..."
+                  className="w-full sm:max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-xl"
+                  value={productSearchTerm}
+                  onChange={(e) => setProductSearchTerm(e.target.value)}
+                />
+                <button
+                  onClick={handleCreateNew}
+                  className="bg-[#801010] hover:bg-[#921913] text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-xl"
+                >
+                  <PlusCircle size={20} />
+                  <span>Nuevo Producto</span>
+                </button>
+              </div>
+
+              {loading ? (
+                <p className="text-center text-black text-xl">Cargando productos...</p>
+              ) : (
+                <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg border border-gray-200 mb-12">
+                  <table className="min-w-full bg-white">
+                    <thead className="bg-gray-100 sticky top-0 z-10">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-lg font-medium text-black">ID</th>
+                        <th className="px-6 py-3 text-left text-lg font-medium text-black">Nombre</th>
+                        <th className="px-6 py-3 text-left text-lg font-medium text-black">Categoría</th>
+                        <th className="px-6 py-3 text-left text-lg font-medium text-black">Precio</th>
+                        <th className="px-6 py-3 text-left text-lg font-medium text-black">Descripción</th>
+                        <th className="px-6 py-3 text-center text-lg font-medium text-black">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {filteredProducts.map(product => (
+                        <tr key={product.prodIdProducto} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 text-base text-left text-black">{product.prodIdProducto}</td>
+                          <td className="px-6 py-4 text-base text-left text-black">{product.prodNombre}</td>
+                          <td className="px-6 py-4 text-base text-left text-black">{getCategoryName(product.categIdCategoria)}</td>
+                          <td className="px-6 py-4 text-base text-left text-black">${parseFloat(product.prodPrecio).toFixed(2)}</td>
+                          <td className="px-6 py-4 text-base text-justify text-black">{product.prodDescripcion}</td>
+                          <td className="px-6 py-4 text-base text-center">
+                            <div className="flex justify-center space-x-3">
+                              <button onClick={() => handleEdit(product)} className="text-blue-900 hover:text-blue-600">
+                                <Edit size={18} />
+                              </button>
+                              <button onClick={() => handleDelete(product.prodIdProducto)} className="text-red-900 hover:text-red-600">
+                                <Trash2 size={18} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          )}
+
+          {activeTab === 'categories' && (
+            <>
+              <h2 className="text-xl font-semibold text-black mb-4 text-center">Categorías</h2>
+              <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <input
+                  type="text"
+                  placeholder="Buscar categoría..."
+                  className="w-full sm:max-w-xs border border-gray-300 rounded px-4 py-2 text-black text-xl"
+                  value={categorySearchTerm}
+                  onChange={(e) => setCategorySearchTerm(e.target.value)}
+                />
+                <button
+                  onClick={() => setShowCategoryModal(true)}
+                  className="bg-[#801010] hover:bg-[#921913] text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center space-x-2 text-xl"
+                >
+                  <PlusCircle size={20} />
+                  <span>Nueva Categoría</span>
+                </button>
+              </div>
+
+              {loading ? (
+                <p className="text-center text-black text-xl">Cargando categorías...</p>
+              ) : (
+                <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg border border-gray-200">
+                  <table className="min-w-full bg-white">
+                    <thead className="bg-gray-100 sticky top-0 z-10">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-lg font-medium text-black">ID</th>
+                        <th className="px-6 py-3 text-left text-lg font-medium text-black">Nombre</th>
+                        <th className="px-6 py-3 text-center text-lg font-medium text-black">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {filteredCategories.map(category => (
+                        <tr key={category.categIdCategoria} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 text-base text-left text-black">{category.categIdCategoria}</td>
+                          <td className="px-6 py-4 text-base text-left text-black">{category.catNombre}</td>
+                          <td className="px-6 py-4 text-base text-center">
+                            <div className="flex justify-center space-x-3">
+                              <button onClick={() => handleCategoryEdit(category)} className="text-blue-900 hover:text-blue-600">
+                                <Edit size={18} />
+                              </button>
+                              <button onClick={() => handleCategoryDelete(category.categIdCategoria)} className="text-red-900 hover:text-red-600">
+                                <Trash2 size={18} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          )}
 
           {isModalOpen && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
@@ -353,11 +486,49 @@ export default function GestionProductos() {
             </div>
           )}
 
+          {isCategoryEditModalOpen && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Editar Categoría</h2>
+                <form onSubmit={handleCategoryUpdate} className="space-y-4">
+                  <input
+                    type="text"
+                    name="catNombre"
+                    placeholder="Nombre de la categoría"
+                    value={currentCategory.catNombre}
+                    onChange={(e) => { setCurrentCategory(prev => ({ ...prev, catNombre: e.target.value })); setCategoryEditError(''); }}
+                    className="w-full border px-3 py-2 rounded text-black"
+                  />
+                  {categoryEditError && <p className="text-red-500 text-sm">{categoryEditError}</p>}
+
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => { setIsCategoryEditModalOpen(false); setCurrentCategory(null); setCategoryEditError(''); }}
+                      className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                    >
+                      <XCircle size={20} />
+                      <span>Cancelar</span>
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#801010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                    >
+                      <Save size={20} />
+                      <span>Guardar</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           {showConfirmModal && (
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="relative p-8 bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl z-10">
-                <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación</h2>
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación de Producto</h2>
                 <p className="text-black text-center mb-6">¿Estás seguro de que quieres eliminar este producto?</p>
                 <div className="flex justify-center space-x-4">
                   <button
@@ -369,6 +540,33 @@ export default function GestionProductos() {
                   </button>
                   <button
                     onClick={confirmDelete}
+                    className="bg-[#921913] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <Trash2 size={20} />
+                    <span>Eliminar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showConfirmCategoryModal && (
+            <div className="fixed inset-0 flex justify-center items-center z-50">
+              <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+              <div className="relative p-8 bg-white w-full max-w-sm mx-auto rounded-lg shadow-xl z-10">
+                <h2 className="text-xl font-bold text-black mb-6 text-center">Confirmar Eliminación de Categoría</h2>
+                <p className="text-black text-center mb-6">¿Estás seguro de que quieres eliminar esta categoría?</p>
+                <p className="text-red-600 text-center text-sm mb-4">¡Advertencia! Eliminar una categoría no eliminará los productos asociados, pero su categoría se mostrará como "Desconocida".</p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={() => { setShowConfirmCategoryModal(false); setCategoryIdToDelete(null); }}
+                    className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md flex items-center space-x-2"
+                  >
+                    <XCircle size={20} />
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={confirmCategoryDelete}
                     className="bg-[#921913] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md flex items-center space-x-2"
                   >
                     <Trash2 size={20} />
