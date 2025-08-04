@@ -8,7 +8,7 @@
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    min-height: 80vh;
+    /* Se ha eliminado 'min-height: 80vh;' para que el main se adapte al contenido */
     padding-top: 20px;
     padding-bottom: 20px;
 }
@@ -22,12 +22,14 @@
     padding: 10px 20px;
 }
 
+/* ------------------------------------------------------------- */
+/* Se ha modificado esta sección para usar CSS Grid */
+/* ------------------------------------------------------------- */
 .productos-container-vinos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
-    gap: 30px;
+    display: grid;
+    /* Esto crea un layout de 5 columnas en pantallas grandes que se ajusta automáticamente */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px; /* Manteniendo el espacio de 30px que definiste */
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
@@ -41,13 +43,15 @@
     text-align: center;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     width: 100%;
-    max-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    height: 100%; /* Asegura que las tarjetas tengan la misma altura */
 }
+/* ------------------------------------------------------------- */
+
 
 .product-card-modern-vinos:hover {
     transform: translateY(-10px);
@@ -75,19 +79,7 @@
     margin-bottom: 10px;
 }
 
-@media (max-width: 1024px) {
-    .product-card-modern-vinos {
-        width: calc(50% - 30px);
-        max-width: none;
-    }
-}
-
-@media (max-width: 768px) {
-    .product-card-modern-vinos {
-        width: 100%;
-        max-width: 300px;
-    }
-}
+/* Las media queries ya no son necesarias para este layout */
 
 .nombre-producto-vinos {
     font-size: 24px;

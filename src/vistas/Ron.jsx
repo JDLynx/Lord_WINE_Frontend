@@ -4,16 +4,17 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
 import TarjetaProducto from '../components/TarjetaProducto';
-import "./CremasWhisky.css";
+import "./Ron.css";
 
-function CremasWhisky() {
-  const [cremasWhiskyProductos, setCremasWhiskyProductos] = useState([]);
+function Ron() {
+  const [ronProductos, setRonProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProductos = async () => {
       try {
+        // CORRECCIÓN 1: Se cambia el puerto de 4000 a 3000
         const response = await fetch('http://localhost:3000/api/productos'); 
         
         if (!response.ok) {
@@ -22,9 +23,10 @@ function CremasWhisky() {
 
         const productosData = await response.json();
         
-        const productosFiltrados = productosData.filter(producto => producto.category === 'Cremas de Whisky');
+        // CORRECCIÓN 2: Se cambia el filtro a 'producto.category' para que coincida con tus datos
+        const productosFiltrados = productosData.filter(producto => producto.category === 'Ron');
         
-        setCremasWhiskyProductos(productosFiltrados);
+        setRonProductos(productosFiltrados);
       } catch (err) {
         console.error("Error al obtener los productos:", err);
         setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
@@ -34,7 +36,7 @@ function CremasWhisky() {
     };
     
     fetchProductos();
-  }, []); 
+  }, []);
 
   if (error) {
       return <p className="text-center mt-10 text-red-500">{error}</p>;
@@ -46,8 +48,8 @@ function CremasWhisky() {
         <Header />
         <BarraProductos />
 
-        <main className="bg-vistas-cremas-whisky">
-          <h2 className="titulo-cremas-whisky">Cremas de Whisky</h2>
+        <main className="bg-vistas-ron">
+          <h2 className="titulo-ron">Ron</h2>
           
           {loading ? (
             <div className="flex flex-col items-center justify-center flex-grow p-10">
@@ -55,12 +57,12 @@ function CremasWhisky() {
                 <p className="mt-4 text-gray-600 text-lg">Cargando productos...</p>
             </div>
           ) : (
-            <div className="productos-container-cremas-whisky">
-              {cremasWhiskyProductos.map(producto => (
+            <div className="productos-container-ron">
+              {ronProductos.map(producto => (
                 <TarjetaProducto 
                   key={producto.prodIdProducto} 
                   producto={producto} 
-                  sufijoClaseCategoria="cremas-whisky" 
+                  sufijoClaseCategoria="ron" 
                 />
               ))}
             </div>
@@ -73,4 +75,4 @@ function CremasWhisky() {
   );
 }
 
-export default CremasWhisky;
+export default Ron;

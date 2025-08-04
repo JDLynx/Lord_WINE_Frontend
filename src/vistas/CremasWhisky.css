@@ -1,4 +1,4 @@
-.bg-vistas-cremas-whisky{
+.bg-vistas-cremas-whisky {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -8,83 +8,83 @@
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    min-height: 80vh;
+    /* Se ha eliminado 'min-height: 80vh;' para que el main se adapte al contenido */
     padding-top: 20px;
     padding-bottom: 20px;
 }
-.productos-container-cremas-whisky{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
+
+.productos-container-cremas-whisky {
+    display: grid;
+    /* Esto crea un layout de 5 columnas en pantallas grandes que se ajusta automáticamente */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
-.product-card-modern-cremas-whisky{
-    background: rgb(255, 255, 255);
+
+.product-card-modern-cremas-whisky {
+    background: rgba(255, 255, 255, 0.85);
     border-radius: 8px;
     padding: 15px;
     text-align: center;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     width: 100%;
-    max-width: 280px;
-    height: 350px;
+    /* Se eliminaron las propiedades de tamaño fijo que impedían el correcto funcionamiento del grid */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    opacity: 0.8;
+    height: 100%; /* Para que todas las tarjetas en la misma fila tengan la misma altura */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
-.product-card-modern-cremas-whisky:hover{
+
+.product-card-modern-cremas-whisky:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
-.product-card-modern-cremas-whisky h5{
+
+.product-card-modern-cremas-whisky h5 {
     font-weight: bold;
     color: #222;
     font-size: 18px;
 }
-.detalle-cremas-whisky{
+
+.detalle-cremas-whisky {
     color: #222;
     font-size: 16px;
 }
-.price-cremas-whisky{
+
+.price-cremas-whisky {
     font-size: 18px;
     font-weight: bold;
     color: #00C853;
 }
 
-@media (max-width: 1024px){
-    .product-card-modern-cremas-whisky{
-        width: 45%;
-    }
-}
-@media (max-width: 768px){
-    .product-card-modern-cremas-whisky{
-        width: 100%;
-    }
-}
-.nombre-producto-cremas-whisky{
+/* Se eliminan las media queries que no son necesarias con CSS Grid */
+
+.nombre-producto-cremas-whisky {
     font-size: 24px;
     color: #12b873;
 }
-.product-image-cremas-whisky{
+
+.product-image-cremas-whisky {
     max-width: 100%;
     max-height: 120px;
     object-fit: contain;
     margin-bottom: 10px;
     display: block;
 }
-.prox{
+
+.prox {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
 }
-.titulo-cremas-whisky{
+
+.titulo-cremas-whisky {
     font-size: 32px;
     color: #000000;
     font-weight: bold;

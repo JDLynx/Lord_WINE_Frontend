@@ -1,13 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'; 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
 import TarjetaProducto from '../components/TarjetaProducto';
-import datosProductos from '../data/DatosProductos';
 import "./Vinos.css";
 
 function Vinos() {
-  const vinosProductos = datosProductos.filter(producto => producto.category === 'vinos');
+  const [vinosProductos, setVinosProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/productos'); 
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar los productos');
+        }
+
+        const productosData = await response.json();
+
+        // Define todas las categorías y subcategorías de vinos que quieres mostrar
+        const categoriasVinos = ['Vino', 'Vino Tinto', 'Vino Rosado', 'Vino Blanco', 'Espumosos'];
+
+        // Filtra los productos que pertenecen a cualquiera de estas categorías
+        const productosFiltrados = productosData.filter(producto => 
+          categoriasVinos.includes(producto.category)
+        );
+        
+        setVinosProductos(productosFiltrados);
+      } catch (err) {
+        console.error("Error al obtener los productos:", err);
+        setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchProductos();
+  }, []); 
+
+  if (error) {
+      return <p className="text-center mt-10 text-red-500">{error}</p>;
+  }
 
   return (
     <>
@@ -16,13 +53,24 @@ function Vinos() {
         <BarraProductos />
 
         <main className="bg-vistas-vinos">
-          <h2 className="titulo-vinos">Vinos Dulces</h2>
-
-          <div className="productos-container-vinos">
-            {vinosProductos.map(producto => (
-              <TarjetaProducto key={producto.id} producto={producto} sufijoClaseCategoria="vinos" />
-            ))}
-          </div>
+          <h2 className="titulo-vinos">Vinos</h2>
+          
+          {loading ? (
+            <div className="flex flex-col items-center justify-center flex-grow p-10">
+                <AiOutlineLoading3Quarters className="w-12 h-12 text-[#921913] animate-spin" />
+                <p className="mt-4 text-gray-600 text-lg">Cargando productos...</p>
+            </div>
+          ) : (
+            <div className="productos-container-vinos">
+              {vinosProductos.map(producto => (
+                <TarjetaProducto 
+                  key={producto.prodIdProducto} 
+                  producto={producto} 
+                  sufijoClaseCategoria="vinos" 
+                />
+              ))}
+            </div>
+          )}
         </main>
 
         <Footer />
