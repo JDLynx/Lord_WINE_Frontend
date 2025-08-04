@@ -1,20 +1,42 @@
-// src/vistas/Home.jsx
-import "./Home.css";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'; 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
-import TarjetaProducto from '../components/TarjetaProducto'; // Importar TarjetaProducto
-import datosProductos from '../data/DatosProductos'; // Importar tus datos de productos
+import TarjetaProducto from '../components/TarjetaProducto';
+import "./Home.css";
 
 export default function Home() {
-    // Filtra los productos que quieres mostrar en la Home
-    // Por ejemplo, aquí mostramos los vinos, las mistelas y el zumo
-    const productosHome = datosProductos.filter(producto => 
-        producto.category === 'vinos' || 
-        producto.category === 'mistelas' ||
-        producto.category === 'zumo'
-    );
+    const [productosHome, setProductosHome] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      const fetchProductos = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/api/productos');
+
+          if (!response.ok) {
+              throw new Error('Error al cargar los productos');
+          }
+
+          const productosData = await response.json();
+
+          setProductosHome(productosData);
+        } catch (err) {
+          console.error("Error al obtener los productos:", err);
+          setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchProductos();
+    }, []);
+
+    if (error) {
+        return <p className="text-center mt-10 text-red-500">{error}</p>;
+    }
 
     return (
         <>
@@ -23,16 +45,23 @@ export default function Home() {
                 <BarraProductos />
 
                 <main className="bg-vistas-home">
-                    <div className="productos-container-home">
-                        {/* Mapear los productos para usar TarjetaProducto */}
-                        {productosHome.map(producto => (
-                            <TarjetaProducto 
-                                key={producto.id} 
-                                producto={producto} 
-                                sufijoClaseCategoria="home" // Usamos "home" para las clases CSS específicas de Home
-                            />
-                        ))}
-                    </div>
+                    {/* Lógica condicional dentro del 'main' */}
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center flex-grow p-10">
+                            <AiOutlineLoading3Quarters className="w-12 h-12 text-[#921913] animate-spin" />
+                            <p className="mt-4 text-gray-600 text-lg">Cargando productos...</p>
+                        </div>
+                    ) : (
+                        <div className="productos-container-home">
+                            {productosHome.map(producto => (
+                                <TarjetaProducto
+                                    key={producto.prodIdProducto}
+                                    producto={producto}
+                                    sufijoClaseCategoria="home"
+                                />
+                            ))}
+                        </div>
+                    )}
                 </main>
 
                 <Footer />

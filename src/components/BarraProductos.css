@@ -30,3 +30,49 @@
     color: #ffcccb;
     font-weight: bold;
 }
+
+/* Estilos para el nuevo menú desplegable de Vinos, basados en BotonMenu.css */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    flex: 1;
+}
+
+.dropdown-menu {
+    white-space: nowrap;
+    min-width: 200px;
+    position: absolute;
+    top: 100%; /* Ajustado para que aparezca debajo de la barra */
+    left: 50%; /* Centrado */
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    z-index: 100; /* Asegura que el menú esté por encima de otros elementos */
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.dropdown-item {
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    display: block;
+    text-align: left;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 5px; /* Para que el hover se vea mejor */
+}
+
+.dropdown-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #921913;
+}

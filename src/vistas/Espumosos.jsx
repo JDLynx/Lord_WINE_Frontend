@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai'; 
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
 import TarjetaProducto from '../components/TarjetaProducto';
-import "./CremasWhisky.css";
+import "./Espumosos.css";
 
-function CremasWhisky() {
-  const [cremasWhiskyProductos, setCremasWhiskyProductos] = useState([]);
+function Espumosos() {
+  const [espumososProductos, setEspumososProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,9 +22,10 @@ function CremasWhisky() {
 
         const productosData = await response.json();
         
-        const productosFiltrados = productosData.filter(producto => producto.category === 'Cremas de Whisky');
+        // Filtra por la categoría 'Espumosos'
+        const productosFiltrados = productosData.filter(producto => producto.category === 'Espumosos');
         
-        setCremasWhiskyProductos(productosFiltrados);
+        setEspumososProductos(productosFiltrados);
       } catch (err) {
         console.error("Error al obtener los productos:", err);
         setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
@@ -46,8 +47,8 @@ function CremasWhisky() {
         <Header />
         <BarraProductos />
 
-        <main className="bg-vistas-cremas-whisky">
-          <h2 className="titulo-cremas-whisky">Cremas de Whisky</h2>
+        <main className="bg-vistas-espumosos">
+          <h2 className="titulo-espumosos">Espumosos</h2>
           
           {loading ? (
             <div className="flex flex-col items-center justify-center flex-grow p-10">
@@ -55,12 +56,12 @@ function CremasWhisky() {
                 <p className="mt-4 text-gray-600 text-lg">Cargando productos...</p>
             </div>
           ) : (
-            <div className="productos-container-cremas-whisky">
-              {cremasWhiskyProductos.map(producto => (
+            <div className="productos-container-espumosos">
+              {espumososProductos.map(producto => (
                 <TarjetaProducto 
                   key={producto.prodIdProducto} 
                   producto={producto} 
-                  sufijoClaseCategoria="cremas-whisky" 
+                  sufijoClaseCategoria="espumosos" 
                 />
               ))}
             </div>
@@ -73,4 +74,4 @@ function CremasWhisky() {
   );
 }
 
-export default CremasWhisky;
+export default Espumosos;

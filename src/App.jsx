@@ -24,7 +24,13 @@ import Vinos from "./vistas/Vinos";
 import CremasWhisky from "./vistas/CremasWhisky";
 import Mistelas from "./vistas/Mistelas";
 import Zumo from "./vistas/Zumo";
-import Accesorios from "./vistas/Accesorios";
+import Ron from "./vistas/Ron";
+
+// Importación de las nuevas vistas para subcategorías de Vinos
+import VinosTintos from "./vistas/VinosTintos";
+import VinosRosados from "./vistas/VinosRosados";
+import VinosBlancos from "./vistas/VinosBlancos";
+import Espumosos from "./vistas/Espumosos";
 
 import GestionAdministradores from "./vistas/GestionAdministradores";
 import GestionEmpleados from "./vistas/GestionEmpleados";
@@ -76,11 +82,19 @@ function App() {
         <Route path="/editar-perfil-administrador" element={<EditarPerfilAdministrador />} />
         <Route path="/cambiar-contrasena-administrador" element={<CambiarContraseñaAdministrador />} />
 
+        {/* Ruta para la categoría principal de Vinos*/}
         <Route path="/vinos" element={<Vinos />} />
+        
+        {/* Rutas para las nuevas subcategorías de Vinos */}
+        <Route path="/vinos-tintos" element={<VinosTintos />} />
+        <Route path="/vinos-rosados" element={<VinosRosados />} />
+        <Route path="/vinos-blancos" element={<VinosBlancos />} />
+        <Route path="/espumosos" element={<Espumosos />} />
+        
         <Route path="/cremas-whisky" element={<CremasWhisky />} />
         <Route path="/mistelas" element={<Mistelas />} />
         <Route path="/zumo" element={<Zumo />} />
-        <Route path="/accesorios" element={<Accesorios />} />
+        <Route path="/ron" element={<Ron />} />
 
         <Route path="/administradores" element={<GestionAdministradores />} />
         <Route path="/empleados" element={<GestionEmpleados />} />
