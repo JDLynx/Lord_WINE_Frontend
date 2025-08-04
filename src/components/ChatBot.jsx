@@ -73,7 +73,7 @@ const Chatbot = () => {
         />
       </button>
 
-      {/* Contenedor*/}
+      {/* Contenedor del chat*/}
       {isChatOpen && (
         <div className="absolute bottom-20 right-8 w-80 h-[450px] bg-white rounded-lg shadow-xl flex flex-col overflow-hidden" style={{ opacity: 0.8 }}>
           <div className="bg-[#7a1010] text-white p-3 flex justify-between items-center">
