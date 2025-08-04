@@ -98,7 +98,7 @@ export default function CambiarContraseñaAdministrador() {
           <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
             <div>
               <label htmlFor="currentPassword" className="block text-lg font-medium text-black mb-1">
-                <Key className="inline-block w-4 h-4 mr-2 text-red-500" />Contraseña Actual
+                <Key className="inline-block w-4 h-4 mr-2 text-[#921913]" />Contraseña Actual
               </label>
               <input
                 type="password"
@@ -113,7 +113,7 @@ export default function CambiarContraseñaAdministrador() {
 
             <div>
               <label htmlFor="newPassword" className="block text-lg font-medium text-black mb-1">
-                <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Nueva Contraseña
+                <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Nueva Contraseña
               </label>
               <input
                 type="password"
@@ -128,7 +128,7 @@ export default function CambiarContraseñaAdministrador() {
 
             <div>
               <label htmlFor="confirmNewPassword" className="block text-lg font-medium text-black mb-1">
-                <Lock className="inline-block w-4 h-4 mr-2 text-red-500" />Confirmar Nueva Contraseña
+                <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Confirmar Nueva Contraseña
               </label>
               <input
                 type="password"
@@ -144,7 +144,7 @@ export default function CambiarContraseñaAdministrador() {
             <div className="flex justify-center space-x-6 mt-6">
               <button
                 type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                className="bg-[#921913] hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                 disabled={loading}
               >
                 {loading ? (

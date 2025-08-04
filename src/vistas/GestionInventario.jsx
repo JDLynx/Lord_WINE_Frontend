@@ -125,7 +125,6 @@ export default function GestionInventario() {
         )
       );
 
-      showNotification('Cantidad actualizada correctamente.', 'success');
     } catch (err) {
       console.error(err);
       showNotification('Ocurrió un error al actualizar la cantidad: ' + err.message, 'error');
@@ -158,7 +157,7 @@ export default function GestionInventario() {
           !(item.invTienIdInventarioTienda === itemToDelete.invTienIdInventarioTienda && item.prodIdProducto === itemToDelete.prodIdProducto)
         )
       );
-      showNotification('Producto eliminado del inventario correctamente.', 'success');
+
     } catch (err) {
       console.error(err);
       showNotification('Ocurrió un error al eliminar el producto del inventario: ' + err.message, 'error');
@@ -196,6 +195,16 @@ export default function GestionInventario() {
 
     const invTienIdInventarioToUse = foundRelation.invTienIdInventarioTienda;
 
+    const isDuplicate = storeInventory.some(item =>
+      item.prodIdProducto === parseInt(prodIdProducto) &&
+      item.invTienIdInventarioTienda === invTienIdInventarioToUse
+    );
+
+    if (isDuplicate) {
+      showNotification('Este producto ya existe en el inventario de esta tienda.', 'error');
+      return;
+    }
+
     try {
       const res = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto', {
         method: 'POST',
@@ -229,7 +238,6 @@ export default function GestionInventario() {
         },
       ]);
 
-      showNotification('Producto añadido al inventario correctamente.', 'success');
       setShowAddModal(false);
       setNewInventoryItem({ prodIdProducto: '', tiendIdTiendaFisica: '', invTienProdCantidad: 0 });
     } catch (err) {
@@ -247,19 +255,19 @@ export default function GestionInventario() {
   );
 
   return (
-    <div className="page-container">
+    <div className="page-container min-h-screen flex flex-col">
       <Header />
       <BarraProductos />
-      <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-        <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+      <main className="bg-vistas-home py-8 px-4 sm:px-8 flex-grow overflow-y-auto">
+        <div className="w-full mx-auto bg-white rounded-2xl shadow-lg p-10 mt-8">
           <h1 className="text-3xl font-semibold text-black mb-2 text-center">Gestión de Inventarios</h1>
-          <p className="text-justify text-black mb-8 text-xl">
+          <p className="text-center text-black mb-8 text-xl">
             Gestión del inventario de productos en cada una de tus tiendas. Puedes añadir nuevos productos a una tienda, actualizar la cantidad de un producto existente o eliminarlo del inventario de una tienda específica.
           </p>
 
-          {message && (
+          {message && messageType === 'error' && (
             <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
-              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+              messageType === 'error' ? 'bg-red-500 text-white' : ''
             }`}>
               {message}
             </div>
@@ -325,7 +333,7 @@ export default function GestionInventario() {
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
-                <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+                <h2 className="text-xl font-semibold text-black mb-6 text-center">
                   Editar cantidad de "{selectedItem.producto}" en "{selectedItem.tienda}"
                 </h2>
                 <div className="mb-6">
@@ -364,11 +372,11 @@ export default function GestionInventario() {
             <div className="fixed inset-0 flex justify-center items-center z-50">
               <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
               <div className="relative p-8 bg-white w-full max-w-md mx-auto rounded-lg shadow-xl z-10">
-                <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+                <h2 className="text-xl font-semibold text-black mb-6 text-center">
                   Añadir Producto a Inventario de Tienda
                 </h2>
                 <div className="mb-4">
-                  <label htmlFor="select-product" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="select-product" className="block text-sm font-medium text-black mb-1">
                     Producto:
                   </label>
                   <select
@@ -387,7 +395,7 @@ export default function GestionInventario() {
                   </select>
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="select-store" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="select-store" className="block text-sm font-medium text-black mb-1">
                     Tienda:
                   </label>
                   <select
@@ -406,7 +414,7 @@ export default function GestionInventario() {
                   </select>
                 </div>
                 <div className="mb-6">
-                  <label htmlFor="add-quantity" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="add-quantity" className="block text-sm font-medium text-black mb-1">
                     Cantidad:
                   </label>
                   <input

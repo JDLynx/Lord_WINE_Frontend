@@ -74,12 +74,9 @@ export default function PerfilEmpleado() {
   };
 
   const managementOptions = [
-    { name: 'Clientes', description: 'Ver datos básicos para entrega y comunicación', icon: Users, path: '/clientes-empleado' },
-    { name: 'Pedidos', description: 'Ver, actualizar estado y asignarse pedidos', icon: ClipboardList, path: '/pedidos-empleado' },
-    { name: 'Inventario de Tienda', description: 'Ver inventario de la tienda donde trabaja', icon: Boxes, path: '/inventario-tienda' },
-    { name: 'Gestión Empleado Inventario Tienda', description: 'Ver qué inventario gestiona junto a otros empleados', icon: LayoutGrid, path: '/gestion-empleado-inventario-tienda' },
-    { name: 'Productos en Tienda', description: 'Ver productos disponibles', icon: Package, path: '/productos-tienda' },
-    { name: 'Detalles de Pedidos', description: 'Ver detalles para preparación y entrega', icon: Eye, path: '/detalles-pedidos-empleado' },
+    { name: 'Clientes', description: 'Gestión de clientes', icon: Users, path: '/clientes-empleado' },
+    { name: 'Pedidos', description: 'Gestión de pedidos', icon: ClipboardList, path: '/pedidos-empleado' },
+    { name: 'Inventario Tienda', description: 'Gestión de inventario tienda', icon: Boxes, path: '/inventario-tienda' }
   ];
 
   return (

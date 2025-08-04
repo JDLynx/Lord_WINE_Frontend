@@ -148,7 +148,6 @@ export default function GestionEmpleados() {
 
       await fetchEmpleados();
       setIsModalOpen(false);
-      showNotification(currentEmployee.emplCodEmpleado ? 'Empleado actualizado correctamente.' : 'Empleado creado correctamente.', 'success');
     } catch (error) {
       console.error('Error al guardar empleado:', error);
       showNotification(`Error al guardar: ${error.message}`, 'error');
@@ -168,19 +167,19 @@ export default function GestionEmpleados() {
   );
 
   return (
-    <div className="page-container">
+    <div className="page-container min-h-screen flex flex-col">
       <Header />
       <BarraProductos />
-      <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-        <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+      <main className="bg-vistas-home py-8 px-4 sm:px-8 flex-grow overflow-y-auto">
+        <div className="w-full mx-auto bg-white rounded-2xl shadow-lg p-10 mt-8">
           <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Empleados</h1>
-          <p className="text-justify text-black mb-8 text-xl">
+          <p className="text-center text-black mb-8 text-xl">
             Gestión de los empleados del sistema: crear nuevos, editar su información y eliminar registros existentes.
           </p>
 
-          {message && (
+          {message && messageType === 'error' && (
             <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
-              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+              messageType === 'error' ? 'bg-red-500 text-white' : ''
             }`}>
               {message}
             </div>

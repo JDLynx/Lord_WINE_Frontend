@@ -13,6 +13,7 @@ export default function GestionPedidos() {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const API_URL_PEDIDOS = 'http://localhost:3000/api/pedidos';
   const API_URL_EMPLEADOS = 'http://localhost:3000/api/empleados';
@@ -119,7 +120,6 @@ export default function GestionPedidos() {
         setNewStatus('');
         setAssignedEmployeeId('');
         await fetchOrders();
-        showNotification(`Pedido ${selectedOrder.id} actualizado correctamente.`, 'success');
       } catch (error) {
         console.error('Error al actualizar pedido:', error);
         showNotification(`Error al actualizar el pedido: ${error.message}`, 'error');
@@ -133,28 +133,58 @@ export default function GestionPedidos() {
     setAssignedEmployeeId(order.emplCodEmpleado || (employees.length > 0 ? employees[0].emplCodEmpleado : ''));
   };
 
+  const filteredOrders = orders.filter(order => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    
+    if (order.id && order.id.toString().includes(lowerCaseQuery)) return true;
+    
+    if (order.customerName && order.customerName.toLowerCase().includes(lowerCaseQuery)) return true;
+    
+    if (order.date && order.date.toLowerCase().includes(lowerCaseQuery)) return true;
+    
+    if (order.total && order.total.toString().includes(lowerCaseQuery)) return true;
+    
+    if (order.status && order.status.toLowerCase().includes(lowerCaseQuery)) return true;
+
+    if (order.assignedEmployee && order.assignedEmployee.toLowerCase().includes(lowerCaseQuery)) return true;
+
+    if (order.items && order.items.some(item => item.name.toLowerCase().includes(lowerCaseQuery))) return true;
+
+    return false;
+  });
+
   return (
     <>
-      <div className="page-container">
+      <div className="page-container min-h-screen flex flex-col">
         <Header />
         <BarraProductos />
-        <main className="bg-vistas-home min-h-screen py-8 px-4 sm:px-8">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+        <main className="bg-vistas-home py-8 px-4 sm:px-8 flex-grow overflow-y-auto">
+          <div className="w-full mx-auto bg-white rounded-2xl shadow-lg p-10 mt-8">
             <h1 className="text-2xl font-semibold text-black mb-2 text-center">Gestión de Pedidos</h1>
-            <p className="text-justify text-black text-lg mb-8">
+            <p className="text-center text-black text-lg mb-8">
               Visualización y gestión de todos los pedidos de los clientes. Detalles de cada pedido, actualización de estado y asignación de un empleado para su procesamiento.
             </p>
 
-            {message && (
+            {message && messageType === 'error' && (
               <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
-                messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                messageType === 'error' ? 'bg-red-500 text-white' : ''
               }`}>
                 {message}
               </div>
             )}
 
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Buscar"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full border border-gray-300 px-4 py-2 rounded text-black text-lg focus:border-black focus:outline-none"
+              />
+            </div>
+
             {isLoading ? (
-              <div className="overflow-x-auto rounded-lg shadow-md">
+              <div className="overflow-x-auto rounded-lg shadow-md max-h-[60vh]">
                 <table className="min-w-full bg-white animate-pulse">
                   <thead className="bg-gray-100 border-b border-gray-200">
                     <tr>
@@ -164,6 +194,7 @@ export default function GestionPedidos() {
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Total</th>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Estado</th>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Empleado Asignado</th>
+                      <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Items del Pedido</th>
                       <th className="px-6 py-3 text-center text-lg font-medium text-black tracking-wider">Acciones</th>
                     </tr>
                   </thead>
@@ -188,6 +219,9 @@ export default function GestionPedidos() {
                         <td className="px-6 py-4 whitespace-nowrap text-base text-black">
                           <div className="h-4 bg-gray-200 rounded w-32"></div>
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black">
+                          <div className="h-4 bg-gray-200 rounded w-40"></div>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-base font-medium">
                           <div className="flex justify-center space-x-3">
                             <div className="h-6 w-6 bg-gray-200 rounded-full"></div>
@@ -198,10 +232,10 @@ export default function GestionPedidos() {
                   </tbody>
                 </table>
               </div>
-            ) : orders.length > 0 ? (
-              <div className="overflow-x-auto rounded-lg shadow-md">
+            ) : filteredOrders.length > 0 ? (
+              <div className="overflow-x-auto rounded-lg shadow-md max-h-[60vh]">
                 <table className="min-w-full bg-white">
-                  <thead className="bg-gray-100 border-b border-gray-200">
+                  <thead className="bg-gray-100 border-b border-gray-200 sticky top-0">
                     <tr>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">ID Pedido</th>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Cliente</th>
@@ -209,24 +243,41 @@ export default function GestionPedidos() {
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Total</th>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Estado</th>
                       <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Empleado Asignado</th>
+                      <th className="px-6 py-3 text-left text-lg font-medium text-black tracking-wider">Items del Pedido</th>
                       <th className="px-6 py-3 text-center text-lg font-medium text-black tracking-wider">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {orders.map((order) => (
+                    {filteredOrders.map((order) => (
                       <tr key={order.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-base text-black">{order.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-base text-black">{order.customerName}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-base text-black">{order.date}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-base text-black">${order.total.toFixed(2)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-black leading-5 font-semibold text-base rounded-full ${getStatusClass(order.status)}`}>
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">{order.customerName}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">{order.date}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">${order.total.toFixed(2)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-left">
+                          <span className={`px-2 inline-flex text-black leading-5 font-semibold text-base rounded-full text-left ${getStatusClass(order.status)}`}>
                             {getStatusIcon(order.status)}
                             {order.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-base text-black">
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-black text-left">
                           {order.assignedEmployee || 'N/A'}
+                        </td>
+                        <td className="px-6 py-4 text-base text-black text-left">
+                          {order.items && order.items.length > 0 ? (
+                            <>
+                              {order.items.slice(0, 2).map((item, idx) => (
+                                <span key={item.productId || idx} className="block">
+                                  {item.name} (x{item.quantity})
+                                </span>
+                              ))}
+                              {order.items.length > 2 && (
+                                <span className="text-gray-500 text-sm">...(más {order.items.length - 2})</span>
+                              )}
+                            </>
+                          ) : (
+                            'N/A'
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-base font-medium">
                           <div className="flex justify-center space-x-3">
