@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
@@ -39,33 +39,37 @@ export default function GestionProductos() {
     }, 3000);
   };
 
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [productsRes, categoriesRes, adminsRes] = await Promise.all([
+        fetch(`${API_URL}/productos`),
+        fetch(`${API_URL}/categorias`),
+        fetch(`${API_URL}/administradores`)
+      ]);
+
+      if (!productsRes.ok) throw new Error('Error al obtener productos.');
+      if (!categoriesRes.ok) throw new Error('Error al obtener categorías.');
+      if (!adminsRes.ok) throw new Error('Error al obtener administradores.');
+
+      const productsData = await productsRes.json();
+      const categoriesData = await categoriesRes.json();
+      const adminsData = await adminsRes.json();
+
+      setProducts(productsData);
+      setCategories(categoriesData);
+      setAdmins(adminsData);
+    } catch (err) {
+      console.error('Error al cargar datos:', err);
+      showNotification('Error al cargar los datos: ' + err.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, [API_URL]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [productsRes, categoriesRes, adminsRes] = await Promise.all([
-          fetch(`${API_URL}/productos`),
-          fetch(`${API_URL}/categorias`),
-          fetch(`${API_URL}/administradores`)
-        ]);
-
-        const productsData = await productsRes.json();
-        const categoriesData = await categoriesRes.json();
-        const adminsData = await adminsRes.json();
-
-        setProducts(productsData);
-        setCategories(categoriesData);
-        setAdmins(adminsData);
-      } catch (err) {
-        console.error('Error al cargar datos:', err);
-        showNotification('Error al cargar los datos.', 'error');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const validateForm = (data) => {
     const errors = {};
@@ -102,11 +106,15 @@ export default function GestionProductos() {
 
   const confirmDelete = async () => {
     try {
-      await fetch(`${API_URL}/productos/${productIdToDelete}`, { method: 'DELETE' });
-      setProducts(products.filter(p => p.prodIdProducto !== productIdToDelete));
+      const res = await fetch(`${API_URL}/productos/${productIdToDelete}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al eliminar el producto.');
+      }
+      await fetchData();
     } catch (err) {
       console.error(err);
-      showNotification('Error al eliminar el producto.', 'error');
+      showNotification('Error al eliminar el producto: ' + err.message, 'error');
     } finally {
       setShowConfirmModal(false);
       setProductIdToDelete(null);
@@ -128,21 +136,27 @@ export default function GestionProductos() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(currentProduct),
         });
-        const data = await res.json();
-        setProducts(products.map(p => (p.prodIdProducto === data.producto.prodIdProducto ? data.producto : p)));
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Error al actualizar el producto.');
+        }
+        await fetchData();
       } else {
         const res = await fetch(`${API_URL}/productos`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(currentProduct),
         });
-        const data = await res.json();
-        setProducts([...products, data.producto]);
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Error al crear el producto.');
+        }
+        await fetchData();
       }
       setIsModalOpen(false);
     } catch (err) {
       console.error(err);
-      showNotification('Error al guardar el producto.', 'error');
+      showNotification('Error al guardar el producto: ' + err.message, 'error');
     }
   };
 
@@ -158,13 +172,16 @@ export default function GestionProductos() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ catNombre: newCategoryName }),
       });
-      const data = await res.json();
-      setCategories([...categories, data.categoria]);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al crear la categoría.');
+      }
+      await fetchData();
       setNewCategoryName('');
       setShowCategoryModal(false);
     } catch (err) {
       console.error(err);
-      showNotification('Error al crear la categoría.', 'error');
+      showNotification('Error al crear la categoría: ' + err.message, 'error');
     }
   };
 
@@ -192,12 +209,15 @@ export default function GestionProductos() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ catNombre: currentCategory.catNombre }),
       });
-      const data = await res.json();
-      setCategories(categories.map(cat => (cat.categIdCategoria === data.categoria.categIdCategoria ? data.categoria : cat)));
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al actualizar la categoría.');
+      }
+      await fetchData();
       setIsCategoryEditModalOpen(false);
     } catch (err) {
       console.error(err);
-      showNotification('Error al actualizar la categoría.', 'error');
+      showNotification('Error al actualizar la categoría: ' + err.message, 'error');
     }
   };
 
@@ -208,11 +228,15 @@ export default function GestionProductos() {
 
   const confirmCategoryDelete = async () => {
     try {
-      await fetch(`${API_URL}/categorias/${categoryIdToDelete}`, { method: 'DELETE' });
-      setCategories(categories.filter(c => c.categIdCategoria !== categoryIdToDelete));
+      const res = await fetch(`${API_URL}/categorias/${categoryIdToDelete}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al eliminar la categoría.');
+      }
+      await fetchData();
     } catch (err) {
       console.error(err);
-      showNotification('Error al eliminar la categoría.', 'error');
+      showNotification('Error al eliminar la categoría: ' + err.message, 'error');
     } finally {
       setShowConfirmCategoryModal(false);
       setCategoryIdToDelete(null);
@@ -401,11 +425,11 @@ export default function GestionProductos() {
                   {currentProduct.prodIdProducto ? 'Editar Producto' : 'Crear Nuevo Producto'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <input type="text" name="prodNombre" placeholder="Nombre" value={currentProduct.prodNombre}
+                  <input type="text" name="prodNombre" placeholder="Nombre" value={currentProduct.prodNombre || ''}
                     onChange={handleChange} className="w-full border px-3 py-2 rounded text-black" />
                   {formErrors.prodNombre && <p className="text-red-500 text-sm">{formErrors.prodNombre}</p>}
 
-                  <select name="categIdCategoria" value={currentProduct.categIdCategoria}
+                  <select name="categIdCategoria" value={currentProduct.categIdCategoria || ''}
                     onChange={handleChange} className="w-full border px-3 py-2 rounded text-black bg-white">
                     <option value="">Seleccione una categoría</option>
                     {categories.map(cat => (
@@ -414,15 +438,15 @@ export default function GestionProductos() {
                   </select>
                   {formErrors.categIdCategoria && <p className="text-red-500 text-sm">{formErrors.categIdCategoria}</p>}
 
-                  <input type="number" name="prodPrecio" placeholder="Precio" value={currentProduct.prodPrecio}
+                  <input type="number" name="prodPrecio" placeholder="Precio" value={currentProduct.prodPrecio || ''}
                     onChange={handleChange} className="w-full border px-3 py-2 rounded text-black" />
                   {formErrors.prodPrecio && <p className="text-red-500 text-sm">{formErrors.prodPrecio}</p>}
 
-                  <textarea name="prodDescripcion" placeholder="Descripción" value={currentProduct.prodDescripcion}
+                  <textarea name="prodDescripcion" placeholder="Descripción" value={currentProduct.prodDescripcion || ''}
                     onChange={handleChange} className="w-full border px-3 py-2 rounded text-black" />
                   {formErrors.prodDescripcion && <p className="text-red-500 text-sm">{formErrors.prodDescripcion}</p>}
 
-                  <select name="adminCodAdministrador" value={currentProduct.adminCodAdministrador}
+                  <select name="adminCodAdministrador" value={currentProduct.adminCodAdministrador || ''}
                     onChange={handleChange} className="w-full border px-3 py-2 rounded text-black bg-white">
                     <option value="">Seleccione un administrador</option>
                     {admins.map(admin => (
@@ -496,7 +520,7 @@ export default function GestionProductos() {
                     type="text"
                     name="catNombre"
                     placeholder="Nombre de la categoría"
-                    value={currentCategory.catNombre}
+                    value={currentCategory.catNombre || ''}
                     onChange={(e) => { setCurrentCategory(prev => ({ ...prev, catNombre: e.target.value })); setCategoryEditError(''); }}
                     className="w-full border px-3 py-2 rounded text-black"
                   />
