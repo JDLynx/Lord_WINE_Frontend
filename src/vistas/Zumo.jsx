@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'; 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
@@ -22,7 +22,6 @@ function Zumo() {
 
         const productosData = await response.json();
         
-        // CORRECCIÓN: Se cambia el filtro a 'producto.category' para que coincida con tus datos
         const productosFiltrados = productosData.filter(producto => producto.category === 'Zumo');
         
         setZumoProductos(productosFiltrados);
@@ -37,10 +36,6 @@ function Zumo() {
     fetchProductos();
   }, []);
 
-  if (error) {
-      return <p className="text-center mt-10 text-red-500">{error}</p>;
-  }
-
   return (
     <>
       <div className="page-container">
@@ -51,11 +46,23 @@ function Zumo() {
           <h2 className="titulo-zumo">Zumo</h2>
           
           {loading ? (
+            // spinner de carga
             <div className="flex flex-col items-center justify-center flex-grow p-10">
                 <AiOutlineLoading3Quarters className="w-12 h-12 text-[#921913] animate-spin" />
                 <p className="mt-4 text-gray-600 text-lg">Cargando productos...</p>
             </div>
+          ) : error ? (
+            //  mensaje de error directamente en un párrafo
+            <p className="text-center text-[#921913] text-xl font-semibold p-10">
+                {error}
+            </p>
+          ) : zumoProductos.length === 0 ? (
+            // Mensaje de "no hay productos" directamente en un párrafo
+            <p className="text-center text-gray-600 text-xl font-semibold p-10">
+                No se encontraron productos de Zumo en este momento.
+            </p>
           ) : (
+            // productos si todo está bien
             <div className="productos-container-zumo">
               {zumoProductos.map(producto => (
                 <TarjetaProducto 
