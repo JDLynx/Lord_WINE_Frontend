@@ -8,14 +8,12 @@
     background-position: center;
     background-repeat: no-repeat;
     width: 100%;
-    /* Se ha eliminado 'min-height: 80vh;' para que el main se adapte al contenido */
     padding-top: 20px;
     padding-bottom: 20px;
 }
 
 .productos-container-zumo {
     display: grid;
-    /* Esto crea un layout de 5 columnas en pantallas grandes que se ajusta automáticamente */
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     width: 100%;
@@ -25,7 +23,7 @@
 }
 
 .product-card-modern-zumo {
-    background: rgba(255, 255, 255, 0.85); /* Se cambió a rgba para mantener consistencia */
+    background: rgba(255, 255, 255, 0.85);
     border-radius: 8px;
     padding: 15px;
     text-align: center;
@@ -36,7 +34,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: 100%; /* Para que todas las tarjetas en la misma fila tengan la misma altura */
+    height: 100%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -62,17 +60,37 @@
     color: #00C853;
 }
 
-/* Se eliminan las media queries que no son necesarias con CSS Grid */
+/* Contenedor de la imagen para altura fija y centrado */
+.product-image-wrapper-zumo {
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
 
+/* Ajustes para la imagen dentro del contenedor */
+.product-image-zumo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Limita el nombre del producto a dos líneas y centra el texto */
 .nombre-producto-zumo {
     font-size: 24px;
     color: #12b873;
-}
-
-.product-image-zumo {
-    max-height: 120px;
-    object-fit: contain;
-    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 48px;
+    margin-bottom: 5px;
+    text-align: center;
+    line-clamp: 2;
 }
 
 .prox {
