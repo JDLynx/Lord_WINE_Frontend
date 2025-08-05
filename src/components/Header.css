@@ -4,9 +4,10 @@ header{
     flex-direction: column;
     align-items: center;
     padding: 10px 20px;
-    width: 100vw;
+    width: 100%; 
     max-width: 100%;
     gap: 10px;
+    box-sizing: border-box; /* ¡Esta es la corrección clave! */
 }
 .header-parte-superior{
     display: flex;

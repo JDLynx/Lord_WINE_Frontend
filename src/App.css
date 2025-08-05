@@ -2,6 +2,16 @@
   text-align: center;
 }
 
+/* Corrección clave para el desbordamiento horizontal */
+html, body {
+  box-sizing: border-box; /* Incluye padding y border en el ancho/alto */
+  overflow-x: hidden; /* Previene el scroll horizontal no deseado */
+}
+
+*, *::before, *::after {
+  box-sizing: inherit; /* Asegura que todos los elementos hereden esta propiedad */
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

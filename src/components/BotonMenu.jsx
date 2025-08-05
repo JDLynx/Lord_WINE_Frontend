@@ -29,7 +29,7 @@ function BotonMenu() {
         </button>
 
         {isOpen && (
-            <ul className="dropdown-menu">
+            <ul className="dropdown-menu-principal">
             <li><Link className="dropdown-item" to="/">Inicio</Link></li>
             <li><Link className="dropdown-item" to="/album">Álbum</Link></li>
             <li><Link className="dropdown-item" to="/contacto">Contacto</Link></li>
