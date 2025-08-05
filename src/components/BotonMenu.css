@@ -35,12 +35,15 @@
     color: #921913;
 }
 
-.dropdown-menu {
-    white-space: nowrap;
-    min-width: 200px;
+.dropdown-menu-principal {
     position: absolute;
     top: 55px;
-    right: 13px;
+    right: 10px;
+    left: auto;
+    min-width: 200px;
+    max-width: 300px;
+    width: auto;
+    
     background: rgba(255, 255, 255, 0.9);
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -50,6 +53,8 @@
     flex-direction: column;
     text-align: left;
     cursor: pointer;
+    z-index: 1000;
+    box-sizing: border-box;
 }
 
 .dropdown-item {
@@ -63,4 +68,26 @@
 .dropdown-item:hover {
     background: rgba(0, 0, 0, 0.05);
     color: #921913;
+}
+
+/* Media query para pantallas más pequeñas (ej. móviles) */
+@media (max-width: 768px) {
+    .dropdown-menu-principal {
+        left: 10px;
+        right: 10px;
+        width: auto;
+        min-width: unset;
+        max-width: unset;
+        transform: none;
+    }
+}
+
+/* Definición de la animación fadeIn */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }

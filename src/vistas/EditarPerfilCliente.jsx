@@ -38,7 +38,7 @@ export default function EditarPerfilCliente() {
         console.log('3. Estado de la respuesta de la API:', response.status, response.statusText);
 
         if (!response.ok) {
-          const errorText = await response.text(); // Intenta obtener el texto del error
+          const errorText = await response.text();
           console.error('4. Error en la respuesta de la API:', errorText);
           throw new Error(`Error al obtener datos del cliente: ${response.status} ${response.statusText} - ${errorText}`);
         }
@@ -46,7 +46,6 @@ export default function EditarPerfilCliente() {
         const data = await response.json();
         console.log('5. Datos recibidos de la API:', data);
 
-        // Asegúrate de que las propiedades de 'data' coincidan con las del estado 'clientData'
         setClientData({
           clNombre: data.clNombre || '',
           clIdCliente: data.clIdCliente || '',
@@ -70,7 +69,7 @@ export default function EditarPerfilCliente() {
       }
     };
     fetchClientData();
-  }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,10 +94,9 @@ export default function EditarPerfilCliente() {
 
     try {
       const response = await fetch(`http://localhost:3000/api/clientes/${clienteId}`, {
-        method: 'PUT', // O 'PATCH' si tu API soporta actualizaciones parciales
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          // Aquí podrías añadir un token de autorización si lo usas
         },
         body: JSON.stringify(clientData),
       });
@@ -109,10 +107,9 @@ export default function EditarPerfilCliente() {
       }
 
       setSuccessMessage('¡Perfil actualizado exitosamente!');
-      // Navegar de vuelta al perfil después de un éxito
       setTimeout(() => {
         navigate('/perfil-cliente');
-      }, 1500); // Redirige después de 1.5 segundos
+      }, 1500);
 
     } catch (err) {
       console.error("Error al actualizar el perfil:", err);
@@ -133,25 +130,24 @@ export default function EditarPerfilCliente() {
           style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
         >
           <div className="max-w-4xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center border-b pb-4 border-gray-200">
+            <h1 className="text-2xl font-semibold text-black mb-8 text-center border-b pb-4 border-gray-200">
               Editar Perfil
             </h1>
 
             {loading ? (
               <div className="flex flex-col items-center justify-center p-10">
-                <AiOutlineLoading3Quarters className="w-12 h-12 text-red-600 animate-spin" />
-                <p className="mt-4 text-gray-600 text-lg">Cargando datos para edición...</p>
+                <AiOutlineLoading3Quarters className="w-12 h-12 text-[#921913] animate-spin" />
+                <p className="mt-4 text-black text-lg">Cargando datos para edición...</p>
               </div>
             ) : error ? (
-              <div className="text-center text-red-600 font-bold mb-4">{error}</div>
+              <div className="text-center text-[#921913] font-bold mb-4">{error}</div>
             ) : successMessage ? (
-              <div className="text-center text-green-600 font-bold mb-4">{successMessage}</div>
+              <div className="text-center text-green-700 font-bold mb-4">{successMessage}</div>
             ) : (
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                {/* Campo Nombre */}
                 <div className="col-span-1">
-                  <label htmlFor="clNombre" className="block text-sm font-medium text-gray-700 mb-1">
-                    <User className="inline-block w-4 h-4 mr-2 text-red-500" />Nombre Completo
+                  <label htmlFor="clNombre" className="block text-lg font-medium text-black mb-1">
+                    <User className="inline-block w-4 h-4 mr-2 text-[#921913]" />Nombre Completo
                   </label>
                   <input
                     type="text"
@@ -159,15 +155,14 @@ export default function EditarPerfilCliente() {
                     name="clNombre"
                     value={clientData.clNombre}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base"
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#921913] focus:border-[#921913] text-base text-black" // Added text-black
                     required
                   />
                 </div>
 
-                {/* Campo Identificación (generalmente no editable) */}
                 <div className="col-span-1">
-                  <label htmlFor="clIdCliente" className="block text-sm font-medium text-gray-700 mb-1">
-                    <CreditCard className="inline-block w-4 h-4 mr-2 text-red-500" />Identificación
+                  <label htmlFor="clIdCliente" className="block text-lg font-medium text-black mb-1">
+                    <CreditCard className="inline-block w-4 h-4 mr-2 text-[#921913]" />Identificación
                   </label>
                   <input
                     type="text"
@@ -175,15 +170,15 @@ export default function EditarPerfilCliente() {
                     name="clIdCliente"
                     value={clientData.clIdCliente}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-base cursor-not-allowed"
-                    readOnly // La identificación generalmente no se edita
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-base text-black cursor-not-allowed" // Added text-black and bg-gray-100 for disabled look
+                    readOnly
                   />
                 </div>
 
                 {/* Campo Dirección */}
                 <div className="col-span-1">
-                  <label htmlFor="clDireccion" className="block text-sm font-medium text-gray-700 mb-1">
-                    <Home className="inline-block w-4 h-4 mr-2 text-red-500" />Dirección
+                  <label htmlFor="clDireccion" className="block text-lg font-medium text-black mb-1">
+                    <Home className="inline-block w-4 h-4 mr-2 text-[#921913]" />Dirección
                   </label>
                   <input
                     type="text"
@@ -191,15 +186,14 @@ export default function EditarPerfilCliente() {
                     name="clDireccion"
                     value={clientData.clDireccion}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base"
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black" // Added text-black
                     required
                   />
                 </div>
 
-                {/* Campo Teléfono */}
                 <div className="col-span-1">
-                  <label htmlFor="clTelefono" className="block text-sm font-medium text-gray-700 mb-1">
-                    <Phone className="inline-block w-4 h-4 mr-2 text-red-500" />Teléfono
+                  <label htmlFor="clTelefono" className="block text-lg font-medium text-black mb-1">
+                    <Phone className="inline-block w-4 h-4 mr-2 text-[#921913]" />Teléfono
                   </label>
                   <input
                     type="tel"
@@ -207,15 +201,14 @@ export default function EditarPerfilCliente() {
                     name="clTelefono"
                     value={clientData.clTelefono}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base"
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black" // Added text-black
                     required
                   />
                 </div>
 
-                {/* Campo Correo Electrónico */}
                 <div className="col-span-full">
-                  <label htmlFor="clCorreoElectronico" className="block text-sm font-medium text-gray-700 mb-1">
-                    <Mail className="inline-block w-4 h-4 mr-2 text-red-500" />Correo Electrónico
+                  <label htmlFor="clCorreoElectronico" className="block text-lg font-medium text-black mb-1">
+                    <Mail className="inline-block w-4 h-4 mr-2 text-[#921913]" />Correo Electrónico
                   </label>
                   <input
                     type="email"
@@ -223,16 +216,15 @@ export default function EditarPerfilCliente() {
                     name="clCorreoElectronico"
                     value={clientData.clCorreoElectronico}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base"
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black" // Added text-black
                     required
                   />
                 </div>
 
-                {/* Botones de acción */}
                 <div className="col-span-full flex justify-center space-x-6 mt-6">
                   <button
                     type="submit"
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                    className="bg-[#921913] hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                     disabled={loading}
                   >
                     {loading ? (
@@ -245,7 +237,7 @@ export default function EditarPerfilCliente() {
                   <button
                     type="button"
                     onClick={() => navigate('/perfil-cliente')}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                    className="bg-white hover:bg-gray-300 text-black font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                   >
                     Cancelar
                   </button>

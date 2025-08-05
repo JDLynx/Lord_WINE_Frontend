@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
 import { Key, Lock } from 'lucide-react';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 export default function CambiarContraseñaCliente() {
   const navigate = useNavigate();
@@ -42,18 +42,45 @@ export default function CambiarContraseñaCliente() {
       return;
     }
 
-    console.log('Simulando cambio de contraseña (solo frontend):', passwords);
+    const clienteCodCliente = localStorage.getItem('clienteCodCliente');
+    if (!clienteCodCliente) {
+      setError('No se encontró el ID del cliente. Por favor, inicie sesión nuevamente.');
+      setLoading(false);
+      return;
+    }
 
-    setTimeout(() => {
-      setSuccessMessage('¡Contraseña cambiada exitosamente (simulado)!');
+    try {
+      // Realizamos la llamada PUT al nuevo endpoint específico para cambiar contraseña
+      const response = await fetch(`http://localhost:3000/api/clientes/${clienteCodCliente}/cambiar-contrasena`, {
+        method: 'PUT', // Usamos PUT para actualizar un recurso existente
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword: passwords.currentPassword, // Enviamos la contraseña actual
+          newPassword: passwords.newPassword,         // Enviamos la nueva contraseña
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al cambiar la contraseña.');
+      }
+
+      setSuccessMessage('¡Contraseña cambiada exitosamente!');
       setPasswords({
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       });
-      setLoading(false);
       setTimeout(() => navigate('/perfil-cliente'), 1500);
-    }, 1000);
+
+    } catch (err) {
+      console.error("Error al cambiar la contraseña:", err);
+      setError(err.message || 'Hubo un error al cambiar la contraseña.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,16 +94,16 @@ export default function CambiarContraseñaCliente() {
           style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
         >
           <div className="max-w-xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center border-b pb-4 border-gray-200">
+            <h1 className="text-3xl font-semibold text-black mb-8 text-center border-b pb-4 border-gray-200">
               Cambiar Contraseña
             </h1>
 
-            {error && <div className="text-center text-red-600 font-bold mb-4">{error}</div>}
-            {successMessage && <div className="text-center text-green-600 font-bold mb-4">{successMessage}</div>}
+            {error && <div className="text-center text-[#921913] font-semibold mb-4">{error}</div>}
+            {successMessage && <div className="text-center text-green-700 font-bold mb-4">{successMessage}</div>}
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
               <div>
-                <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="currentPassword" className="block text-xl font-medium text-black mb-1">
                   <Key className="inline-block w-4 h-4 mr-2 text-[#921913]" />Contraseña Actual
                 </label>
                 <input
@@ -85,13 +112,13 @@ export default function CambiarContraseñaCliente() {
                   name="currentPassword"
                   value={passwords.currentPassword}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="newPassword" className="block text-xl font-medium text-black mb-1">
                   <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Nueva Contraseña
                 </label>
                 <input
@@ -100,13 +127,13 @@ export default function CambiarContraseñaCliente() {
                   name="newPassword"
                   value={passwords.newPassword}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="confirmNewPassword" className="block text-xl font-medium text-black mb-1">
                   <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Confirmar Nueva Contraseña
                 </label>
                 <input
@@ -115,7 +142,7 @@ export default function CambiarContraseñaCliente() {
                   name="confirmNewPassword"
                   value={passwords.confirmNewPassword}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-gray-900"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
                   required
                 />
               </div>
@@ -123,7 +150,7 @@ export default function CambiarContraseñaCliente() {
               <div className="flex justify-center space-x-6 mt-6">
                 <button
                   type="submit"
-                  className="!bg-blue-600 !hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  className="!bg-red-700 !hover:bg-red-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                   disabled={loading}
                 >
                   {loading ? (
@@ -136,7 +163,7 @@ export default function CambiarContraseñaCliente() {
                 <button
                   type="button"
                   onClick={() => navigate('/perfil-cliente')}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                  className="bg-white hover:bg-gray-100 text-black font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                 >
                   Cancelar
                 </button>
