@@ -1,18 +1,22 @@
-.page-container{
+.page-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+}
+
+.servicios-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+    text-align: center;
     background-image: url('/img/Viñedo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    
-}
-.servicios-main{
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-attachment: fixed;
 }
 .text-container{
     background: rgba(0, 0, 0, 0.6);
@@ -32,12 +36,15 @@ h2 span{
     font-size: 1.2rem;
     color: #ffffff;
 }
+
 .servicios-container{
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    justify-items: center;
     gap: 3rem;
-    flex-wrap: wrap;
+    padding: 1rem;
 }
+
 .servicio-card{
     background: rgba(0, 0, 0, 0.6);
     border-radius: 10px;
@@ -67,6 +74,19 @@ h2 span{
     font-size: 1rem;
     color: #ffffff;
 }
+
+@media (min-width: 768px) {
+  .servicios-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+  }
+}
+
+@media (min-width: 1024px) {
+  .servicios-container {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
 @media (max-width: 768px){
     .text-container {
         width: 90%;

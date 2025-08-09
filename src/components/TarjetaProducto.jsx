@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { usarCarrito } from "../context/ContextoCarrito";
 
 const TarjetaProducto = ({ producto, sufijoClaseCategoria }) => {
   const { agregarAlCarrito } = usarCarrito();
+  const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = useState("");
+  const [esError, setEsError] = useState(false);
+
+  // useEffect para manejar el temporizador de la alerta
+  useEffect(() => {
+    if (mostrarAlerta) {
+      const timer = setTimeout(() => {
+        setMostrarAlerta(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [mostrarAlerta]);
 
   // Objeto de mapeo de prodIdProducto a URLs de imágenes
   const productImages = {
@@ -39,15 +52,18 @@ const TarjetaProducto = ({ producto, sufijoClaseCategoria }) => {
 
   const handleAgregarAlCarrito = () => {
     if (producto.prodConsignacion) {
-      alert(`"${producto.prodNombre}" estará disponible próximamente.`);
+      setMensajeAlerta(`"${producto.prodNombre}" estará disponible próximamente.`);
+      setEsError(true);
+      setMostrarAlerta(true);
       return;
     }
     agregarAlCarrito(producto);
-    alert(`"${producto.prodNombre}" ha sido agregado al carrito.`);
+    setMensajeAlerta(`"${producto.prodNombre}" ha sido agregado al carrito.`);
+    setEsError(false);
+    setMostrarAlerta(true);
   };
 
   // Construcción de clases más directa
-  // Ahora, las clases se construyen directamente usando el sufijo
   const cardClassName = `product-card-modern-${sufijoClaseCategoria}`;
   const imageWrapperClassName = `product-image-wrapper-${sufijoClaseCategoria}`; 
   const imageClassName = `product-image-${sufijoClaseCategoria}`;
@@ -55,29 +71,42 @@ const TarjetaProducto = ({ producto, sufijoClaseCategoria }) => {
   const priceClassName = `price-${sufijoClaseCategoria}`;
 
   return (
-    <div className={cardClassName}> {/* Se uso la variable directa */}
-      <div className={imageWrapperClassName}> {/* Se uso la variable directa */}
-        <img 
-          src={imageUrl} 
-          alt={producto.prodNombre} 
-          className={imageClassName}
-        />
-      </div>
-      <h5 className={`${nameClassName} text-lg`}>{producto.prodNombre}</h5> {/* Se uso la variable directa */}
-      
-      {producto.prodPrecio !== undefined && producto.prodPrecio !== null && (
-        <p className={`${priceClassName} text-base`}> {/* Se uso la variable directa */}
-          Precio: ${parseFloat(producto.prodPrecio).toLocaleString("es-CO")}
-        </p>
+    <>
+      {mostrarAlerta && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg text-center mx-4">
+            <p className={`text-xl font-bold ${esError ? "text-red-700" : "text-[#7a1010]"}`}>
+              {mensajeAlerta}
+            </p>
+          </div>
+        </div>
       )}
 
-      <button
-        onClick={handleAgregarAlCarrito}
-        className="bg-[#7a1010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out text-lg"
-      >
-        Agregar al Carrito
-      </button>
-    </div>
+      <div className={cardClassName}>
+        <div className={imageWrapperClassName}>
+          <img 
+            src={imageUrl} 
+            alt={producto.prodNombre} 
+            className={imageClassName}
+          />
+        </div>
+        <h5 className={`${nameClassName} text-lg`}>{producto.prodNombre}</h5>
+        
+        {producto.prodPrecio !== undefined && producto.prodPrecio !== null && (
+          <p className={`${priceClassName} text-base`}>
+            <span className="text-black">Precio: </span>
+            <span className="text-green-700">${parseFloat(producto.prodPrecio).toLocaleString("es-CO")}</span>
+          </p>
+        )}
+
+        <button
+          onClick={handleAgregarAlCarrito}
+          className="bg-[#7a1010] hover:bg-[#921913] text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out text-lg"
+        >
+          Agregar al Carrito
+        </button>
+      </div>
+    </>
   );
 };
 
