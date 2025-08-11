@@ -14,7 +14,6 @@ function Ron() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        // CORRECCIÓN 1: Se cambia el puerto de 4000 a 3000
         const response = await fetch('http://localhost:3000/api/productos'); 
         
         if (!response.ok) {

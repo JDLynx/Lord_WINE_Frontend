@@ -50,14 +50,28 @@ const TarjetaProducto = ({ producto, sufijoClaseCategoria }) => {
   // Obtiene la URL de la imagen del mapeo
   const imageUrl = productImages[producto.prodIdProducto] || 'https://placehold.co/150x120/E0E0E0/333333?text=No+Imagen';
 
+  // Función corregida
   const handleAgregarAlCarrito = () => {
+    // Si el producto está en consignación, no se puede agregar
     if (producto.prodConsignacion) {
       setMensajeAlerta(`"${producto.prodNombre}" estará disponible próximamente.`);
       setEsError(true);
       setMostrarAlerta(true);
       return;
     }
-    agregarAlCarrito(producto);
+
+    // Se crea un nuevo objeto con los nombres de propiedades correctos para el carrito
+    const productoParaCarrito = {
+      id: producto.prodIdProducto,
+      name: producto.prodNombre,
+      image: imageUrl,
+      price: parseFloat(producto.prodPrecio),
+      presentation: producto.prodPresentacion, // Incluimos la presentación si existe
+    };
+
+    // Llamamos a la función del contexto con el objeto corregido
+    agregarAlCarrito(productoParaCarrito);
+
     setMensajeAlerta(`"${producto.prodNombre}" ha sido agregado al carrito.`);
     setEsError(false);
     setMostrarAlerta(true);
