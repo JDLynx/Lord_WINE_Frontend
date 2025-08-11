@@ -28,7 +28,7 @@ export default function GestionAdministradores() {
 
   const fetchAdministradores = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/administradores');
+      const response = await fetch('https://lord-wine-backend.onrender.com/api/administradores');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -103,7 +103,7 @@ export default function GestionAdministradores() {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/administradores/${adminIdToDelete}`, {
+      const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${adminIdToDelete}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -132,8 +132,8 @@ export default function GestionAdministradores() {
     try {
       const method = currentAdmin.adminCodAdministrador ? 'PUT' : 'POST';
       const url = currentAdmin.adminCodAdministrador
-        ? `http://localhost:3000/api/administradores/${currentAdmin.adminCodAdministrador}`
-        : 'http://localhost:3000/api/administradores';
+        ? `https://lord-wine-backend.onrender.com/api/administradores/${currentAdmin.adminCodAdministrador}`
+        : 'https://lord-wine-backend.onrender.com/api/administradores';
 
       const body = {
         adminNombre: currentAdmin.adminNombre.trim(),

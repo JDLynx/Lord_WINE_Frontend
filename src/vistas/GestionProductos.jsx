@@ -28,7 +28,7 @@ export default function GestionProductos() {
   const [categoryEditError, setCategoryEditError] = useState('');
   const [activeTab, setActiveTab] = useState('products');
 
-  const API_URL = 'http://localhost:3000/api';
+  const API_URL = 'https://lord-wine-backend.onrender.com/api';
 
   const showNotification = (msg, type) => {
     setMessage(msg);

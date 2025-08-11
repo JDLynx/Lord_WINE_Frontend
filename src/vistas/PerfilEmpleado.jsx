@@ -27,12 +27,12 @@ export default function PerfilEmpleado() {
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/api/empleados/${employeeCod}`);
+        const response = await fetch(`https://lord-wine-backend.onrender.com/api/empleados/${employeeCod}`);
         if (!response.ok) throw new Error('Error al obtener datos del empleado');
         const data = await response.json();
         setProfileData(data);
 
-        const relacionesResponse = await fetch(`http://localhost:3000/api/trabaja-empleado-tienda/`);
+        const relacionesResponse = await fetch(`https://lord-wine-backend.onrender.com/api/trabaja-empleado-tienda/`);
         if (!relacionesResponse.ok) throw new Error('Error al obtener relaciones');
         const relaciones = await relacionesResponse.json();
 
@@ -40,7 +40,7 @@ export default function PerfilEmpleado() {
         if (relacion) {
           setTiendaId(relacion.tiendIdTiendaFisica);
 
-          const tiendasResponse = await fetch(`http://localhost:3000/api/tiendas-fisicas/`);
+          const tiendasResponse = await fetch(`https://lord-wine-backend.onrender.com/api/tiendas-fisicas/`);
           if (!tiendasResponse.ok) throw new Error('Error al obtener tiendas físicas');
           const tiendas = await tiendasResponse.json();
 

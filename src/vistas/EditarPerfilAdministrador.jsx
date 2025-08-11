@@ -30,7 +30,7 @@ export default function EditarPerfilAdministrador() {
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`);
+        const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${adminCod}`);
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -79,7 +79,7 @@ export default function EditarPerfilAdministrador() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`, {
+      const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${adminCod}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

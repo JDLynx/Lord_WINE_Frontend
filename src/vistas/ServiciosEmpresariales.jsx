@@ -20,7 +20,7 @@ function ServiciosEmpresariales() {
   useEffect(() => {
     const fetchServicios = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/servicios-empresariales');
+        const response = await fetch('https://lord-wine-backend.onrender.com/api/servicios-empresariales');
         if (!response.ok) {
           throw new Error('Error al cargar los datos');
         }

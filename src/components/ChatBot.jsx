@@ -9,7 +9,7 @@ const Chatbot = () => {
   const messagesEndRef = useRef(null);
 
   const userId = 'user-lordwine-frontend-1';
-  const BACKEND_URL = 'http://localhost:3000/api/dialogflow-query';
+  const BACKEND_URL = 'https://lord-wine-backend.onrender.com/api/dialogflow/dialogflow-query';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

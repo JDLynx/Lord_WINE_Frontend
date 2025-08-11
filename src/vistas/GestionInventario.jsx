@@ -39,7 +39,7 @@ export default function GestionInventario() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const inventoryResponse = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto');
+        const inventoryResponse = await fetch('https://lord-wine-backend.onrender.com/api/tiene-inventario-tienda-producto');
 
         if (!inventoryResponse.ok) {
           throw new Error('Error al obtener datos de inventario por tienda');
@@ -57,21 +57,21 @@ export default function GestionInventario() {
         }));
         setStoreInventory(mappedInventoryData);
 
-        const productsResponse = await fetch('http://localhost:3000/api/productos');
+        const productsResponse = await fetch('https://lord-wine-backend.onrender.com/api/productos');
         if (!productsResponse.ok) {
           throw new Error('Error al obtener productos');
         }
         const productsData = await productsResponse.json();
         setProductos(productsData);
 
-        const storesResponse = await fetch('http://localhost:3000/api/tiendas-fisicas');
+        const storesResponse = await fetch('https://lord-wine-backend.onrender.com/api/tiendas-fisicas');
         if (!storesResponse.ok) {
           throw new Error('Error al obtener tiendas');
         }
         const storesData = await storesResponse.json();
         setTiendas(storesData);
 
-        const tieneTiendaFisicaInvTienResponse = await fetch('http://localhost:3000/api/tiene-tienda-fisica-inventario-tienda');
+        const tieneTiendaFisicaInvTienResponse = await fetch('https://lord-wine-backend.onrender.com/api/tiene-tienda-fisica-inventario-tienda');
         if (!tieneTiendaFisicaInvTienResponse.ok) {
           throw new Error('Error al obtener relaciones tienda-inventario');
         }
@@ -100,7 +100,7 @@ export default function GestionInventario() {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${selectedItem.invTienIdInventarioTienda}/${selectedItem.prodIdProducto}`, {
+      const res = await fetch(`https://lord-wine-backend.onrender.com/api/tiene-inventario-tienda-producto/${selectedItem.invTienIdInventarioTienda}/${selectedItem.prodIdProducto}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ invTienProdCantidad: parseInt(newQuantity) }),
@@ -143,7 +143,7 @@ export default function GestionInventario() {
     if (!itemToDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/tiene-inventario-tienda-producto/${itemToDelete.invTienIdInventarioTienda}/${itemToDelete.prodIdProducto}`, {
+      const res = await fetch(`https://lord-wine-backend.onrender.com/api/tiene-inventario-tienda-producto/${itemToDelete.invTienIdInventarioTienda}/${itemToDelete.prodIdProducto}`, {
         method: 'DELETE',
       });
 
@@ -206,7 +206,7 @@ export default function GestionInventario() {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/tiene-inventario-tienda-producto', {
+      const res = await fetch('https://lord-wine-backend.onrender.com/api/tiene-inventario-tienda-producto', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

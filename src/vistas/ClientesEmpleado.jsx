@@ -28,7 +28,7 @@ export default function ClientesEmpleado() {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [clientIdToDelete, setClientIdToDelete] = useState(null);
 
-    const API_URL = 'http://localhost:3000/api/clientes';
+    const API_URL = 'https://lord-wine-backend.onrender.com/api/clientes';
 
     const showNotification = (msg, type = 'success') => {
         setMessage(msg);

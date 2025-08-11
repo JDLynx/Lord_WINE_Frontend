@@ -46,7 +46,7 @@ export default function CambiarContraseñaEmpleado() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/empleados/${user.id}/cambiar-contrasena`, {
+      const response = await fetch(`https://lord-wine-backend.onrender.com/api/empleados/${user.id}/cambiar-contrasena`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

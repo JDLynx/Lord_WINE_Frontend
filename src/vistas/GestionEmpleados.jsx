@@ -30,7 +30,7 @@ export default function GestionEmpleados() {
 
   const fetchEmpleados = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/empleados');
+      const res = await fetch('https://lord-wine-backend.onrender.com/api/empleados');
       const data = await res.json();
       setEmployees(data);
     } catch (error) {
@@ -87,7 +87,7 @@ export default function GestionEmpleados() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/empleados/${employeeIdToDelete}`, {
+      const res = await fetch(`https://lord-wine-backend.onrender.com/api/empleados/${employeeIdToDelete}`, {
         method: 'DELETE',
       });
       if (!res.ok) {
@@ -116,8 +116,8 @@ export default function GestionEmpleados() {
     try {
       const method = currentEmployee.emplCodEmpleado ? 'PUT' : 'POST';
       const url = currentEmployee.emplCodEmpleado
-        ? `http://localhost:3000/api/empleados/${currentEmployee.emplCodEmpleado}`
-        : 'http://localhost:3000/api/empleados';
+        ? `https://lord-wine-backend.onrender.com/api/empleados/${currentEmployee.emplCodEmpleado}`
+        : 'https://lord-wine-backend.onrender.com/api/empleados';
 
       const body = {
         emplIdEmpleado: currentEmployee.emplIdEmpleado,

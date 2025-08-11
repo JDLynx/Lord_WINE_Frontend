@@ -51,7 +51,7 @@ export default function CambiarContraseñaCliente() {
 
     try {
       // Realizamos la llamada PUT al nuevo endpoint específico para cambiar contraseña
-      const response = await fetch(`http://localhost:3000/api/clientes/${clienteCodCliente}/cambiar-contrasena`, {
+      const response = await fetch(`https://lord-wine-backend.onrender.com/api/clientes/${clienteCodCliente}/cambiar-contrasena`, {
         method: 'PUT', // Usamos PUT para actualizar un recurso existente
         headers: {
           'Content-Type': 'application/json',

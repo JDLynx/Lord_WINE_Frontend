@@ -17,7 +17,7 @@ export default function GestionServicios() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [serviceToDeleteId, setServiceToDeleteId] = useState(null);
 
-  const API_URL = 'http://localhost:3000/api/servicios-empresariales';
+  const API_URL = 'https://lord-wine-backend.onrender.com/api/servicios-empresariales';
 
   const showNotification = (msg, type = 'success') => {
     setMessage(msg);

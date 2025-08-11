@@ -61,7 +61,7 @@ export default function CambiarContraseña() {
             // since we are only changing the password. We primarily need adminCod.
             // However, keeping the fetch operation can confirm the adminCod is valid.
             try {
-                const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`);
+                const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${adminCod}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -122,7 +122,7 @@ export default function CambiarContraseña() {
         console.log('Datos a guardar (contraseña):', dataToSave);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`, {
+            const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${adminCod}`, {
                 method: 'PUT', // Use PUT or PATCH depending on your API
                 headers: {
                     'Content-Type': 'application/json',

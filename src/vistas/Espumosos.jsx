@@ -14,7 +14,7 @@ function Espumosos() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/productos'); 
+        const response = await fetch('https://lord-wine-backend.onrender.com/api/productos'); 
         
         if (!response.ok) {
             throw new Error('Error al cargar los productos');

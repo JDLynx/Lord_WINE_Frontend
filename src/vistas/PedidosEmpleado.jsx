@@ -17,8 +17,8 @@ export default function PedidosEmpleado() {
         parseInt(localStorage.getItem("employeeCod"), 10) || null
     );
 
-    const API_URL_PEDIDOS = 'http://localhost:3000/api/pedidos';
-    const API_URL_EMPLEADOS = 'http://localhost:3000/api/empleados';
+    const API_URL_PEDIDOS = 'https://lord-wine-backend.onrender.com/api/pedidos';
+    const API_URL_EMPLEADOS = 'https://lord-wine-backend.onrender.com/api/empleados';
 
     const statuses = ['Pendiente', 'En Proceso', 'Completado', 'Cancelado'];
 

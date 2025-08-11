@@ -46,7 +46,7 @@ export default function CambiarContraseñaAdministrador() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/administradores/${user.id}/cambiar-contrasena`, {
+      const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${user.id}/cambiar-contrasena`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

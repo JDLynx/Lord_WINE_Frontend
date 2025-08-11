@@ -40,7 +40,7 @@ export default function EditarPerfil() {
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`);
+        const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${adminCod}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -131,7 +131,7 @@ export default function EditarPerfil() {
 
     try {
       // Realiza la solicitud PUT a tu backend
-      const response = await fetch(`http://localhost:3000/api/administradores/${adminCod}`, {
+      const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${adminCod}`, {
         method: 'PUT', // Usa PUT o PATCH según tu API
         headers: {
           'Content-Type': 'application/json',

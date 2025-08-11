@@ -32,7 +32,7 @@ export default function GestionTiendas() {
 
   const fetchTiendas = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/tiendas-fisicas');
+      const res = await fetch('https://lord-wine-backend.onrender.com/api/tiendas-fisicas');
       const data = await res.json();
       setTiendas(data);
     } catch (error) {
@@ -43,7 +43,7 @@ export default function GestionTiendas() {
 
   const fetchAdministradores = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/administradores');
+      const res = await fetch('https://lord-wine-backend.onrender.com/api/administradores');
       const data = await res.json();
       const map = {};
       data.forEach(a => map[a.adminCodAdministrador] = a.adminNombre);
@@ -88,7 +88,7 @@ export default function GestionTiendas() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/tiendas-fisicas/${tiendaIdToDelete}`, { method: 'DELETE' });
+      const res = await fetch(`https://lord-wine-backend.onrender.com/api/tiendas-fisicas/${tiendaIdToDelete}`, { method: 'DELETE' });
       if (!res.ok) {
         throw new Error('Error al eliminar la tienda.');
       }
@@ -112,8 +112,8 @@ export default function GestionTiendas() {
     }
 
     const url = currentTienda.tiendIdTiendaFisica
-      ? `http://localhost:3000/api/tiendas-fisicas/${currentTienda.tiendIdTiendaFisica}`
-      : 'http://localhost:3000/api/tiendas-fisicas';
+      ? `https://lord-wine-backend.onrender.com/api/tiendas-fisicas/${currentTienda.tiendIdTiendaFisica}`
+      : 'https://lord-wine-backend.onrender.com/api/tiendas-fisicas';
     const method = currentTienda.tiendIdTiendaFisica ? 'PUT' : 'POST';
 
     try {

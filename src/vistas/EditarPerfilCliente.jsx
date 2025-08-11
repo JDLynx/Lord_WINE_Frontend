@@ -31,7 +31,7 @@ export default function EditarPerfilCliente() {
       }
 
       try {
-        const apiUrl = `http://localhost:3000/api/clientes/${clienteId}`;
+        const apiUrl = `https://lord-wine-backend.onrender.com/api/clientes/${clienteId}`;
         console.log('2. Intentando obtener datos del cliente desde la URL:', apiUrl);
         const response = await fetch(apiUrl);
 
@@ -93,7 +93,7 @@ export default function EditarPerfilCliente() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/clientes/${clienteId}`, {
+      const response = await fetch(`https://lord-wine-backend.onrender.com/api/clientes/${clienteId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

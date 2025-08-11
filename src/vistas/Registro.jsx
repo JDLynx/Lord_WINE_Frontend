@@ -28,7 +28,7 @@ export default function Registro() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/clientes/", {
+            const response = await fetch("https://lord-wine-backend.onrender.com/api/clientes/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

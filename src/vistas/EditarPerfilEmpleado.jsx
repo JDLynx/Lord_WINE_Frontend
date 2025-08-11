@@ -33,11 +33,11 @@ export default function EditarPerfilEmpleado() {
       }
 
       try {
-        const resEmpleado = await fetch(`http://localhost:3000/api/empleados/${employeeCod}`);
+        const resEmpleado = await fetch(`https://lord-wine-backend.onrender.com/api/empleados/${employeeCod}`);
         if (!resEmpleado.ok) throw new Error("Error al obtener datos del empleado");
         const empleadoJson = await resEmpleado.json();
 
-        const resTienda = await fetch(`http://localhost:3000/api/trabaja-empleado-tienda/`);
+        const resTienda = await fetch(`https://lord-wine-backend.onrender.com/api/trabaja-empleado-tienda/`);
         if (!resTienda.ok) throw new Error("Error al obtener tienda del empleado");
         const tiendaData = await resTienda.json();
         const relacion = tiendaData.find(rel => rel.emplCodEmpleado === parseInt(employeeCod));
@@ -86,7 +86,7 @@ export default function EditarPerfilEmpleado() {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/api/empleados/${employeeCod}`, {
+      const res = await fetch(`https://lord-wine-backend.onrender.com/api/empleados/${employeeCod}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

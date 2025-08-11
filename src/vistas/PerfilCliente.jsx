@@ -23,7 +23,7 @@ export default function PerfilCliente() {
 
     const fetchClientData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/clientes/${user.id}`);
+        const response = await fetch(`https://lord-wine-backend.onrender.com/api/clientes/${user.id}`);
         if (!response.ok) throw new Error('Error al obtener datos del cliente');
         const data = await response.json();
         setClientData(data);

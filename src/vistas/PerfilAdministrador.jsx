@@ -28,7 +28,7 @@ export default function PerfilAdministrador() {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/administradores/${user.id}`);
+        const response = await fetch(`https://lord-wine-backend.onrender.com/api/administradores/${user.id}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
 
