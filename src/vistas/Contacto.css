@@ -7,7 +7,7 @@
     background-position: center;
     background-repeat: no-repeat;
 }
-main{
+.main-contacto{
     flex-grow: 1;
     display: flex;
     justify-content: center;

@@ -15,7 +15,7 @@ function Contacto()
 
         
 
-        <main className="container mx-auto mt-4 px-4">
+        <main className="main-contacto container mx-auto mt-4 px-4">
             <div className= "p-8 text-white bg-black rounded-[10px]" style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}>
                 <h2 className="text-center text-2xl font-semibold">Contacto</h2>
                 <form className="flex flex-col gap-4 mt-4">

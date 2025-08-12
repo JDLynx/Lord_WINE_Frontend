@@ -80,10 +80,8 @@ function App() {
         <Route path="/editar-perfil-administrador" element={<EditarPerfilAdministrador />} />
         <Route path="/cambiar-contrasena-administrador" element={<CambiarContraseñaAdministrador />} />
 
-        {/* Ruta para la categoría principal de Vinos*/}
         <Route path="/vinos" element={<Vinos />} />
-        
-        {/* Rutas para las nuevas subcategorías de Vinos */}
+
         <Route path="/vinos-tintos" element={<VinosTintos />} />
         <Route path="/vinos-rosados" element={<VinosRosados />} />
         <Route path="/vinos-blancos" element={<VinosBlancos />} />
