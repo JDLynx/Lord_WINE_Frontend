@@ -12,9 +12,39 @@ function ServiciosEmpresariales() {
 
   // Objeto de mapeo de IDs de servicio a URLs de imágenes
   const serviceImages = {
-    '1': '',
-    '2': '',
-    '3': '',
+    '1': '/img/Cata_Domicilio.png', 
+    '2': '/img/Personalizacion_Etiquetas.jpg',
+    '3': '/img/Eventos_Corporativos.jpg',
+    '7': '/img/Alquiler_Barra_Movil.jpg',
+    '8': '/img/Cata_Vino_Corporativa.png',
+    '9': '/img/Servicio_Cocteleria_Personalizada.jpg',
+    '10': '/img/Maridaje_Gourmet.jpg',
+    '11': '/img/Taller_Mixologia.jpg',
+    '12': '/img/Asesoria_Carta_Vinos.jpg',
+    '13': '/img/Capacitacion_Servicio_Bebidas.jpg',
+    '14': '/img/Suministro_Licores_Eventos.jpg',
+    '15': '/img/Ambientacion_Bar_Eventos.jpg',
+    '16': '/img/Experiencia_Sensorial.jpg',
+    '17': '/img/Diseño_Carta_Licores.jpg',
+    '18': '/img/Refrigerio_Vino.jpg',
+    '19': '/img/Staff_Servicio_Eventos.jpg',
+    '20': '/img/Montaje_Express_Barra_Vinos.jpg',
+    '21': '/img/Tienda_Movil_Eventos.jpg',
+    '22': '/img/Degustacion_Tematica_Licores.jpg',
+    '23': '/img/Licorera_Ferias.jpg',
+    '24': '/img/Taller_Vinos_Ejecutivos.jpg',
+    '25': '/img/Alquiler_Cristaleria_Premium.jpg',
+    '26': '/img/Muestra_Comercial_Marca.jpg',
+    '27': '/img/Cava_Personalizada_Empresas.jpg',
+    '28': '/img/Eventos_Networking_Vino.jpg',
+    '29': '/img/Catering_Vinos_Premium.jpg',
+    '30': '/img/Kit_Empresarial_Regalo.jpg',
+    '31': '/img/Puesta_Escena_Lanzamiento.jpg',
+    '32': '/img/Desarrollado_Marca_Licor.jpg',
+    '33': '/img/Distribucion_Institucional_Vinos.jpg',
+    '34': '/img/Ruta_Vino_Empresas.jpg',
+    '35': '/img/Licor_Corporativo_Personalizado.jpg',
+    '36': '/img/Activacion_Centros_Comerciales_Vinos.png',
   };
 
   useEffect(() => {
@@ -51,7 +81,7 @@ function ServiciosEmpresariales() {
           <h2>Servicios <span>Empresariales</span></h2>
           <p>
             En <strong>LORD WINE</strong>, ofrecemos soluciones personalizadas para empresas, eventos y distribuidores.
-            Contamos con una amplia gama de vinos, licores y cócteles para satisfacer tus necesidades.
+            Contamos con una amplia gama de vinos, licores y cócteles para satisfacer tus necesidades.<br></br><strong>Para más información: </strong> Contactenos al 3006578 888
           </p>
         </div>
 

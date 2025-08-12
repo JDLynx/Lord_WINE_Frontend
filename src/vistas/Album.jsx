@@ -49,7 +49,7 @@ export default function Album()
     <div className="page-container bg-gray-900 text-white min-h-screen flex flex-col">
       <Header />
       <BarraProductos />
-      <main className="flex flex-col md:flex-row justify-around py-4 px-4">
+      <main className="main-album flex flex-col md:flex-row justify-around py-4 px-4">
 
         <div className="flex items-center justify-center p-6 shadow-lg">
           <div

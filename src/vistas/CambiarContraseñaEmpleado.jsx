@@ -144,7 +144,7 @@ export default function CambiarContraseñaEmpleado() {
             <div className="flex justify-center space-x-6 mt-6">
               <button
                 type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                className="bg-[#921913] hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
                 disabled={loading}
               >
                 {loading ? (
