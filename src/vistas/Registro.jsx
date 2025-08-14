@@ -15,7 +15,19 @@ export default function Registro() {
     const [confirmarContrasena, setConfirmarContrasena] = useState('');
     const [error, setError] = useState('');
     const [mensaje, setMensajeExito] = useState('');
+    const [correoError, setCorreoError] = useState('');
     const navigate = useNavigate();
+
+    const correoValido = /^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|live\.com|yahoo\.com|icloud\.com|protonmail\.com|aol\.com|msn\.com|zoho\.com|gmx\.com|mail\.com|yahoo\.com\.mx|hotmail\.com\.mx|outlook\.com\.mx|live\.com\.mx|yahoo\.com\.co|hotmail\.com\.co|outlook\.com\.co)$/i;
+
+    const handleCorreoChange = (value) => {
+        setClCorreoElectronico(value);
+        if (value && !correoValido.test(value)) {
+            setCorreoError('Dominio de correo no permitido');
+        } else {
+            setCorreoError('');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,6 +36,11 @@ export default function Registro() {
 
         if (clContrasena !== confirmarContrasena) {
             setError('Las contraseñas no coinciden.');
+            return;
+        }
+
+        if (!correoValido.test(clCorreoElectronico)) {
+            setError('Por favor ingresa un correo electrónico válido (gmail, hotmail, outlook, yahoo, etc).');
             return;
         }
 
@@ -150,10 +167,11 @@ export default function Registro() {
                                 type="email"
                                 placeholder="Correo electrónico"
                                 value={clCorreoElectronico}
-                                onChange={(e) => setClCorreoElectronico(e.target.value)}
+                                onChange={(e) => handleCorreoChange(e.target.value)}
                                 className="input-field"
                                 required
                             />
+                            {correoError && <p className="error">{correoError}</p>}
                         </div>
                         <div className="input-group">
                             <input
