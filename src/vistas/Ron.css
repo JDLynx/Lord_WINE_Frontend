@@ -1,12 +1,13 @@
 .bg-vistas-ron {
-    flex: 1;
-    display: flex;
     flex-direction: column;
-    align-items: center;
     background-image: url('/img/Viñedo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center; 
     width: 100%;
     padding-top: 20px;
     padding-bottom: 20px;

@@ -1,12 +1,13 @@
 .bg-vistas-zumo {
-    flex: 1;
-    display: flex;
     flex-direction: column;
-    align-items: center;
     background-image: url('/img/Viñedo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center; 
     width: 100%;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -58,7 +59,6 @@
     color: #00C853;
 }
 
-/* Contenedor de la imagen para altura fija y centrado */
 .product-image-wrapper-zumo {
     height: 120px;
     display: flex;
@@ -68,7 +68,6 @@
     width: 100%;
 }
 
-/* Ajustes para la imagen dentro del contenedor */
 .product-image-zumo {
     max-width: 100%;
     max-height: 100%;
@@ -76,7 +75,6 @@
     display: block;
 }
 
-/* Limita el nombre del producto a dos líneas y centra el texto */
 .nombre-producto-zumo {
     font-size: 24px;
     color: #12b873;
