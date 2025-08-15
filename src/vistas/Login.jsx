@@ -43,7 +43,7 @@ export default function Login() {
     try {
       limpiarValoresAntiguos();
 
-      const response = await fetch("https://lord-wine-backend.onrender.com/api/auth/login", {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -131,6 +131,12 @@ export default function Login() {
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? "Ingresando..." : "Ingresar"}
             </button>
+            <p className="mt-5 text-center text-black">
+              ¿Olvidaste tu contraseña?{" "}
+              <Link to="/recuperar-contrasena" className="text-red-600 font-bold hover:underline">
+              Recuperar aquí
+              </Link>
+            </p>
           </form>
         </div>
         <p className="mt-5 text-center text-black">
