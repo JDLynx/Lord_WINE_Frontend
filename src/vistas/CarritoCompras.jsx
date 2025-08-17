@@ -43,7 +43,8 @@ export default function CarritoCompras() {
     };
 
     try {
-      const response = await fetch(`${backendUrl}/pedidos/carrito`, {
+
+      const response = await fetch(`${backendUrl}/api/pedidos/carrito`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -233,7 +234,7 @@ export default function CarritoCompras() {
             <p className="text-black mb-6">Gracias por tu compra. Tu pedido ha sido procesado.</p>
             <button
               onClick={() => setMostrarModalExitoPago(false)}
-              className="px-6 py-3 bg-green-700 text-white rounded-full hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              className="px-6 py-3 bg-green-700 text-white rounded-full hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring-green-500"
             >
               Cerrar
             </button>
