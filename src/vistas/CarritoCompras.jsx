@@ -34,7 +34,7 @@ export default function CarritoCompras() {
     const backendUrl = "https://lord-wine-backend.onrender.com";
 
     const pedidoData = {
-      clCodCliente: 1,
+      clCodCliente: 1, 
       serIdServicioEmpresarial: 1,
       items: itemsCarrito.map(item => ({
         prodIdProducto: item.id,
@@ -44,7 +44,7 @@ export default function CarritoCompras() {
 
     try {
 
-      const response = await fetch(`${backendUrl}/api/pedidos/carrito`, {
+      const response = await fetch(`${backendUrl}/api/pedidos/crear-desde-carrito`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,11 +63,11 @@ export default function CarritoCompras() {
       vaciarCarrito();
       setMostrarModalPago(false);
       setMostrarModalExitoPago(true);
-      setMensajeError("");
+      setMensajeError(""); 
 
     } catch (error) {
       console.error("Error al confirmar el pago:", error);
-      setMensajeError(error.message);
+      setMensajeError(error.message); 
     }
   };
 
@@ -234,7 +234,7 @@ export default function CarritoCompras() {
             <p className="text-black mb-6">Gracias por tu compra. Tu pedido ha sido procesado.</p>
             <button
               onClick={() => setMostrarModalExitoPago(false)}
-              className="px-6 py-3 bg-green-700 text-white rounded-full hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring-green-500"
+              className="px-6 py-3 bg-green-700 text-white rounded-full hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
               Cerrar
             </button>
