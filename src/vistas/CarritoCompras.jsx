@@ -11,6 +11,7 @@ export default function CarritoCompras() {
   const { itemsCarrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito } = usarCarrito();
   const [mostrarModalPago, setMostrarModalPago] = useState(false);
   const [mostrarModalExitoPago, setMostrarModalExitoPago] = useState(false);
+  const [mensajeError, setMensajeError] = useState("");
 
   const total = itemsCarrito.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -28,10 +29,45 @@ export default function CarritoCompras() {
     setMostrarModalPago(true);
   };
 
-  const handleConfirmarPago = () => {
-    vaciarCarrito();
-    setMostrarModalPago(false);
-    setMostrarModalExitoPago(true);
+  const handleConfirmarPago = async () => {
+
+    const backendUrl = "https://lord-wine-backend.onrender.com";
+
+    const pedidoData = {
+      clCodCliente: 1,
+      serIdServicioEmpresarial: 1,
+      items: itemsCarrito.map(item => ({
+        prodIdProducto: item.id,
+        cantidad: item.quantity
+      }))
+    };
+
+    try {
+      const response = await fetch(`${backendUrl}/pedidos/carrito`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pedidoData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Ocurrió un error al procesar el pedido.");
+      }
+
+      const resultado = await response.json();
+      console.log("Pedido creado exitosamente:", resultado);
+
+      vaciarCarrito();
+      setMostrarModalPago(false);
+      setMostrarModalExitoPago(true);
+      setMensajeError("");
+
+    } catch (error) {
+      console.error("Error al confirmar el pago:", error);
+      setMensajeError(error.message);
+    }
   };
 
   return (
@@ -43,7 +79,6 @@ export default function CarritoCompras() {
         className="flex-grow flex flex-col items-center justify-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
       >
-
         <div
           className="p-6 shadow-lg rounded-2xl w-full max-w-5xl md:w-3/4 lg:w-2/3"
           style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
@@ -132,6 +167,12 @@ export default function CarritoCompras() {
                     Proceder al Pago
                   </button>
                 </div>
+              </div>
+            )}
+            {mensajeError && (
+              <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <p className="font-bold">Error:</p>
+                <p>{mensajeError}</p>
               </div>
             )}
           </div>
