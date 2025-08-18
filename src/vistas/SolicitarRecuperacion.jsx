@@ -33,7 +33,7 @@ export default function SolicitarRecuperacion() {
     setMessageType('');
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/solicitar-recuperacion', {
+      const response = await axios.post('https://lord-wine-backend.onrender.com/api/auth/solicitar-recuperacion', {
         correo,
       });
 

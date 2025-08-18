@@ -40,7 +40,7 @@ export default function RestablecerContrasena() {
     setMessageType('');
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/restablecer-contrasena', formData);
+      const response = await axios.post('https://lord-wine-backend.onrender.com/api/auth/restablecer-contrasena', formData);
 
       showNotification(response.data.mensaje || 'Contraseña actualizada exitosamente.', 'success');
       setFormData({ correo: '', token: '', nuevaContrasena: '' });
