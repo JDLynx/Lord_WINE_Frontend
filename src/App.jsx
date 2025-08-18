@@ -7,6 +7,8 @@ import PuntosVenta from "./vistas/PuntosVenta";
 import CarritoCompras from "./vistas/CarritoCompras";
 import Login from "./vistas/Login";
 import Registro from "./vistas/Registro";
+import SolicitarRecuperacion from './vistas/SolicitarRecuperacion';
+import RestablecerContrasena from './vistas/RestablecerContrasena';
 
 import Album from "./vistas/Album";
 import Contacto from "./vistas/Contacto";
@@ -67,6 +69,8 @@ function App() {
         <Route path="/carrito-compras" element={<CarritoCompras />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
+        <Route path="/solicitar-recuperacion" element={<SolicitarRecuperacion />} />
+        <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
 
         <Route path="/album" element={<Album />} />
         <Route path="/contacto" element={<Contacto />} />

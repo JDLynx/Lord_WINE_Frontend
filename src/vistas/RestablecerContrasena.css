@@ -1,0 +1,60 @@
+/* src/vistas/RestablecerContrasena.css */
+
+@import "tailwindcss";
+
+.bg-vistas {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  background-image: url('/img/Viñedo.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 2rem;
+}
+
+.restablecer-card {
+  padding: 20px;
+  width: 400px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.restablecer-title {
+  text-align: center;
+  margin: 0;
+  color: #ccc;
+}
+
+.restablecer-input-group {
+  margin-bottom: 15px;
+}
+
+.restablecer-input-label {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.restablecer-input-field {
+  background-color: #212121;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+}
+
+.restablecer-submit-btn {
+  width: 100%;
+  background-color: #921913;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.restablecer-submit-btn:hover {
+  background-color: #921913;
+}
