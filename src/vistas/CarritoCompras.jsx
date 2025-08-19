@@ -11,6 +11,7 @@ export default function CarritoCompras() {
   const { itemsCarrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito } = usarCarrito();
   const [mostrarModalPago, setMostrarModalPago] = useState(false);
   const [mostrarModalExitoPago, setMostrarModalExitoPago] = useState(false);
+  const [mostrarModalQR, setMostrarModalQR] = useState(false); // Nuevo estado para el modal del QR
   const [mensajeError, setMensajeError] = useState("");
 
   const total = itemsCarrito.reduce(
@@ -30,7 +31,11 @@ export default function CarritoCompras() {
   };
 
   const handleConfirmarPago = async () => {
-
+    setMostrarModalPago(false);
+    setMostrarModalQR(true);
+  };
+  
+  const handleFinalizarPagoQR = async () => {
     const backendUrl = "https://lord-wine-backend.onrender.com";
 
     const pedidoData = {
@@ -43,7 +48,6 @@ export default function CarritoCompras() {
     };
 
     try {
-
       const response = await fetch(`${backendUrl}/api/pedidos/crear-desde-carrito`, {
         method: "POST",
         headers: {
@@ -61,13 +65,12 @@ export default function CarritoCompras() {
       console.log("Pedido creado exitosamente:", resultado);
 
       vaciarCarrito();
-      setMostrarModalPago(false);
+      setMostrarModalQR(false); // Oculta el modal del QR
       setMostrarModalExitoPago(true);
-      setMensajeError(""); 
-
+      setMensajeError("");
     } catch (error) {
       console.error("Error al confirmar el pago:", error);
-      setMensajeError(error.message); 
+      setMensajeError(error.message);
     }
   };
 
@@ -136,12 +139,12 @@ export default function CarritoCompras() {
                     </div>
                   ))}
                   <div className="flex justify-end mt-6">
-                      <button
-                          onClick={vaciarCarrito}
-                          className="flex items-center px-4 py-2 bg-[#921913] text-white rounded-md hover:bg-red-700 transition duration-300 text-xl"
-                      >
-                          <Trash2 className="w-4 h-4 mr-2" /> Vaciar Carrito
-                      </button>
+                    <button
+                      onClick={vaciarCarrito}
+                      className="flex items-center px-4 py-2 bg-[#921913] text-white rounded-md hover:bg-red-700 transition duration-300 text-xl"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" /> Vaciar Carrito
+                    </button>
                   </div>
                 </div>
 
@@ -180,6 +183,7 @@ export default function CarritoCompras() {
         </div>
       </main>
 
+      {/* MODAL 1: Confirmar Pedido */}
       {mostrarModalPago && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -205,9 +209,6 @@ export default function CarritoCompras() {
               <span>Total a Pagar:</span>
               <span className="text-green-700">${total.toLocaleString('es-CO')}</span>
             </div>
-            <p className="text-center text-black mb-8">
-              Esta es una simulación del proceso de pago. Al confirmar, tu pedido será procesado y el carrito se vaciará.
-            </p>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => setMostrarModalPago(false)}
@@ -225,7 +226,36 @@ export default function CarritoCompras() {
           </div>
         </div>
       )}
+      
+      {/* Modal del QR */}
+      {mostrarModalQR && (
+        <div className="fixed inset-0 flex justify-center items-center z-50">
+          <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
+          <div className="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full relative z-10">
+            <button
+              onClick={() => setMostrarModalQR(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition duration-200"
+              title="Cerrar"
+            >
+              <XCircle className="w-6 h-6" />
+            </button>
+            <h2 className="text-3xl font-bold text-black mb-6 text-center">LordWine</h2>
+            <div className="flex justify-center mb-6">
+              <div className="p-4 border-2 border-gray-300 rounded-lg">
+                <img src="/img/QR_Nequi.jpg" alt="Código QR de Pago" className="w-48 h-48" />
+              </div>
+            </div>
+            <button
+              onClick={handleFinalizarPagoQR}
+              className="mt-4 w-full bg-[#921913] text-white font-semibold py-3 rounded-full hover:bg-red-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Confirmar Pago
+            </button>
+          </div>
+        </div>
+      )}
 
+      {/* MODAL 3: Éxito de Pago */}
       {mostrarModalExitoPago && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>

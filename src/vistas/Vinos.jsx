@@ -22,7 +22,7 @@ function Vinos() {
 
         const productosData = await response.json();
 
-        const categoriasVinos = ['Vino', 'Vinos Tintos', 'Vinos Rosados', 'Vinos Blancos', 'Espumosos'];
+        const categoriasVinos = ['Vino', 'Vino Tinto', 'Vino Rosado', 'Vino Blanco', 'Espumosos'];
 
         const productosFiltrados = productosData.filter(producto => 
           categoriasVinos.includes(producto.category)

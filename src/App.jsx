@@ -11,7 +11,6 @@ import SolicitarRecuperacion from './vistas/SolicitarRecuperacion';
 import RestablecerContrasena from './vistas/RestablecerContrasena';
 
 import Album from "./vistas/Album";
-import Contacto from "./vistas/Contacto";
 import ServiciosEmpresariales from "./vistas/ServiciosEmpresariales";
 import SobreNosotros from "./vistas/SobreNosotros";
 
@@ -73,7 +72,6 @@ function App() {
         <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
 
         <Route path="/album" element={<Album />} />
-        <Route path="/contacto" element={<Contacto />} />
         <Route path="/servicios-empresariales" element={<ServiciosEmpresariales />} />
         <Route path="/sobre-nosotros" element={<SobreNosotros />} />
 

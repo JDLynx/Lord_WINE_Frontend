@@ -32,7 +32,6 @@ function BotonMenu() {
             <ul className="dropdown-menu-principal">
             <li><Link className="dropdown-item" to="/">Inicio</Link></li>
             <li><Link className="dropdown-item" to="/album">Álbum</Link></li>
-            <li><Link className="dropdown-item" to="/contacto">Contacto</Link></li>
             <li><Link className="dropdown-item" to="/servicios-empresariales">Servicios empresariales</Link></li>
             <li><Link className="dropdown-item" to="/sobre-nosotros">Sobre nosotros</Link></li>
             </ul>
