@@ -214,7 +214,7 @@ export default function GestionAdministradores() {
             </button>
           </div>
 
-          <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg border">
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto rounded-lg">
             <table className="min-w-full bg-white">
               <thead className="bg-gray-100 sticky top-0 z-10">
                 <tr>
@@ -229,7 +229,7 @@ export default function GestionAdministradores() {
               </thead>
               <tbody>
                 {filteredAdmins.map((admin) => (
-                  <tr key={admin.adminCodAdministrador} className="border-b hover:bg-gray-50">
+                  <tr key={admin.adminCodAdministrador} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-black text-left text-base">{admin.adminCodAdministrador}</td>
                     <td className="px-4 py-3 text-black text-left text-base">{admin.adminIdAdministrador}</td>
                     <td className="px-4 py-3 text-black text-left whitespace-nowrap text-base">{admin.adminNombre}</td>
