@@ -17,7 +17,6 @@ import SobreNosotros from "./vistas/SobreNosotros";
 import Perfil from "./vistas/Perfil";
 
 import PerfilAdministrador from "./vistas/PerfilAdministrador";
-import GestioUsuario from "./vistas/GestioUsuario";
 import EditarPerfilAdministrador from "./vistas/EditarPerfilAdministrador";
 import CambiarContraseñaAdministrador from "./vistas/CambiarContraseñaAdministrador";
 
@@ -41,14 +40,11 @@ import GestionInventario from "./vistas/GestionInventario";
 import GestionServicios from "./vistas/GestionServicios";
 import GestionPedidos from "./vistas/GestionPedidos";
 import GestionAdminInventarioGeneral from "./vistas/GestionAdminInventarioGeneral";
-import ReportesVentas from "./vistas/ReportesVentas";
 
 import PerfilEmpleado from "./vistas/PerfilEmpleado";
 import ClientesEmpleado from "./vistas/ClientesEmpleado";
 import PedidosEmpleado from "./vistas/PedidosEmpleado";
 import InventarioTienda from "./vistas/InventarioTienda";
-import ProductosTienda from "./vistas/ProductosTienda";
-import DetallesPedidosEmpleado from "./vistas/DetallesPedidosEmpleado";
 import GestionEmpleadoInventarioTienda from "./vistas/GestionEmpleadoInventarioTienda";
 import EditarPerfilEmpleado from "./vistas/EditarPerfilEmpleado";
 import CambiarContraseñaEmpleado from "./vistas/CambiarContraseñaEmpleado";
@@ -78,7 +74,6 @@ function App() {
         <Route path="/perfil" element={<Perfil />} />
 
         <Route path="/perfil-admin" element={<PerfilAdministrador />} />
-        <Route path="/gestion-usuario" element={<GestioUsuario />} />
         <Route path="/editar-perfil-administrador" element={<EditarPerfilAdministrador />} />
         <Route path="/cambiar-contrasena-administrador" element={<CambiarContraseñaAdministrador />} />
 
@@ -102,15 +97,12 @@ function App() {
         <Route path="/servicios" element={<GestionServicios />} />
         <Route path="/pedidos" element={<GestionPedidos />} />
         <Route path="/gestion-admin-inventario" element={<GestionAdminInventarioGeneral />} />
-        <Route path="/reportes" element={<ReportesVentas />} />
 
         <Route path="/perfil-empleado" element={<PerfilEmpleado />} />
         <Route path="/clientes-empleado" element={<ClientesEmpleado />} />
         <Route path="/pedidos-empleado" element={<PedidosEmpleado />} />
         <Route path="/inventario-tienda" element={<InventarioTienda />} />
         <Route path="/gestion-empleado-inventario-tienda" element={<GestionEmpleadoInventarioTienda />} />
-        <Route path="/productos-tienda" element={<ProductosTienda />} />
-        <Route path="/detalles-pedidos-empleado" element={<DetallesPedidosEmpleado />} />
         <Route path="/editar-perfil-empleado" element={<EditarPerfilEmpleado />} />
         <Route path="/cambiar-contrasena-empleado" element={<CambiarContraseñaEmpleado />} />
 
