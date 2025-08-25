@@ -7,16 +7,6 @@ function Footer() {
       <div className="social-icons">
 
         <a
-          href="https://web.whatsapp.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="WhatsApp"
-          className="social-link"
-        >
-          <i className="fab fa-whatsapp"></i>
-        </a>
-
-        <a
           href="https://www.facebook.com/lordrobert.colombia"
           target="_blank"
           rel="noopener noreferrer"
@@ -34,6 +24,16 @@ function Footer() {
           className="social-link"
         >
           <i className="fab fa-instagram"></i>
+        </a>
+
+        <a
+          href="https://web.whatsapp.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp"
+          className="social-link"
+        >
+          <i className="fab fa-whatsapp"></i>
         </a>
 
         <a
