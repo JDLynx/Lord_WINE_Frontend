@@ -34,6 +34,7 @@ import Espumosos from "./vistas/Espumosos";
 
 import GestionAdministradores from "./vistas/GestionAdministradores";
 import GestionEmpleados from "./vistas/GestionEmpleados";
+import AsignarempleadoaTienda from './vistas/AsignarempleadoaTienda.jsx';
 import GestionTiendas from "./vistas/GestionTiendas";
 import GestionProductos from "./vistas/GestionProductos";
 import GestionInventario from "./vistas/GestionInventario";
@@ -91,6 +92,7 @@ function App() {
 
         <Route path="/administradores" element={<GestionAdministradores />} />
         <Route path="/empleados" element={<GestionEmpleados />} />
+        <Route path="/asignar-empleado-a-tienda" element={<AsignarempleadoaTienda />} />
         <Route path="/tiendas-fisicas" element={<GestionTiendas />} />
         <Route path="/productos" element={<GestionProductos />} />
         <Route path="/inventario" element={<GestionInventario />} />

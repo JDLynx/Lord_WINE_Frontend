@@ -59,6 +59,7 @@ export default function PerfilAdministrador() {
         { name: 'Administradores', description: 'Gestión de administradores', icon: Users, path: '/administradores' },
         { name: 'Empleados', description: 'Gestión de empleados', icon: User, path: '/empleados' },
         { name: 'Clientes', description: 'Gestión de clientes', icon: Users, path: '/clientes-empleado' },
+        { name: 'Asignar Empleado', description: 'Asignación de empleados a tiendas', icon: Store, path: '/asignar-empleado-a-tienda' },
         { name: 'Tiendas Físicas', description: 'Gestión de tiendas físicas', icon: Store, path: '/tiendas-fisicas' },
         { name: 'Productos y Categorías', description: 'Gestión de productos', icon: Package, path: '/productos' },
         { name: 'Inventario General', description: 'Gestión del inventario general', icon: Boxes, path: '/inventario' },
