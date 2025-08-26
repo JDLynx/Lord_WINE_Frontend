@@ -13,9 +13,16 @@ const getUserFromToken = (token) => {
     }
 
     console.log("[AuthContext] Token decodificado:", decoded);
+    
+    const userId = decoded.clCodCliente || decoded.id;
+
+    if (!userId) {
+      console.error("ID de usuario no encontrado en el token.");
+      return null;
+    }
 
     return {
-      id: decoded.id,
+      id: userId,
       role: decoded.role || decoded.rol,
     };
   } catch (error) {
