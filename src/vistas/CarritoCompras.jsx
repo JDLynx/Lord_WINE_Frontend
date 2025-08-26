@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ShoppingCart, Trash2, XCircle } from "lucide-react";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
 import { usarCarrito } from '../context/ContextoCarrito';
+import { AuthContext } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import "./CarritoCompras.css";
 
 export default function CarritoCompras() {
   const { itemsCarrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito } = usarCarrito();
+  const { user } = useContext(AuthContext);
   const [mostrarModalPago, setMostrarModalPago] = useState(false);
   const [mostrarModalExitoPago, setMostrarModalExitoPago] = useState(false);
-  const [mostrarModalQR, setMostrarModalQR] = useState(false); // Nuevo estado para el modal del QR
+  const [mostrarModalQR, setMostrarModalQR] = useState(false); 
   const [mensajeError, setMensajeError] = useState("");
 
   const total = itemsCarrito.reduce(
@@ -27,6 +29,11 @@ export default function CarritoCompras() {
   };
 
   const handleProcederPago = () => {
+
+    if (!user) {
+      setMensajeError("Debes iniciar sesión para realizar un pedido.");
+      return;
+    }
     setMostrarModalPago(true);
   };
 
@@ -38,8 +45,16 @@ export default function CarritoCompras() {
   const handleFinalizarPagoQR = async () => {
     const backendUrl = "https://lord-wine-backend.onrender.com";
 
+    const clienteId = user?.id;
+
+    if (!clienteId) {
+      setMensajeError("No se pudo obtener el ID del cliente. Por favor, inicia sesión de nuevo.");
+      setMostrarModalQR(false);
+      return;
+    }
+
     const pedidoData = {
-      clCodCliente: 1, 
+      clCodCliente: clienteId,
       serIdServicioEmpresarial: 1,
       items: itemsCarrito.map(item => ({
         prodIdProducto: item.id,
@@ -65,7 +80,7 @@ export default function CarritoCompras() {
       console.log("Pedido creado exitosamente:", resultado);
 
       vaciarCarrito();
-      setMostrarModalQR(false); // Oculta el modal del QR
+      setMostrarModalQR(false); 
       setMostrarModalExitoPago(true);
       setMensajeError("");
     } catch (error) {
@@ -139,12 +154,12 @@ export default function CarritoCompras() {
                     </div>
                   ))}
                   <div className="flex justify-end mt-6">
-                    <button
-                      onClick={vaciarCarrito}
-                      className="flex items-center px-4 py-2 bg-[#921913] text-white rounded-md hover:bg-red-700 transition duration-300 text-xl"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" /> Vaciar Carrito
-                    </button>
+                      <button
+                          onClick={vaciarCarrito}
+                          className="flex items-center px-4 py-2 bg-[#921913] text-white rounded-md hover:bg-red-700 transition duration-300 text-xl"
+                      >
+                          <Trash2 className="w-4 h-4 mr-2" /> Vaciar Carrito
+                      </button>
                   </div>
                 </div>
 
@@ -183,7 +198,6 @@ export default function CarritoCompras() {
         </div>
       </main>
 
-      {/* MODAL 1: Confirmar Pedido */}
       {mostrarModalPago && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -226,8 +240,7 @@ export default function CarritoCompras() {
           </div>
         </div>
       )}
-      
-      {/* Modal del QR */}
+
       {mostrarModalQR && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -255,7 +268,6 @@ export default function CarritoCompras() {
         </div>
       )}
 
-      {/* MODAL 3: Éxito de Pago */}
       {mostrarModalExitoPago && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
