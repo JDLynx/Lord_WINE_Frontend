@@ -62,7 +62,6 @@ export default function Login() {
           localStorage.setItem("adminCodAdministrador", data.id);
           navigate("/perfil");
         } else if (data.rol === "Cliente") {
-          localStorage.setItem("clienteCodCliente", data.id);
           navigate("/perfil");
         } else if (data.rol === "Empleado") {
           localStorage.setItem("employeeCod", data.id);
