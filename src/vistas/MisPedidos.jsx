@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
 import { ShoppingBag, Calendar, User, Truck, CheckCircle, XCircle, Clock, DollarSign } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 
 export default function PedidosCliente() {
     const [orders, setOrders] = useState([]);
@@ -10,7 +11,10 @@ export default function PedidosCliente() {
     const [messageType, setMessageType] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    const clienteLogeadoId = parseInt(localStorage.getItem("clienteCodCliente"), 10) || null;
+    const { user } = useContext(AuthContext);
+
+    const clienteLogeadoId = user?.id || null;
+    
     const API_URL_PEDIDOS = 'https://lord-wine-backend.onrender.com/api/pedidos';
 
     const showNotification = (msg, type) => {
@@ -66,10 +70,13 @@ export default function PedidosCliente() {
     }, [API_URL_PEDIDOS, clienteLogeadoId]);
 
     useEffect(() => {
-        if (clienteLogeadoId !== null) {
+        if (user) {
             fetchOrders();
+        } else {
+            setOrders([]);
+            setIsLoading(false);
         }
-    }, [fetchOrders, clienteLogeadoId]);
+    }, [fetchOrders, user]);
 
     const getStatusIcon = (status) => {
         switch (status) {
