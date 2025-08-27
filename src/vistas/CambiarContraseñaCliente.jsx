@@ -1,179 +1,217 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
 import { Key, Lock } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 
 export default function CambiarContraseñaCliente() {
-  const navigate = useNavigate();
-  const [passwords, setPasswords] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPasswords(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccessMessage('');
-
-    if (passwords.newPassword !== passwords.confirmNewPassword) {
-      setError('La nueva contraseña y su confirmación no coinciden.');
-      setLoading(false);
-      return;
-    }
-    if (passwords.newPassword.length < 6) {
-      setError('La nueva contraseña debe tener al menos 6 caracteres.');
-      setLoading(false);
-      return;
-    }
-
-    const clienteCodCliente = localStorage.getItem('clienteCodCliente');
-    if (!clienteCodCliente) {
-      setError('No se encontró el ID del cliente. Por favor, inicie sesión nuevamente.');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Realizamos la llamada PUT al nuevo endpoint específico para cambiar contraseña
-      const response = await fetch(`https://lord-wine-backend.onrender.com/api/clientes/${clienteCodCliente}/cambiar-contrasena`, {
-        method: 'PUT', // Usamos PUT para actualizar un recurso existente
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          currentPassword: passwords.currentPassword, // Enviamos la contraseña actual
-          newPassword: passwords.newPassword,         // Enviamos la nueva contraseña
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al cambiar la contraseña.');
-      }
-
-      setSuccessMessage('¡Contraseña cambiada exitosamente!');
-      setPasswords({
+    const navigate = useNavigate();
+    const { user, logout } = useContext(AuthContext);
+    const [passwords, setPasswords] = useState({
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: '',
-      });
-      setTimeout(() => navigate('/perfil-cliente'), 1500);
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
-    } catch (err) {
-      console.error("Error al cambiar la contraseña:", err);
-      setError(err.message || 'Hubo un error al cambiar la contraseña.');
-    } finally {
-      setLoading(false);
+    useEffect(() => {
+        if (!user || user.role !== 'Cliente') {
+            setError('No tienes permiso para ver esta página.');
+            setLoading(false);
+            setTimeout(() => {
+                logout();
+                navigate('/login');
+            }, 2000);
+        } else {
+            setLoading(false);
+        }
+    }, [user, navigate, logout]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setPasswords(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+        setSuccessMessage('');
+
+        if (passwords.newPassword !== passwords.confirmNewPassword) {
+            setError('La nueva contraseña y su confirmación no coinciden.');
+            setLoading(false);
+            return;
+        }
+        if (passwords.newPassword.length < 6) {
+            setError('La nueva contraseña debe tener al menos 6 caracteres.');
+            setLoading(false);
+            return;
+        }
+
+        if (!user || user.role !== 'Cliente') {
+            setError('No se encontró el ID del cliente. Por favor, inicie sesión nuevamente.');
+            setLoading(false);
+            return;
+        }
+
+        const clienteCodCliente = user.id;
+
+        try {
+            const response = await fetch(`https://lord-wine-backend.onrender.com/api/clientes/${clienteCodCliente}/cambiar-contrasena`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    currentPassword: passwords.currentPassword,
+                    newPassword: passwords.newPassword,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al cambiar la contraseña.');
+            }
+
+            setSuccessMessage('¡Contraseña cambiada exitosamente!');
+            setPasswords({
+                currentPassword: '',
+                newPassword: '',
+                confirmNewPassword: '',
+            });
+            setTimeout(() => navigate('/perfil-cliente'), 1500);
+
+        } catch (err) {
+            console.error("Error al cambiar la contraseña:", err);
+            setError(err.message || 'Hubo un error al cambiar la contraseña.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex flex-col min-h-screen overflow-x-hidden">
+                <Header />
+                <BarraProductos />
+                <main className="flex-grow flex flex-col items-center justify-center w-full py-8 px-4 sm:px-8">
+                    <div className="flex flex-col items-center justify-center p-10">
+                        <AiOutlineLoading3Quarters className="w-12 h-12 text-[#921913] animate-spin" />
+                        <p className="mt-4 text-black text-lg">Cargando...</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
     }
-  };
+    
+    if (error && error !== 'No tienes permiso para ver esta página.') {
+        // Muestra el error de la API
+    } else if (error && error === 'No tienes permiso para ver esta página.') {
+        // El useEffect ya se encarga de redirigir
+        return null;
+    }
 
-  return (
-    <>
-      <div className="flex flex-col min-h-screen overflow-x-hidden">
-        <Header />
-        <BarraProductos />
+    return (
+        <>
+            <div className="flex flex-col min-h-screen overflow-x-hidden">
+                <Header />
+                <BarraProductos />
 
-        <main
-          className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
-        >
-          <div className="max-w-xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
-            <h1 className="text-3xl font-semibold text-black mb-8 text-center border-b pb-4 border-gray-200">
-              Cambiar Contraseña
-            </h1>
-
-            {error && <div className="text-center text-[#921913] font-semibold mb-4">{error}</div>}
-            {successMessage && <div className="text-center text-green-700 font-bold mb-4">{successMessage}</div>}
-
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
-              <div>
-                <label htmlFor="currentPassword" className="block text-xl font-medium text-black mb-1">
-                  <Key className="inline-block w-4 h-4 mr-2 text-[#921913]" />Contraseña Actual
-                </label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  name="currentPassword"
-                  value={passwords.currentPassword}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="newPassword" className="block text-xl font-medium text-black mb-1">
-                  <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Nueva Contraseña
-                </label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  name="newPassword"
-                  value={passwords.newPassword}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="confirmNewPassword" className="block text-xl font-medium text-black mb-1">
-                  <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Confirmar Nueva Contraseña
-                </label>
-                <input
-                  type="password"
-                  id="confirmNewPassword"
-                  name="confirmNewPassword"
-                  value={passwords.confirmNewPassword}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
-                  required
-                />
-              </div>
-
-              <div className="flex justify-center space-x-6 mt-6">
-                <button
-                  type="submit"
-                  className="!bg-red-700 !hover:bg-red-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
-                  disabled={loading}
+                <main
+                    className="flex-grow flex flex-col items-center w-full py-8 px-4 sm:px-8 bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: "url('/img/Viñedo.jpg')" }}
                 >
-                  {loading ? (
-                    <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Key className="w-5 h-5" />
-                  )}
-                  <span>{loading ? 'Cambiando...' : 'Cambiar Contraseña'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('/perfil-cliente')}
-                  className="bg-white hover:bg-gray-100 text-black font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          </div>
-        </main>
+                    <div className="max-w-xl mx-auto w-full bg-white rounded-2xl shadow-lg p-8 sm:p-10">
+                        <h1 className="text-3xl font-semibold text-black mb-8 text-center border-b pb-4 border-gray-200">
+                            Cambiar Contraseña
+                        </h1>
 
-        <Footer />
-      </div>
-    </>
-  );
+                        {error && <div className="text-center text-[#921913] font-semibold mb-4">{error}</div>}
+                        {successMessage && <div className="text-center text-green-700 font-bold mb-4">{successMessage}</div>}
+
+                        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-6">
+                            <div>
+                                <label htmlFor="currentPassword" className="block text-xl font-medium text-black mb-1">
+                                    <Key className="inline-block w-4 h-4 mr-2 text-[#921913]" />Contraseña Actual
+                                </label>
+                                <input
+                                    type="password"
+                                    id="currentPassword"
+                                    name="currentPassword"
+                                    value={passwords.currentPassword}
+                                    onChange={handleChange}
+                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="newPassword" className="block text-xl font-medium text-black mb-1">
+                                    <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Nueva Contraseña
+                                </label>
+                                <input
+                                    type="password"
+                                    id="newPassword"
+                                    name="newPassword"
+                                    value={passwords.newPassword}
+                                    onChange={handleChange}
+                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="confirmNewPassword" className="block text-xl font-medium text-black mb-1">
+                                    <Lock className="inline-block w-4 h-4 mr-2 text-[#921913]" />Confirmar Nueva Contraseña
+                                </label>
+                                <input
+                                    type="password"
+                                    id="confirmNewPassword"
+                                    name="confirmNewPassword"
+                                    value={passwords.confirmNewPassword}
+                                    onChange={handleChange}
+                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base text-black"
+                                    required
+                                />
+                            </div>
+
+                            <div className="flex justify-center space-x-6 mt-6">
+                                <button
+                                    type="submit"
+                                    className="!bg-red-700 !hover:bg-red-500 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" />
+                                    ) : (
+                                        <Key className="w-5 h-5" />
+                                    )}
+                                    <span>{loading ? 'Cambiando...' : 'Cambiar Contraseña'}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => navigate('/perfil-cliente')}
+                                    className="bg-white hover:bg-gray-100 text-black font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 text-lg"
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </main>
+
+                <Footer />
+            </div>
+        </>
+    );
 }
