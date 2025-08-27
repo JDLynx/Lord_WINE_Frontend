@@ -41,8 +41,8 @@ export default function GestionEmpleados() {
 
   const validateForm = (data) => {
     const errors = {};
-    if (!data.emplNombre) errors.emplNombre = 'El nombre es obligatorio.';
     if (!data.emplIdEmpleado) errors.emplIdEmpleado = 'El documento es obligatorio.';
+    if (!data.emplNombre) errors.emplNombre = 'El nombre es obligatorio.';
     if (!data.emplDireccion) errors.emplDireccion = 'La dirección es obligatoria.';
     if (!data.emplTelefono) errors.emplTelefono = 'El teléfono es obligatorio.';
     if (!data.emplCorreoElectronico) {
@@ -51,11 +51,14 @@ export default function GestionEmpleados() {
       errors.emplCorreoElectronico = 'Correo inválido.';
     }
 
-    if (!data.emplCodEmpleado && !data.emplContrasena?.trim()) {
+    if (!data.emplCodEmpleado && (!data.emplContrasena || data.emplContrasena.trim() === '')) {
       errors.emplContrasena = 'La contraseña es obligatoria.';
-    } else if (!data.emplCodEmpleado && data.emplContrasena.length < 6) {
+    } else if (data.emplContrasena && data.emplContrasena.length < 6) {
       errors.emplContrasena = 'La contraseña debe tener al menos 6 caracteres.';
     }
+
+    if (!data.adminCodAdministrador) errors.adminCodAdministrador = 'El ID del administrador es obligatorio.';
+    if (!data.tiendIdTiendaFisica) errors.tiendIdTiendaFisica = 'El ID de la tienda es obligatorio.';
 
     return errors;
   };
@@ -68,14 +71,19 @@ export default function GestionEmpleados() {
       emplTelefono: '',
       emplCorreoElectronico: '',
       emplContrasena: '',
+      emplApellido: '',
       adminCodAdministrador: 1,
+      tiendIdTiendaFisica: 1,
     });
     setFormErrors({});
     setIsModalOpen(true);
   };
 
   const handleEdit = (employee) => {
-    setCurrentEmployee({ ...employee, emplContrasena: '' });
+    setCurrentEmployee({
+      ...employee,
+      emplContrasena: '',
+    });
     setFormErrors({});
     setIsModalOpen(true);
   };
@@ -120,19 +128,13 @@ export default function GestionEmpleados() {
         : 'https://lord-wine-backend.onrender.com/api/empleados';
 
       const body = {
-        emplIdEmpleado: currentEmployee.emplIdEmpleado,
-        emplNombre: currentEmployee.emplNombre,
-        emplDireccion: currentEmployee.emplDireccion,
-        emplTelefono: currentEmployee.emplTelefono,
-        emplCorreoElectronico: currentEmployee.emplCorreoElectronico,
+        ...currentEmployee,
         adminCodAdministrador: currentEmployee.adminCodAdministrador || 1,
+        tiendIdTiendaFisica: currentEmployee.tiendIdTiendaFisica || 1,
       };
 
-      if (
-        method === 'POST' ||
-        (currentEmployee.emplContrasena && currentEmployee.emplContrasena.trim() !== '')
-      ) {
-        body.emplContrasena = currentEmployee.emplContrasena.trim();
+      if (method === 'PUT' && body.emplContrasena.trim() === '') {
+        delete body.emplContrasena;
       }
 
       const res = await fetch(url, {
@@ -148,6 +150,7 @@ export default function GestionEmpleados() {
 
       await fetchEmpleados();
       setIsModalOpen(false);
+      showNotification(`Empleado ${method === 'POST' ? 'creado' : 'actualizado'} correctamente.`, 'success');
     } catch (error) {
       console.error('Error al guardar empleado:', error);
       showNotification(`Error al guardar: ${error.message}`, 'error');
@@ -177,9 +180,9 @@ export default function GestionEmpleados() {
             Gestión de los empleados del sistema: crear nuevos, editar su información y eliminar registros existentes.
           </p>
 
-          {message && messageType === 'error' && (
+          {message && (
             <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-opacity duration-300 ${
-              messageType === 'error' ? 'bg-red-500 text-white' : ''
+              messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
             }`}>
               {message}
             </div>
@@ -277,6 +280,9 @@ export default function GestionEmpleados() {
                       {formErrors.emplContrasena && <p className="text-red-500 text-sm">{formErrors.emplContrasena}</p>}
                     </>
                   )}
+
+                  <input type="hidden" name="adminCodAdministrador" value={currentEmployee.adminCodAdministrador || ''} />
+                  <input type="hidden" name="tiendIdTiendaFisica" value={currentEmployee.tiendIdTiendaFisica || ''} />
 
                   <div className="flex justify-end gap-4 mt-4">
                     <button type="button" onClick={() => setIsModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black">
