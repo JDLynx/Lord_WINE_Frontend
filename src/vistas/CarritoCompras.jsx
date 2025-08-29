@@ -183,7 +183,7 @@ export default function CarritoCompras() {
                     onClick={handleProcederPago}
                     className="mt-8 w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                   >
-                    Proceder al Pago
+                    Confirmar Pedido
                   </button>
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function CarritoCompras() {
                 onClick={handleConfirmarPago}
                 className="px-6 py-3 bg-green-700 text-white rounded-full hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
-                Confirmar Pago
+                Confirmar Pedido
               </button>
             </div>
           </div>
@@ -252,7 +252,7 @@ export default function CarritoCompras() {
             >
               <XCircle className="w-6 h-6" />
             </button>
-            <h2 className="text-3xl font-bold text-black mb-6 text-center">LordWine</h2>
+            <h2 className="text-3xl font-bold text-black mb-6 text-center">LordWine Nequi</h2>
             <div className="flex justify-center mb-6">
               <div className="p-4 border-2 border-gray-300 rounded-lg">
                 <img src="/img/QR_Nequi.jpg" alt="Código QR de Pago" className="w-48 h-48" />
@@ -262,7 +262,7 @@ export default function CarritoCompras() {
               onClick={handleFinalizarPagoQR}
               className="mt-4 w-full bg-[#921913] text-white font-semibold py-3 rounded-full hover:bg-red-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
-              Confirmar Pago
+              Finalizar Pedido
             </button>
           </div>
         </div>
