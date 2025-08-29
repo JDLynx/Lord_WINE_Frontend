@@ -272,7 +272,7 @@ export default function CarritoCompras() {
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
           <div className="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full relative z-10 text-center">
-            <h2 className="text-2xl font-semibold text-green-700 mb-4">¡Pago Exitoso!</h2>
+            <h2 className="text-2xl font-semibold text-green-700 mb-4">¡Pedido Exitoso!</h2>
             <p className="text-black mb-6">Gracias por tu compra. Tu pedido ha sido procesado.</p>
             <button
               onClick={() => setMostrarModalExitoPago(false)}
