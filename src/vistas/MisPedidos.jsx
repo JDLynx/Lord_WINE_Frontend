@@ -10,7 +10,6 @@ export default function PedidosCliente() {
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    // ✅ ESTADOS PARA EL MODAL DE SUBIDA
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [currentOrderId, setCurrentOrderId] = useState(null);
 
@@ -85,13 +84,11 @@ export default function PedidosCliente() {
         }
     }, [API_URL_PEDIDOS, clienteLogeadoId]);
 
-    // ✅ NUEVA FUNCIÓN PARA ABRIR EL MODAL
     const handleOpenUploadModal = (orderId) => {
         setCurrentOrderId(orderId);
         setShowUploadModal(true);
     };
-    
-    // ✅ NUEVA FUNCIÓN PARA EL CIERRE DEL MODAL
+
     const handleCloseUploadModal = () => {
         setShowUploadModal(false);
         setCurrentOrderId(null);
@@ -206,10 +203,9 @@ export default function PedidosCliente() {
                                                     </a>
                                                 ) : (
                                                     order.status === 'Pendiente' ? (
-                                                        // ✅ CAMBIO AQUÍ: Llamamos a la nueva función
                                                         <button
-                                                          onClick={() => handleOpenUploadModal(order.id)}
-                                                          className="flex items-center space-x-2 text-blue-600 hover:underline cursor-pointer"
+                                                            onClick={() => handleOpenUploadModal(order.id)}
+                                                            className="flex items-center space-x-2 text-blue-600 hover:underline cursor-pointer"
                                                         >
                                                             <UploadCloud className="w-4 h-4" />
                                                             <span>Subir</span>
@@ -230,8 +226,7 @@ export default function PedidosCliente() {
                 </div>
             </main>
             <Footer />
-            
-            {/* ✅ NUEVO MODAL DE SUBIDA */}
+
             {showUploadModal && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     {/* Fondo opaco */}
@@ -260,7 +255,6 @@ export default function PedidosCliente() {
                                 type="file"
                                 className="hidden"
                                 accept="image/png, image/jpeg, image/jpg"
-                                // ✅ Usamos la misma función de subida, ahora dentro del modal
                                 onChange={handleFileUpload} 
                             />
                         </label>

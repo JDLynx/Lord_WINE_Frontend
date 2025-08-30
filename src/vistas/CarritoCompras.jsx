@@ -201,9 +201,8 @@ export default function CarritoCompras() {
                       Confirmar Pedido
                     </button>
                   ) : (
-                    // ✅ Modificación aquí para que sea un botón con estilos y acción de navegación
                     <button
-                      onClick={() => navigate('/login')} // Redirige a la vista de Login
+                      onClick={() => navigate('/login')}
                       className="mt-8 w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                     >
                       Inicia sesión como cliente para continuar
