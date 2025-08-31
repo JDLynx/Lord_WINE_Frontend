@@ -43,7 +43,7 @@ export default function CarritoCompras() {
   };
   
   const handleFinalizarPagoQR = async () => {
-    const backendUrl = "http://localhost:3000";
+    const backendUrl = "https://lord-wine-backend.onrender.com";
 
     const clienteId = user?.id;
 

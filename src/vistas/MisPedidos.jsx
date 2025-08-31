@@ -15,7 +15,7 @@ export default function PedidosCliente() {
 
     const clienteLogeadoId = user?.id || null;
     
-    const API_URL_PEDIDOS = 'http://localhost:3000/api/pedidos';
+    const API_URL_PEDIDOS = 'https://lord-wine-backend.onrender.com/api/pedidos';
 
     const showNotification = (msg, type) => {
         setMessage(msg);
