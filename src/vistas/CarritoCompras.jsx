@@ -5,13 +5,12 @@ import Footer from '../components/Footer';
 import BarraProductos from "../components/BarraProductos";
 import { usarCarrito } from '../context/ContextoCarrito';
 import { AuthContext } from '../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { Link } from 'react-router-dom';
 import "./CarritoCompras.css";
 
 export default function CarritoCompras() {
   const { itemsCarrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito } = usarCarrito();
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate(); // Inicializa useNavigate
   const [mostrarModalPago, setMostrarModalPago] = useState(false);
   const [mostrarModalExitoPago, setMostrarModalExitoPago] = useState(false);
   const [mostrarModalQR, setMostrarModalQR] = useState(false); 
@@ -30,6 +29,7 @@ export default function CarritoCompras() {
   };
 
   const handleProcederPago = () => {
+
     if (!user) {
       setMensajeError("Debes iniciar sesión para realizar un pedido.");
       return;
@@ -43,15 +43,9 @@ export default function CarritoCompras() {
   };
   
   const handleFinalizarPagoQR = async () => {
-    const backendUrl = import.meta.env.VITE_API_URL || "https://lord-wine-backend.onrender.com";
+    const backendUrl = "http://localhost:3000";
 
-    if (!user || user.role !== 'Cliente') {
-      setMensajeError("Solo los clientes pueden realizar un pedido.");
-      setMostrarModalQR(false);
-      return;
-    }
-
-    const clienteId = user.id;
+    const clienteId = user?.id;
 
     if (!clienteId) {
       setMensajeError("No se pudo obtener el ID del cliente. Por favor, inicia sesión de nuevo.");
@@ -69,18 +63,10 @@ export default function CarritoCompras() {
     };
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setMensajeError("Token de autenticación no encontrado. Por favor, inicia sesión.");
-        setMostrarModalQR(false);
-        return;
-      }
-      
       const response = await fetch(`${backendUrl}/api/pedidos/crear-desde-carrito`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(pedidoData),
       });
@@ -168,12 +154,12 @@ export default function CarritoCompras() {
                     </div>
                   ))}
                   <div className="flex justify-end mt-6">
-                    <button
-                      onClick={vaciarCarrito}
-                      className="flex items-center px-4 py-2 bg-[#921913] text-white rounded-md hover:bg-red-700 transition duration-300 text-xl"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" /> Vaciar Carrito
-                    </button>
+                      <button
+                          onClick={vaciarCarrito}
+                          className="flex items-center px-4 py-2 bg-[#921913] text-white rounded-md hover:bg-red-700 transition duration-300 text-xl"
+                      >
+                          <Trash2 className="w-4 h-4 mr-2" /> Vaciar Carrito
+                      </button>
                   </div>
                 </div>
 
@@ -193,21 +179,12 @@ export default function CarritoCompras() {
                       <span className="text-[#921913]">${total.toLocaleString('es-CO')}</span>
                     </div>
                   </div>
-                  {user && user.role === 'Cliente' ? (
-                    <button
-                      onClick={handleProcederPago}
-                      className="mt-8 w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                      Confirmar Pedido
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => navigate('/login')}
-                      className="mt-8 w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                      Inicia sesión como cliente para continuar
-                    </button>
-                  )}
+                  <button
+                    onClick={handleProcederPago}
+                    className="mt-8 w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  >
+                    Confirmar Pedido
+                  </button>
                 </div>
               </div>
             )}
@@ -263,7 +240,7 @@ export default function CarritoCompras() {
           </div>
         </div>
       )}
-
+      
       {mostrarModalQR && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
@@ -282,13 +259,10 @@ export default function CarritoCompras() {
               </div>
             </div>
             <button
-              onClick={async () => {
-                await handleFinalizarPagoQR();
-                navigate('/mis-pedidos'); 
-              }}
+              onClick={handleFinalizarPagoQR}
               className="mt-4 w-full bg-[#921913] text-white font-semibold py-3 rounded-full hover:bg-red-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
-              Subir Comprobante
+              Finalizar Pedido
             </button>
           </div>
         </div>
