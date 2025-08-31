@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useContext } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BarraProductos from '../components/BarraProductos';
-import { ShoppingBag, Calendar, User, Truck, CheckCircle, XCircle, Clock, DollarSign, UploadCloud, FileText, XCircle as XCircleIcon } from 'lucide-react'; // Cambiamos el alias para evitar conflictos
+import { ShoppingBag, Calendar, User, Truck, CheckCircle, XCircle, Clock, DollarSign } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export default function PedidosCliente() {
@@ -10,14 +10,12 @@ export default function PedidosCliente() {
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [showUploadModal, setShowUploadModal] = useState(false);
-    const [currentOrderId, setCurrentOrderId] = useState(null);
 
     const { user } = useContext(AuthContext);
 
     const clienteLogeadoId = user?.id || null;
-
-    const API_URL_PEDIDOS = import.meta.env.VITE_API_URL || 'https://lord-wine-backend.onrender.com/api/pedidos';
+    
+    const API_URL_PEDIDOS = 'https://lord-wine-backend.onrender.com/api/pedidos';
 
     const showNotification = (msg, type) => {
         setMessage(msg);
@@ -31,25 +29,13 @@ export default function PedidosCliente() {
     const fetchOrders = useCallback(async () => {
         setIsLoading(true);
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                showNotification('Debes iniciar sesión para ver tus pedidos.', 'error');
-                setIsLoading(false);
-                return;
-            }
-
-            const response = await fetch(API_URL_PEDIDOS, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
+            const response = await fetch(API_URL_PEDIDOS);
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
-
             let data = await response.json();
+
             const filteredData = data.filter(order => order.clCodCliente === clienteLogeadoId);
 
             const mappedOrders = filteredData.map(order => {
@@ -70,8 +56,7 @@ export default function PedidosCliente() {
                     status: order.pedEstado,
                     assignedTo: order.empleado ? order.empleado.emplNombre : 'Sin Asignar',
                     details: details,
-                    subtotal: subtotal,
-                    comprobanteUrl: order.pedComprobanteUrl || null
+                    subtotal: subtotal
                 };
             });
 
@@ -83,27 +68,6 @@ export default function PedidosCliente() {
             setIsLoading(false);
         }
     }, [API_URL_PEDIDOS, clienteLogeadoId]);
-
-    const handleOpenUploadModal = (orderId) => {
-        setCurrentOrderId(orderId);
-        setShowUploadModal(true);
-    };
-
-    const handleCloseUploadModal = () => {
-        setShowUploadModal(false);
-        setCurrentOrderId(null);
-    };
-
-    const handleFileUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        // Mostrar notificación de que la funcionalidad no está lista
-        showNotification('Funcionalidad de subida no disponible. Por favor, implemente el backend.', 'error');
-        
-        // Cerrar el modal después de la 'subida' (simulada)
-        handleCloseUploadModal();
-    };
 
     useEffect(() => {
         if (user) {
@@ -119,7 +83,7 @@ export default function PedidosCliente() {
             case 'Pendiente': return <Clock className="w-4 h-4 text-red-500" />;
             case 'En Proceso': return <Truck className="w-4 h-4 text-orange-500" />;
             case 'Completado': return <CheckCircle className="w-4 h-4 text-green-500" />;
-            case 'Cancelado': return <XCircleIcon className="w-4 h-4 text-red-500" />;
+            case 'Cancelado': return <XCircle className="w-4 h-4 text-red-500" />;
             default: return null;
         }
     };
@@ -153,7 +117,6 @@ export default function PedidosCliente() {
                                         <th className="py-3 px-4 text-left text-lg font-semibold text-black">Empleado Asignado</th>
                                         <th className="py-3 px-4 text-left text-lg font-semibold text-black">Detalles</th>
                                         <th className="py-3 px-4 text-left text-lg font-semibold text-black">Subtotal</th>
-                                        <th className="py-3 px-4 text-left text-lg font-semibold text-black">Comprobante</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -195,26 +158,6 @@ export default function PedidosCliente() {
                                                     <span>${order.subtotal.toFixed(2)}</span>
                                                 </div>
                                             </td>
-                                            <td className="py-3 px-4">
-                                                {order.comprobanteUrl ? (
-                                                    <a href={order.comprobanteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-green-600 hover:underline">
-                                                        <FileText className="w-4 h-4" />
-                                                        <span>Ver</span>
-                                                    </a>
-                                                ) : (
-                                                    order.status === 'Pendiente' ? (
-                                                        <button
-                                                            onClick={() => handleOpenUploadModal(order.id)}
-                                                            className="flex items-center space-x-2 text-blue-600 hover:underline cursor-pointer"
-                                                        >
-                                                            <UploadCloud className="w-4 h-4" />
-                                                            <span>Subir</span>
-                                                        </button>
-                                                    ) : (
-                                                        <span className="text-gray-400">N/A</span>
-                                                    )
-                                                )}
-                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -226,41 +169,6 @@ export default function PedidosCliente() {
                 </div>
             </main>
             <Footer />
-
-            {showUploadModal && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    {/* Fondo opaco */}
-                    <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm"></div>
-                    
-                    {/* Contenido del modal */}
-                    <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full relative z-10">
-                        <button
-                            onClick={handleCloseUploadModal}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition duration-200"
-                            title="Cerrar"
-                        >
-                            <XCircleIcon className="w-6 h-6" />
-                        </button>
-                        <h2 className="text-2xl font-semibold text-black mb-4">Subir Comprobante de Pago</h2>
-                        <p className="text-gray-600 mb-6">
-                            Una vez que subas el comprobante, cuando el administrador verifique el pago el pedido será enviado .
-                        </p>
-                        
-                        <label
-                            className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-green-700 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 cursor-pointer"
-                        >
-                            <UploadCloud className="w-5 h-5 mr-2" />
-                            <span>Subir Comprobante</span>
-                            <input
-                                type="file"
-                                className="hidden"
-                                accept="image/png, image/jpeg, image/jpg"
-                                onChange={handleFileUpload} 
-                            />
-                        </label>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
