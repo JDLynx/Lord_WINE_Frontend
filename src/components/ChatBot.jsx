@@ -20,10 +20,8 @@ const Chatbot = () => {
         scrollToBottom();
     }, [messages]);
 
-    // Lógica para cerrar el chat al hacer clic fuera
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Si el chat está abierto y el clic no está en el contenedor del chat o el botón
             if (chatRef.current && !chatRef.current.contains(event.target) && event.target.tagName !== 'BUTTON') {
                 setIsChatOpen(false);
             }
@@ -34,9 +32,9 @@ const Chatbot = () => {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, []); // El array vacío [] asegura que el efecto solo se ejecute una vez al montar
+    }, []);
 
-    // Lógica para el saludo inicial
+    // Lógica para el saludo inicial (CORREGIDO)
     useEffect(() => {
         if (isChatOpen && messages.length === 0) {
             const getGreeting = () => {
@@ -51,12 +49,27 @@ const Chatbot = () => {
             };
             const greeting = getGreeting();
             const initialMessage = `${greeting} Soy el asistente virtual de Lord Wine, ¿en qué puedo ayudarte?`;
-            setMessages([{ text: initialMessage, sender: 'bot' }]);
+
+            // Define los quick replies aquí mismo con las opciones completas
+            const quickReplies = [
+                "Consultar precio",
+                "Disponibilidad de productos",
+                "Tiendas disponibles",
+                "Hablar con un agente",
+                "Consultar categorías",
+                "Descripción de productos"
+            ];
+            
+            setMessages([
+                { text: initialMessage, sender: 'bot', quickReplies: quickReplies }
+            ]);
         }
-    }, [isChatOpen, messages.length]); // para que el saludo solo se añada si no hay mensajes
+    }, [isChatOpen]); // Solo se ejecuta cuando se abre el chat y no hay mensajes
 
     const sendMessageToDialogflow = async (message) => {
-        setMessages(prevMessages => [...prevMessages, { text: message, sender: 'user' }]);
+        if (message.trim() !== '') {
+            setMessages(prevMessages => [...prevMessages, { text: message, sender: 'user' }]);
+        }
         setInputMessage('');
 
         try {
@@ -65,8 +78,8 @@ const Chatbot = () => {
                 userId: userId
             });
 
-            const botReply = response.data.reply;
-            setMessages(prevMessages => [...prevMessages, { text: botReply, sender: 'bot' }]);
+            const { reply, quickReplies } = response.data;
+            setMessages(prevMessages => [...prevMessages, { text: reply, sender: 'bot', quickReplies: quickReplies }]);
         } catch (error) {
             console.error("Error al comunicarse con el backend de Dialogflow:", error);
             setMessages(prevMessages => [...prevMessages, { text: "Lo siento, hubo un error al conectar con el asistente.", sender: 'bot' }]);
@@ -85,9 +98,12 @@ const Chatbot = () => {
         }
     };
 
+    const handleQuickReplyClick = (replyText) => {
+        sendMessageToDialogflow(replyText);
+    };
+
     return (
         <div ref={chatRef} className="fixed bottom-4 right-8 z-50">
-            {/* Botón para abrir/cerrar el chat */}
             <button
                 onClick={() => setIsChatOpen(!isChatOpen)}
                 className="bg-[#7a1010] text-white rounded-full p-3 shadow-lg hover:bg-[#921913] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
@@ -99,8 +115,6 @@ const Chatbot = () => {
                     className="w-full h-full object-contain p-1 rounded-full"
                 />
             </button>
-
-            {/* Contenedor del chat*/}
             {isChatOpen && (
                 <div className="absolute bottom-20 right-8 w-80 h-[450px] bg-white rounded-lg shadow-xl flex flex-col overflow-hidden">
                     <div className="bg-[#7a1010] text-white p-3 flex justify-between items-center">
@@ -112,27 +126,39 @@ const Chatbot = () => {
                             ✖
                         </button>
                     </div>
-
                     <div className="flex-1 p-4 overflow-y-auto bg-white">
                         {messages.map((msg, index) => (
-                            <div
-                                key={index}
-                                className={`flex mb-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                            >
+                            <div key={index}>
                                 <div
-                                    className={`max-w-[70%] p-2 rounded-lg ${
-                                        msg.sender === 'user'
-                                            ? 'bg-[#7a1010] text-white rounded-br-none'
-                                            : 'bg-gray-300 text-gray-800 rounded-bl-none'
-                                    }`}
+                                    className={`flex mb-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
-                                    {msg.text}
+                                    <div
+                                        className={`max-w-[70%] p-2 rounded-lg ${
+                                            msg.sender === 'user'
+                                                ? 'bg-[#7a1010] text-white rounded-br-none'
+                                                : 'bg-gray-300 text-gray-800 rounded-bl-none'
+                                        }`}
+                                    >
+                                        {msg.text}
+                                    </div>
                                 </div>
+                                {msg.sender === 'bot' && msg.quickReplies && (
+                                    <div className="flex flex-wrap gap-2 mt-1 mb-2">
+                                        {msg.quickReplies.map((reply, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => handleQuickReplyClick(reply)}
+                                                className="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full hover:bg-gray-300 focus:outline-none"
+                                            >
+                                                {reply}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ))}
                         <div ref={messagesEndRef} />
                     </div>
-
                     <div className="p-3 border-t flex items-center bg-white">
                         <input
                             type="text"
