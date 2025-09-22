@@ -22,8 +22,12 @@ const Chatbot = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (chatRef.current && !chatRef.current.contains(event.target) && event.target.tagName !== 'BUTTON') {
-                setIsChatOpen(false);
+            if (chatRef.current && !chatRef.current.contains(event.target)) {
+                // Se agregó una condición para no cerrar si se hace clic en el botón del chatbot
+                const chatbotButton = document.querySelector('.chatbot-button');
+                if (chatbotButton && !chatbotButton.contains(event.target)) {
+                    setIsChatOpen(false);
+                }
             }
         };
 
@@ -34,7 +38,7 @@ const Chatbot = () => {
         };
     }, []);
 
-    // Lógica para el saludo inicial (CORREGIDO)
+    // Lógica para el saludo inicial
     useEffect(() => {
         if (isChatOpen && messages.length === 0) {
             const getGreeting = () => {
@@ -106,7 +110,7 @@ const Chatbot = () => {
         <div ref={chatRef} className="fixed bottom-4 right-8 z-50">
             <button
                 onClick={() => setIsChatOpen(!isChatOpen)}
-                className="bg-[#7a1010] text-white rounded-full p-3 shadow-lg hover:bg-[#921913] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
+                className="chatbot-button bg-[#7a1010] text-white rounded-full p-3 shadow-lg hover:bg-[#921913] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
                 style={{ width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}
             >
                 <img
@@ -116,64 +120,68 @@ const Chatbot = () => {
                 />
             </button>
             {isChatOpen && (
-                <div className="absolute bottom-20 right-8 w-80 h-[450px] bg-white rounded-lg shadow-xl flex flex-col overflow-hidden">
-                    <div className="bg-[#7a1010] text-white p-3 flex justify-between items-center">
-                        <div className="flex items-center">
-                            <img src={logo} alt="LordWine Logo" className="h-6 w-auto mr-2" />
-                            <h3 className="text-lg font-bold">ChatBot</h3>
-                        </div>
-                        <button onClick={() => setIsChatOpen(false)} className="text-white hover:text-gray-200">
-                            ✖
-                        </button>
-                    </div>
-                    <div className="flex-1 p-4 overflow-y-auto bg-white">
-                        {messages.map((msg, index) => (
-                            <div key={index}>
-                                <div
-                                    className={`flex mb-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                                >
-                                    <div
-                                        className={`max-w-[70%] p-2 rounded-lg ${
-                                            msg.sender === 'user'
-                                                ? 'bg-[#7a1010] text-white rounded-br-none'
-                                                : 'bg-gray-300 text-gray-800 rounded-bl-none'
-                                        }`}
-                                    >
-                                        {msg.text}
-                                    </div>
-                                </div>
-                                {msg.sender === 'bot' && msg.quickReplies && (
-                                    <div className="flex flex-wrap gap-2 mt-1 mb-2">
-                                        {msg.quickReplies.map((reply, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => handleQuickReplyClick(reply)}
-                                                className="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full hover:bg-gray-300 focus:outline-none"
-                                            >
-                                                {reply}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-gray-500/20 backdrop-blur-sm" onClick={() => setIsChatOpen(false)}></div>
+                    
+                    <div className="relative w-11/12 max-w-2xl h-3/4 md:h-[600px] lg:h-[700px] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden z-10">
+                        <div className="bg-[#7a1010] text-white p-3 flex justify-between items-center">
+                            <div className="flex items-center">
+                                <img src={logo} alt="LordWine Logo" className="h-6 w-auto mr-2" />
+                                <h3 className="text-lg font-bold">ChatBot</h3>
                             </div>
-                        ))}
-                        <div ref={messagesEndRef} />
-                    </div>
-                    <div className="p-3 border-t flex items-center bg-white">
-                        <input
-                            type="text"
-                            value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            placeholder="Escribe tu mensaje..."
-                            className="flex-1 border rounded-full px-4 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                        />
-                        <button
-                            onClick={handleSendMessage}
-                            className="bg-[#7a1010] text-white rounded-full p-2 px-4 hover:bg-[#921913] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
-                        >
-                            Enviar
-                        </button>
+                            <button onClick={() => setIsChatOpen(false)} className="text-white hover:text-gray-200">
+                                ✖
+                            </button>
+                        </div>
+                        <div className="flex-1 p-4 overflow-y-auto bg-white">
+                            {messages.map((msg, index) => (
+                                <div key={index}>
+                                    <div
+                                        className={`flex mb-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                                    >
+                                        <div
+                                            className={`max-w-[70%] p-2 rounded-lg ${
+                                                msg.sender === 'user'
+                                                    ? 'bg-[#7a1010] text-white rounded-br-none'
+                                                    : 'bg-gray-300 text-gray-800 rounded-bl-none'
+                                            }`}
+                                        >
+                                            {msg.text}
+                                        </div>
+                                    </div>
+                                    {msg.sender === 'bot' && msg.quickReplies && (
+                                        <div className="flex flex-wrap gap-2 mt-1 mb-2">
+                                            {msg.quickReplies.map((reply, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => handleQuickReplyClick(reply)}
+                                                    className="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full hover:bg-gray-300 focus:outline-none"
+                                                >
+                                                    {reply}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                            <div ref={messagesEndRef} />
+                        </div>
+                        <div className="p-3 border-t flex items-center bg-white">
+                            <input
+                                type="text"
+                                value={inputMessage}
+                                onChange={(e) => setInputMessage(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Escribe tu mensaje..."
+                                className="flex-1 border rounded-full px-4 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            />
+                            <button
+                                onClick={handleSendMessage}
+                                className="bg-[#7a1010] text-white rounded-full p-2 px-4 hover:bg-[#921913] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
+                            >
+                                Enviar
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
