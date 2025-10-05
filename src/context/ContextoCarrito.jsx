@@ -24,18 +24,29 @@ export const ProveedorCarrito = ({ children }) => {
   }, [itemsCarrito]);
 
   // Función para agregar un producto al carrito
-  const agregarAlCarrito = (producto) => {
+  const agregarAlCarrito = (producto, quantityToAdd = 1) => {
     setItemsCarrito((prevItems) => {
       const itemExistente = prevItems.find((item) => item.id === producto.id);
+      
+      // Asegurarse de que la cantidad a agregar es válida
+      const cantidadAAgregar = Math.max(1, parseInt(quantityToAdd));
 
       if (itemExistente) {
+        // Si existe, suma la cantidad seleccionada
         return prevItems.map((item) =>
-          item.id === producto.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === producto.id ? { ...item, quantity: item.quantity + cantidadAAgregar } : item
         );
       } else {
-        // Asegurarse de que el precio sea un número y el quantity sea 1 inicialmente
+        // Si es nuevo, lo agrega con la cantidad seleccionada
         const precio = parseFloat(producto.price);
-        return [...prevItems, { ...producto, price: isNaN(precio) ? 0 : precio, quantity: 1 }];
+        return [
+          ...prevItems, 
+          { 
+            ...producto, 
+            price: isNaN(precio) ? 0 : precio, 
+            quantity: cantidadAAgregar 
+          }
+        ];
       }
     });
   };
@@ -45,6 +56,7 @@ export const ProveedorCarrito = ({ children }) => {
     setItemsCarrito((prevItems) => prevItems.filter((item) => item.id !== productoId));
   };
 
+  // Función para actualizar la cantidad de un producto
   const actualizarCantidad = (productoId, nuevaCantidad) => {
     setItemsCarrito((prevItems) =>
       prevItems.map((item) =>

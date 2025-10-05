@@ -1,0 +1,15 @@
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(146, 25, 19, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(146, 25, 19, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(146, 25, 19, 0);
+    }
+}
+.chatbot-pulse {
+    box-shadow: 0 0 0 0 rgba(146, 25, 19, 0.7); 
+    animation: pulse 2s infinite;
+}

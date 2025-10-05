@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import logo from '/img/Lord WINE (3).png';
+import "./Chatbot.css"; 
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
@@ -23,9 +24,9 @@ const Chatbot = () => {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (chatRef.current && !chatRef.current.contains(event.target)) {
-                // Se agregó una condición para no cerrar si se hace clic en el botón del chatbot
                 const chatbotButton = document.querySelector('.chatbot-button');
-                if (chatbotButton && !chatbotButton.contains(event.target)) {
+                // Se verifica si el elemento fuera del chat es el botón, si no es, cierra el chat.
+                if (chatbotButton && !chatbotButton.contains(event.target)) { 
                     setIsChatOpen(false);
                 }
             }
@@ -68,7 +69,7 @@ const Chatbot = () => {
                 { text: initialMessage, sender: 'bot', quickReplies: quickReplies }
             ]);
         }
-    }, [isChatOpen]); // Solo se ejecuta cuando se abre el chat y no hay mensajes
+    }, [isChatOpen]); 
 
     const sendMessageToDialogflow = async (message) => {
         if (message.trim() !== '') {
@@ -110,7 +111,8 @@ const Chatbot = () => {
         <div ref={chatRef} className="fixed bottom-4 right-8 z-50">
             <button
                 onClick={() => setIsChatOpen(!isChatOpen)}
-                className="chatbot-button bg-[#7a1010] text-white rounded-full p-3 shadow-lg hover:bg-[#921913] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
+                // 2. AÑADIR LA CLASE CSS PARA LA ANIMACIÓN
+                className="chatbot-button bg-[#7a1010] text-white rounded-full p-3 shadow-lg hover:bg-[#921913] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75 chatbot-pulse" 
                 style={{ width: '70px', height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}
             >
                 <img

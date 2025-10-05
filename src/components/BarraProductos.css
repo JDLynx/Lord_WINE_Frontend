@@ -31,7 +31,6 @@
     font-weight: bold;
 }
 
-/* Estilos para el nuevo menú desplegable de Vinos, basados en BotonMenu.css */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -42,8 +41,8 @@
     white-space: nowrap;
     min-width: 200px;
     position: absolute;
-    top: 100%; /* Ajustado para que aparezca debajo de la barra */
-    left: 50%; /* Centrado */
+    top: 100%;
+    left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.9);
     border-radius: 5px;
@@ -53,7 +52,7 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    z-index: 100; /* Asegura que el menú esté por encima de otros elementos */
+    z-index: 100;
     animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -69,7 +68,7 @@
     display: block;
     text-align: left;
     transition: background-color 0.2s, color 0.2s;
-    border-radius: 5px; /* Para que el hover se vea mejor */
+    border-radius: 5px;
 }
 
 .dropdown-item:hover {
