@@ -24,14 +24,14 @@ export default function Header() {
         setSearchQuery(e.target.value);
     };
 
-    // FUNCIÓN DE CERRAR SESIÓN (handleLogout)
+    // FUNCIÓN DE CERRAR SESIÓN
     const handleLogout = () => {
         logout(); // Llama a la función del AuthContext que elimina el token
         setIsMenuOpen(false);
         navigate("/login");
     };
 
-    // FUNCIÓN DE IR A PERFIL (goToProfile)
+    // FUNCIÓN DE IR A PERFIL
     const goToProfile = () => {
         if (!user) return;
 
@@ -58,15 +58,15 @@ export default function Header() {
     const UserActions = ({ isMobile = false }) => {
         // Estilos base para elementos de acción
         const baseClasses = "flex items-center font-medium text-white transition duration-150";
-        const mobileClasses = "text-base hover:bg-red-700 px-3 py-2 rounded-md w-full";
-        const desktopClasses = "p-2 rounded-full hover:text-red-300";
+        const mobileClasses = "text-base px-3 py-2 rounded-md w-full";
+        const desktopClasses = "p-2 rounded-full";
 
         const iconClasses = isMobile ? 'w-5 h-5 mr-2' : 'w-6 h-6';
 
         return (
             <div className={`flex ${isMobile ? 'flex-col gap-2' : 'flex-row items-center gap-4'}`}>
                 {!user ? (
-                    // CASO 1: USUARIO NO LOGUEADO -> Ícono de Login
+                    // CASO 1: USUARIO NO LOGUEADO
                     <Link
                         to="/login"
                         onClick={() => setIsMenuOpen(false)}
@@ -77,7 +77,7 @@ export default function Header() {
                         {isMobile && <span>Iniciar sesión</span>}
                     </Link>
                 ) : (
-                    // CASO 2: USUARIO LOGUEADO -> Íconos de Perfil y Logout
+                    // CASO 2: USUARIO LOGUEADO
                     <>
                         {/* Botón de VER PERFIL */}
                         <button 
@@ -106,10 +106,10 @@ export default function Header() {
 
     return (
         <header className="bg-black sticky top-0 z-50">
-            {/* Contenedor principal: Distribución Logo | Buscador | Íconos */}
+            {/* Contenedor principal */}
             <div className='flex items-center justify-between w-full py-3 px-4'>
                 
-                {/* 1. LOGOS (Izquierda) */}
+                {/* LOGOS */}
                 <div className="flex gap-2 sm:gap-4 flex-shrink-0 items-center">
                     <Link to="/">
                         <img src="/img/Logo LORD WINE.png" alt="Logo de LORD WINE" className="h-12 sm:h-16 lg:h-[70px]" />
@@ -119,7 +119,7 @@ export default function Header() {
                     </Link>
                 </div>
                 
-                {/* 2. BUSCADOR (Centro) */}
+                {/* BUSCADOR */}
                 <div className='hidden sm:flex flex-grow justify-center'>
                     <div className='flex items-center p-2 bg-white rounded-xl shadow-inner border border-gray-200 w-full max-w-lg'>
                         <MagnifyingGlassIcon className='w-5 h-5 text-gray-400 mr-2 flex-shrink-0' />
@@ -134,7 +134,7 @@ export default function Header() {
                     </div>
                 </div>
 
-                {/* 3. ÍCONOS PRINCIPALES (Derecha) */}
+                {/* ÍCONOS PRINCIPALES */}
                 <div className='flex items-center gap-2 sm:gap-4 flex-shrink-0 ml-auto'>
                     
                     {/* NAVEGACIÓN Y ACCIONES DE USUARIO - ESCRITORIO */}
@@ -152,7 +152,6 @@ export default function Header() {
                             </Link>
                         ))}
 
-                        {/* Íconos funcionales (Puntos de venta y Carrito) */}
                         <Link to="/puntos-venta" className="p-2 rounded-full text-white transition duration-150" aria-label="Puntos de Venta">
                             <MapPinIcon className='w-6 h-6' />
                         </Link>
@@ -160,7 +159,7 @@ export default function Header() {
                             <ShoppingCartIcon className='w-6 h-6' />
                         </Link>
 
-                        {/* Acciones de Usuario (Logueado o No) */}
+                        {/* Acciones de Usuario */}
                         <UserActions />
                     </div>
 
@@ -191,7 +190,6 @@ export default function Header() {
                             <input
                                 type="text"
                                 placeholder="Buscar productos por nombre..."
-                                // Enlazado al estado real de búsqueda
                                 value={searchQuery}
                                 onChange={handleSearchChange}
                                 className="w-full text-gray-800 focus:outline-none placeholder-gray-500 text-sm"
@@ -215,7 +213,6 @@ export default function Header() {
 
                         {/* Íconos y Acciones de Usuario (Móvil) */}
                         <div className="space-y-2">
-                            {/* Se utiliza UserActions en modo móvil */}
                             <UserActions isMobile={true} />
                         </div>
                         
