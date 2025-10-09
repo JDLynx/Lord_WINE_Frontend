@@ -1,6 +1,7 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { ProveedorCarrito } from "./context/ContextoCarrito";
+import { ProveedorBusqueda } from "./context/ContextoBusqueda";
 
 import Home from "./vistas/Home";
 import PuntosVenta from "./vistas/PuntosVenta";
@@ -58,61 +59,63 @@ import Chatbot from "./components/ChatBot";
 function App() {
   return (
     <ProveedorCarrito>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/puntos-venta" element={<PuntosVenta />} />
-        <Route path="/carrito-compras" element={<CarritoCompras />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Registro />} />
-        <Route path="/solicitar-recuperacion" element={<SolicitarRecuperacion />} />
-        <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
+      <ProveedorBusqueda>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/puntos-venta" element={<PuntosVenta />} />
+          <Route path="/carrito-compras" element={<CarritoCompras />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+          <Route path="/solicitar-recuperacion" element={<SolicitarRecuperacion />} />
+          <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
 
-        <Route path="/servicios-empresariales" element={<ServiciosEmpresariales />} />
-        <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+          <Route path="/servicios-empresariales" element={<ServiciosEmpresariales />} />
+          <Route path="/sobre-nosotros" element={<SobreNosotros />} />
 
-        <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfil" element={<Perfil />} />
 
-        <Route path="/perfil-admin" element={<PerfilAdministrador />} />
-        <Route path="/editar-perfil-administrador" element={<EditarPerfilAdministrador />} />
-        <Route path="/cambiar-contrasena-administrador" element={<CambiarContraseñaAdministrador />} />
+          <Route path="/perfil-admin" element={<PerfilAdministrador />} />
+          <Route path="/editar-perfil-administrador" element={<EditarPerfilAdministrador />} />
+          <Route path="/cambiar-contrasena-administrador" element={<CambiarContraseñaAdministrador />} />
 
-        <Route path="/vinos" element={<Vinos />} />
+          <Route path="/vinos" element={<Vinos />} />
 
-        <Route path="/vinos-tintos" element={<VinosTintos />} />
-        <Route path="/vinos-rosados" element={<VinosRosados />} />
-        <Route path="/vinos-blancos" element={<VinosBlancos />} />
-        <Route path="/espumosos" element={<Espumosos />} />
-        
-        <Route path="/cremas-whisky" element={<CremasWhisky />} />
-        <Route path="/mistelas" element={<Mistelas />} />
-        <Route path="/zumo" element={<Zumo />} />
-        <Route path="/ron" element={<Ron />} />
+          <Route path="/vinos-tintos" element={<VinosTintos />} />
+          <Route path="/vinos-rosados" element={<VinosRosados />} />
+          <Route path="/vinos-blancos" element={<VinosBlancos />} />
+          <Route path="/espumosos" element={<Espumosos />} />
+          
+          <Route path="/cremas-whisky" element={<CremasWhisky />} />
+          <Route path="/mistelas" element={<Mistelas />} />
+          <Route path="/zumo" element={<Zumo />} />
+          <Route path="/ron" element={<Ron />} />
 
-        <Route path="/administradores" element={<GestionAdministradores />} />
-        <Route path="/empleados" element={<GestionEmpleados />} />
-        <Route path="/asignar-empleado-a-tienda" element={<AsignarempleadoaTienda />} />
-        <Route path="/tiendas-fisicas" element={<GestionTiendas />} />
-        <Route path="/productos" element={<GestionProductos />} />
-        <Route path="/inventario" element={<GestionInventario />} />
-        <Route path="/servicios" element={<GestionServicios />} />
-        <Route path="/pedidos" element={<GestionPedidos />} />
-        <Route path="/gestion-admin-inventario" element={<GestionAdminInventarioGeneral />} />
+          <Route path="/administradores" element={<GestionAdministradores />} />
+          <Route path="/empleados" element={<GestionEmpleados />} />
+          <Route path="/asignar-empleado-a-tienda" element={<AsignarempleadoaTienda />} />
+          <Route path="/tiendas-fisicas" element={<GestionTiendas />} />
+          <Route path="/productos" element={<GestionProductos />} />
+          <Route path="/inventario" element={<GestionInventario />} />
+          <Route path="/servicios" element={<GestionServicios />} />
+          <Route path="/pedidos" element={<GestionPedidos />} />
+          <Route path="/gestion-admin-inventario" element={<GestionAdminInventarioGeneral />} />
 
-        <Route path="/perfil-empleado" element={<PerfilEmpleado />} />
-        <Route path="/clientes-empleado" element={<ClientesEmpleado />} />
-        <Route path="/pedidos-empleado" element={<PedidosEmpleado />} />
-        <Route path="/inventario-tienda" element={<InventarioTienda />} />
-        <Route path="/gestion-empleado-inventario-tienda" element={<GestionEmpleadoInventarioTienda />} />
-        <Route path="/editar-perfil-empleado" element={<EditarPerfilEmpleado />} />
-        <Route path="/cambiar-contrasena-empleado" element={<CambiarContraseñaEmpleado />} />
+          <Route path="/perfil-empleado" element={<PerfilEmpleado />} />
+          <Route path="/clientes-empleado" element={<ClientesEmpleado />} />
+          <Route path="/pedidos-empleado" element={<PedidosEmpleado />} />
+          <Route path="/inventario-tienda" element={<InventarioTienda />} />
+          <Route path="/gestion-empleado-inventario-tienda" element={<GestionEmpleadoInventarioTienda />} />
+          <Route path="/editar-perfil-empleado" element={<EditarPerfilEmpleado />} />
+          <Route path="/cambiar-contrasena-empleado" element={<CambiarContraseñaEmpleado />} />
 
-        <Route path="/perfil-cliente" element={<PerfilCliente />} />
-        <Route path="/mis-pedidos" element={<MisPedidos />} />
-        <Route path="/editar-perfil-cliente" element={<EditarPerfilCliente />} />
-        <Route path="/cambiar-contrasena-cliente" element={<CambiarContraseñaCliente />} />
-      </Routes>
+          <Route path="/perfil-cliente" element={<PerfilCliente />} />
+          <Route path="/mis-pedidos" element={<MisPedidos />} />
+          <Route path="/editar-perfil-cliente" element={<EditarPerfilCliente />} />
+          <Route path="/cambiar-contrasena-cliente" element={<CambiarContraseñaCliente />} />
+        </Routes>
 
-      <Chatbot />
+        <Chatbot />
+      </ProveedorBusqueda>
     </ProveedorCarrito>
   );
 }

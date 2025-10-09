@@ -33,7 +33,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: 100%; /* Para que todas las tarjetas en la misma fila tengan la misma altura */
+    height: 100%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -57,15 +57,16 @@
     font-size: 18px;
     font-weight: bold;
     color: #00C853;
+    margin-top: 2px;
+    margin-bottom: 10px; 
 }
 
-/* Contenedor de la imagen para altura fija y centrado */
 .product-image-wrapper-cremas-whisky {
-    height: 120px;
+    height: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     width: 100%;
 }
 
@@ -85,7 +86,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 48px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     text-align: center;
     line-clamp: 2;
 }

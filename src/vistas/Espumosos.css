@@ -58,19 +58,19 @@
     font-size: 18px;
     font-weight: bold;
     color: #00C853;
+    margin-top: 2px;
+    margin-bottom: 10px;
 }
 
-/* Contenedor de la imagen para altura fija y centrado */
 .product-image-wrapper-espumosos {
-    height: 120px;
+    height: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     width: 100%;
 }
 
-/* Ajustes para la imagen dentro del contenedor */
 .product-image-espumosos {
     max-width: 100%;
     max-height: 100%;
@@ -78,7 +78,6 @@
     display: block;
 }
 
-/* Limita el nombre del producto a dos líneas y centra el texto */
 .nombre-producto-espumosos {
     font-size: 24px;
     color: #12b873;
@@ -88,7 +87,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 48px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     text-align: center;
     line-clamp: 2;
 }
